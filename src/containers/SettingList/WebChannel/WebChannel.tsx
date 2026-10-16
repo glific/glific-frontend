@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Field } from 'formik';
+import { Field, FieldArray, getIn } from 'formik';
+import AddIcon from '@mui/icons-material/Add';
 
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -8,6 +9,7 @@ import * as Yup from 'yup';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
+import { Button } from 'components/UI/Form/Button/Button';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { ColorInput } from 'components/UI/Form/ColorInput/ColorInput';
 import { FileUpload } from 'components/UI/Form/FileUpload/FileUpload';
@@ -16,6 +18,7 @@ import { DELETE_ORGANIZATION, CREATE_CREDENTIAL, UPDATE_CREDENTIAL } from 'graph
 import { copyToClipboard } from 'common/utils';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import styles from './WebChannel.module.css';
 
 const SHORTCODE = 'web_channel';
@@ -34,19 +37,13 @@ const FIELDS = [
   'about_website',
   'about_email',
   'about_hours',
-  'jwt_signature_secret_1_name',
-  'jwt_signature_secret_2_name',
 ];
 
-const SECRET_FIELDS = ['jwt_signature_secret_1', 'jwt_signature_secret_2'];
+const JWT_SECRETS = 'jwt_signature_secrets';
 
-const JWT_SECRET_SLOTS = [1, 2].map((slot) => ({
-  slot,
-  name: `jwt_signature_secret_${slot}_name`,
-  secret: `jwt_signature_secret_${slot}`,
-}));
+type JwtSecret = { name: string; secret: string };
 
-const JWT_SECRET_FIELDS = JWT_SECRET_SLOTS.flatMap(({ name, secret }) => [name, secret]);
+const EMPTY_JWT_SECRET: JwtSecret = { name: '', secret: '' };
 
 const parseJson = (value?: string | null) => (value ? JSON.parse(value) : {});
 
@@ -54,6 +51,14 @@ const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 // HS256 needs a key of at least 32 bytes; the server ignores a shorter secret.
 const MIN_SECRET_LENGTH = 32;
+
+const toJwtSecrets = (entries: any): JwtSecret[] =>
+  Array.isArray(entries) ? entries.map((entry) => ({ name: entry?.name ?? '', secret: entry?.secret ?? '' })) : [];
+
+const trimJwtSecrets = (entries: JwtSecret[] = []): JwtSecret[] =>
+  entries
+    .map(({ name, secret }) => ({ name: name.trim(), secret: secret.trim() }))
+    .filter(({ name, secret }) => name || secret);
 
 const queries = {
   getItemQuery: GET_CREDENTIAL,
@@ -105,43 +110,108 @@ const Section = ({ title, description }: { title: string; description?: string }
   </div>
 );
 
-const SecretInput = (props: any) => {
+// Input reads its error by the field's own name, which misses the nested path of a list entry.
+const NestedInput = ({ field, form, ...props }: any) => {
+  const scoped = {
+    ...form,
+    errors: { [field.name]: getIn(form.errors, field.name) },
+    touched: { [field.name]: getIn(form.touched, field.name) },
+  };
+
+  return <Input field={field} form={scoped} {...props} />;
+};
+
+const NestedSecretInput = ({ field, form, ...props }: any) => {
   const [visible, setVisible] = useState(false);
 
   return (
-    <Input {...props} type="password" togglePassword={visible} endAdornmentCallback={() => setVisible(!visible)} />
+    <NestedInput
+      field={field}
+      form={form}
+      {...props}
+      type="password"
+      togglePassword={visible}
+      endAdornmentCallback={() => setVisible(!visible)}
+    />
   );
 };
 
-const JwtSecretCard = ({ slot, nameField, secretField }: { slot: number; nameField: string; secretField: string }) => {
+const JwtSecretCard = ({ index, onRemove }: { index: number; onRemove: () => void }) => {
   const { t } = useTranslation();
+  const slot = index + 1;
+  const nameField = `${JWT_SECRETS}.${index}.name`;
+  const secretField = `${JWT_SECRETS}.${index}.secret`;
 
   return (
     <fieldset className={styles.SecretCard} data-testid={`jwtSecret${slot}`}>
-      <legend className={styles.SecretCardTitle}>{t('Secret {{slot}}', { slot })}</legend>
+      <legend className={styles.SecretCardTitle}>
+        {t('Secret {{slot}}', { slot })}
+        <button
+          type="button"
+          className={styles.RemoveSecret}
+          aria-label={t('Remove secret')}
+          data-testid="removeJwtSecret"
+          onClick={onRemove}
+        >
+          <DeleteIcon />
+        </button>
+      </legend>
       <div className={styles.SecretCardFields}>
         <label className={styles.SecretCardLabel} htmlFor={nameField}>
           {t('Name')}
         </label>
         <Field
-          component={Input}
+          component={NestedInput}
           name={nameField}
           type="text"
           placeholder={t('e.g. Tap 2026')}
-          inputProp={{ id: nameField, 'data-testid': nameField }}
+          inputProp={{ id: nameField, 'data-testid': 'jwtSecretName' }}
         />
         <label className={styles.SecretCardLabel} htmlFor={secretField}>
           {t('Secret')}
         </label>
         <Field
-          component={SecretInput}
+          component={NestedSecretInput}
           name={secretField}
           placeholder=""
           autoComplete="new-password"
-          inputProp={{ id: secretField, 'data-testid': secretField }}
+          inputProp={{ id: secretField, 'data-testid': 'jwtSecretValue' }}
         />
       </div>
     </fieldset>
+  );
+};
+
+const JwtSecrets = ({ form }: any) => {
+  const { t } = useTranslation();
+  const entries: JwtSecret[] = form.values[JWT_SECRETS] ?? [];
+
+  return (
+    <FieldArray
+      name={JWT_SECRETS}
+      render={(arrayHelpers) => (
+        <div data-testid="jwtSecrets">
+          {entries.length === 0 && (
+            <div className={styles.SecretsEmpty} data-testid="jwtSecretsEmpty">
+              {t('No secrets yet. Contacts sign in with phone + OTP only.')}
+            </div>
+          )}
+          {entries.map((_entry, index) => (
+            <JwtSecretCard key={index} index={index} onRemove={() => arrayHelpers.remove(index)} />
+          ))}
+          <Button
+            variant="outlined"
+            color="primary"
+            className={styles.AddSecret}
+            startIcon={<AddIcon />}
+            data-testid="addJwtSecret"
+            onClick={() => arrayHelpers.push({ ...EMPTY_JWT_SECRET })}
+          >
+            {t('Add secret')}
+          </Button>
+        </div>
+      )}
+    />
   );
 };
 
@@ -150,7 +220,7 @@ const JwtSecretsNote = () => {
 
   return (
     <div className={styles.SectionDescription}>
-      {t('To rotate: fill the empty slot, switch your backend, then clear the old one.')}
+      {t('To rotate: add the new secret, switch your backend to it, then remove the old one.')}
     </div>
   );
 };
@@ -219,7 +289,7 @@ export const WebChannel = () => {
     setIsActive(active);
     setStates({
       ...Object.fromEntries(FIELDS.map((name) => [name, savedKeys[name] ?? keys?.[name]?.default ?? ''])),
-      ...Object.fromEntries(SECRET_FIELDS.map((name) => [name, savedSecrets[name] ?? ''])),
+      [JWT_SECRETS]: toJwtSecrets(savedSecrets[JWT_SECRETS]),
       isActive: active,
     });
   };
@@ -249,29 +319,36 @@ export const WebChannel = () => {
       excludeEmptyString: true,
     }),
     about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
-    ...Object.fromEntries(
-      JWT_SECRET_SLOTS.flatMap(({ name, secret }) => [
-        [
-          name,
-          Yup.string().when(['isActive', secret], {
-            is: (active: boolean, secretValue?: string) => active && !!secretValue?.trim(),
-            then: (schema) => schema.trim().required(t('Give this secret a name so you can tell it apart.')),
-          }),
-        ],
-        [
-          secret,
-          Yup.string().when('isActive', {
-            is: true,
-            then: (schema) =>
-              schema.test(
-                'min-secret-length',
-                t('Use at least 32 characters.'),
-                (value) => !value?.trim() || value.trim().length >= MIN_SECRET_LENGTH
-              ),
-          }),
-        ],
-      ])
-    ),
+    [JWT_SECRETS]: Yup.array().when('isActive', {
+      is: true,
+      then: (schema) =>
+        schema.test('jwt-secrets', '', (entries, context) => {
+          const seen = new Set<string>();
+          const error = (index: number, field: keyof JwtSecret, message: string) =>
+            context.createError({ path: `${JWT_SECRETS}[${index}].${field}`, message });
+
+          const errors = (entries ?? []).flatMap((entry: any, index: number) => {
+            const name = entry?.name?.trim() ?? '';
+            const secret = entry?.secret?.trim() ?? '';
+            const entryErrors = [];
+
+            if (secret && !name) {
+              entryErrors.push(error(index, 'name', t('Give this secret a name so you can tell it apart.')));
+            }
+            if (name && seen.has(name)) {
+              entryErrors.push(error(index, 'name', t('Another secret already has this name.')));
+            }
+            if ((name || secret) && secret.length < MIN_SECRET_LENGTH) {
+              entryErrors.push(error(index, 'secret', t('Use at least 32 characters.')));
+            }
+            if (name) seen.add(name);
+
+            return entryErrors;
+          });
+
+          return errors.length ? new Yup.ValidationError(errors) : true;
+        }),
+    }),
   });
 
   const textField = (name: string, label?: string) => ({
@@ -343,34 +420,23 @@ export const WebChannel = () => {
       name: '__sectionJwtSecrets',
       title: t('JWT signature secrets'),
       description: t(
-        "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only. Use a random secret of at least 32 characters."
+        "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating."
       ),
     },
-    ...JWT_SECRET_SLOTS.map(({ slot, name, secret }) => ({
-      component: JwtSecretCard,
-      name: `__jwtSecret${slot}`,
-      slot,
-      nameField: name,
-      secretField: secret,
-    })),
+    { component: JwtSecrets, name: '__jwtSecrets' },
     { component: JwtSecretsNote, name: '__jwtSecretsNote' },
   ];
-
-  const formValue = (payload: any, name: string) => {
-    const value = payload[name] ?? '';
-    return JWT_SECRET_FIELDS.includes(name) && typeof value === 'string' ? value.trim() : value;
-  };
 
   const setPayload = (payload: any) => ({
     shortcode: SHORTCODE,
     isActive: !!payload.isActive,
     keys: JSON.stringify({
       ...saved.current.keys,
-      ...Object.fromEntries(FIELDS.map((name) => [name, formValue(payload, name)])),
+      ...Object.fromEntries(FIELDS.map((name) => [name, payload[name] ?? ''])),
     }),
     secrets: JSON.stringify({
       ...saved.current.secrets,
-      ...Object.fromEntries(SECRET_FIELDS.map((name) => [name, formValue(payload, name)])),
+      [JWT_SECRETS]: trimJwtSecrets(payload[JWT_SECRETS]),
     }),
   });
 

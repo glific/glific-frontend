@@ -31,13 +31,15 @@ const SAVED = {
   about_hours: 'Mon-Sat, 9am-7pm IST',
 };
 
-const JWT_SECRET_NAMES = { jwt_signature_secret_1_name: '2025', jwt_signature_secret_2_name: '2026' };
+const OLD_SECRET = 'old-shared-secret-0123456789abcdef';
+const NEW_SECRET = 'new-shared-secret-0123456789abcdef';
 const JWT_SECRETS = {
-  jwt_signature_secret_1: 'old-shared-secret-0123456789abcdef',
-  jwt_signature_secret_2: 'new-shared-secret-0123456789abcdef',
+  jwt_signature_secrets: [
+    { name: '2025', secret: OLD_SECRET },
+    { name: '2026', secret: NEW_SECRET },
+  ],
 };
-const EMPTY_JWT_SECRET_NAMES = { jwt_signature_secret_1_name: '', jwt_signature_secret_2_name: '' };
-const EMPTY_JWT_SECRETS = { jwt_signature_secret_1: '', jwt_signature_secret_2: '' };
+const NO_JWT_SECRETS = { jwt_signature_secrets: [] };
 
 const wrapper = (mocks: any[]) => (
   <MemoryRouter initialEntries={['/settings/web_channel']}>
@@ -185,7 +187,7 @@ describe('<WebChannel />', () => {
   it('saves every field as the credential keys', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
-    render(wrapper([...off, createWebChannelCredential({ ...SAVED, ...EMPTY_JWT_SECRET_NAMES }, EMPTY_JWT_SECRETS)]));
+    render(wrapper([...off, createWebChannelCredential(SAVED, NO_JWT_SECRETS)]));
 
     await waitFor(() => expect(screen.getByText('Web channel is active')).toBeInTheDocument());
     await user.click(screen.getByTestId('checkboxLabel').querySelector('input') as HTMLElement);
@@ -216,67 +218,90 @@ describe('<WebChannel />', () => {
 });
 
 describe('JWT signature secrets', () => {
-  const fill = (testId: string, value: string) => fireEvent.change(screen.getByTestId(testId), { target: { value } });
+  const fill = (element: HTMLElement, value: string) => fireEvent.change(element, { target: { value } });
+  const card = (slot: number) => screen.getByTestId(`jwtSecret${slot}`);
+  const nameOf = (slot: number) => within(card(slot)).getByTestId('jwtSecretName');
+  const secretOf = (slot: number) => within(card(slot)).getByTestId('jwtSecretValue');
+  const save = () => user.click(screen.getByTestId('submitActionButton'));
 
-  it('groups each secret into its own card, with a name and a masked secret', async () => {
-    render(wrapper(on));
+  it('shows one card per saved secret, each with a name and a masked secret', async () => {
+    render(wrapper(savedWith(SAVED, JWT_SECRETS)));
 
-    await waitFor(() => expect(screen.getByText('JWT signature secrets')).toBeInTheDocument());
-    expect(screen.getByText(/Either one works/)).toBeInTheDocument();
-    expect(screen.getByText(/To rotate: fill the empty slot/)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    expect(screen.queryByTestId('jwtSecret3')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('jwtSecretsEmpty')).not.toBeInTheDocument();
+    expect(screen.getByText(/a token signed with any of them is accepted/)).toBeInTheDocument();
+    expect(screen.getByText(/To rotate: add the new secret/)).toBeInTheDocument();
 
     [1, 2].forEach((slot) => {
-      const card = screen.getByTestId(`jwtSecret${slot}`);
-
       // The test i18n mock returns keys uninterpolated, so the heading reads "Secret {{slot}}" here.
-      expect(card).toHaveAccessibleName('Secret {{slot}}');
-
-      expect(within(card).getByLabelText('Name')).toBe(screen.getByTestId(`jwt_signature_secret_${slot}_name`));
-      expect(within(card).getByLabelText('Name')).toHaveAttribute('type', 'text');
-      expect(within(card).getByLabelText('Name')).toHaveAttribute('placeholder', 'e.g. Tap 2026');
-      expect(within(card).getByLabelText('Secret')).toBe(screen.getByTestId(`jwt_signature_secret_${slot}`));
-      expect(within(card).getByLabelText('Secret')).toHaveAttribute('type', 'password');
+      expect(card(slot)).toHaveAccessibleName(/^Secret \{\{slot\}\}/);
+      expect(within(card(slot)).getByLabelText('Name')).toBe(nameOf(slot));
+      expect(nameOf(slot)).toHaveAttribute('type', 'text');
+      expect(nameOf(slot)).toHaveAttribute('placeholder', 'e.g. Tap 2026');
+      expect(within(card(slot)).getByLabelText('Secret')).toBe(secretOf(slot));
+      expect(secretOf(slot)).toHaveAttribute('type', 'password');
     });
+
+    expect(nameOf(1)).toHaveValue('2025');
+    expect(secretOf(1)).toHaveValue(OLD_SECRET);
+    expect(nameOf(2)).toHaveValue('2026');
+    expect(secretOf(2)).toHaveValue(NEW_SECRET);
+  });
+
+  it('shows the empty state for an organisation with no secrets', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('jwtSecretsEmpty')).toBeInTheDocument());
+    expect(screen.queryByTestId('jwtSecret1')).not.toBeInTheDocument();
+    expect(screen.getByTestId('addJwtSecret')).toBeInTheDocument();
+  });
+
+  it('adds an empty card, and removes the one asked for', async () => {
+    render(wrapper(savedWith(SAVED, JWT_SECRETS)));
+
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    await user.click(screen.getByTestId('addJwtSecret'));
+
+    expect(nameOf(3)).toHaveValue('');
+    expect(secretOf(3)).toHaveValue('');
+
+    await user.click(within(card(1)).getByTestId('removeJwtSecret'));
+
+    expect(screen.queryByTestId('jwtSecret3')).not.toBeInTheDocument();
+    expect(nameOf(1)).toHaveValue('2026');
+    expect(nameOf(2)).toHaveValue('');
   });
 
   it('reveals a secret on request, so an admin can check what they pasted', async () => {
-    render(wrapper(on));
+    render(wrapper(savedWith(SAVED, JWT_SECRETS)));
 
     await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
-    const card = (slot: number) => screen.getByTestId(`jwtSecret${slot}`);
 
     await user.click(within(card(2)).getByTestId('passwordToggle'));
-    expect(within(card(2)).getByLabelText('Secret')).toHaveAttribute('type', 'text');
-    expect(within(card(1)).getByLabelText('Secret')).toHaveAttribute('type', 'password');
+    expect(secretOf(2)).toHaveAttribute('type', 'text');
+    expect(secretOf(1)).toHaveAttribute('type', 'password');
 
     await user.click(within(card(2)).getByTestId('passwordToggle'));
-    expect(within(card(2)).getByLabelText('Secret')).toHaveAttribute('type', 'password');
+    expect(secretOf(2)).toHaveAttribute('type', 'password');
   });
 
-  it('restores the saved names and secrets', async () => {
-    render(wrapper(savedWith({ ...SAVED, ...JWT_SECRET_NAMES }, JWT_SECRETS)));
-
-    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toHaveValue('2025'));
-    expect(screen.getByTestId('jwt_signature_secret_2_name')).toHaveValue('2026');
-    expect(screen.getByTestId('jwt_signature_secret_1')).toHaveValue('old-shared-secret-0123456789abcdef');
-    expect(screen.getByTestId('jwt_signature_secret_2')).toHaveValue('new-shared-secret-0123456789abcdef');
-  });
-
-  it('saves both names in the keys and both secrets in the secrets', async () => {
+  it('saves the secrets as one list in the secrets, trimmed and without empty entries', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
-    render(
-      wrapper([...savedWith(SAVED, {}), updateWebChannelCredential({ ...SAVED, ...JWT_SECRET_NAMES }, JWT_SECRETS)])
-    );
+    render(wrapper([...savedWith(SAVED, {}), updateWebChannelCredential(SAVED, JWT_SECRETS)]));
 
-    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('jwtSecretsEmpty')).toBeInTheDocument());
+    await user.click(screen.getByTestId('addJwtSecret'));
+    await user.click(screen.getByTestId('addJwtSecret'));
+    await user.click(screen.getByTestId('addJwtSecret'));
 
-    fill('jwt_signature_secret_1_name', ' 2025 ');
-    fill('jwt_signature_secret_1', 'old-shared-secret-0123456789abcdef');
-    fill('jwt_signature_secret_2_name', '2026');
-    fill('jwt_signature_secret_2', 'new-shared-secret-0123456789abcdef ');
+    fill(nameOf(1), ' 2025 ');
+    fill(secretOf(1), OLD_SECRET);
+    fill(nameOf(3), '2026');
+    fill(secretOf(3), `${NEW_SECRET} `);
 
-    await user.click(screen.getByTestId('submitActionButton'));
+    await save();
 
     // The mutation's mock matches on the exact payload, so the notification is the assertion.
     await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
@@ -286,7 +311,7 @@ describe('JWT signature secrets', () => {
   // would wipe the JWT signature secrets — and anything set on the credential outside this page.
   it('keeps the JWT signature secrets and every other saved value when only the branding changes', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
-    const keys = { ...SAVED, ...JWT_SECRET_NAMES, widget_variant: 'beta' };
+    const keys = { ...SAVED, widget_variant: 'beta' };
     const secrets = { ...JWT_SECRETS, analytics_token: 'kept' };
 
     render(
@@ -297,31 +322,29 @@ describe('JWT signature secrets', () => {
     );
 
     await waitFor(() => expect(screen.getByTestId('display_name')).toHaveValue('The Apprentice Project'));
-    fill('display_name', 'TAP Buddy');
+    fill(screen.getByTestId('display_name'), 'TAP Buddy');
 
-    await user.click(screen.getByTestId('submitActionButton'));
+    await save();
 
     await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
   });
 
-  it('sends empty slots as empty strings', async () => {
+  it('saves an empty list once every secret is removed, keeping other secrets', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
     render(
       wrapper([
-        ...savedWith({ ...SAVED, ...JWT_SECRET_NAMES }, JWT_SECRETS),
-        updateWebChannelCredential(
-          { ...SAVED, jwt_signature_secret_1_name: '', jwt_signature_secret_2_name: '2026' },
-          { jwt_signature_secret_1: '', jwt_signature_secret_2: 'new-shared-secret-0123456789abcdef' }
-        ),
+        ...savedWith(SAVED, { ...JWT_SECRETS, analytics_token: 'kept' }),
+        updateWebChannelCredential(SAVED, { ...NO_JWT_SECRETS, analytics_token: 'kept' }),
       ])
     );
 
-    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1_name')).toHaveValue('2025'));
-    fill('jwt_signature_secret_1_name', '');
-    fill('jwt_signature_secret_1', '');
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    await user.click(within(card(2)).getByTestId('removeJwtSecret'));
+    await user.click(within(card(1)).getByTestId('removeJwtSecret'));
+    expect(screen.getByTestId('jwtSecretsEmpty')).toBeInTheDocument();
 
-    await user.click(screen.getByTestId('submitActionButton'));
+    await save();
 
     await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
   });
@@ -329,18 +352,29 @@ describe('JWT signature secrets', () => {
   it('asks for a name when a secret is filled in', async () => {
     render(wrapper(on));
 
-    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_2')).toBeInTheDocument());
-    fill('jwt_signature_secret_2', 'new-shared-secret-0123456789abcdef');
+    await waitFor(() => expect(screen.getByTestId('addJwtSecret')).toBeInTheDocument());
+    await user.click(screen.getByTestId('addJwtSecret'));
+    fill(secretOf(1), NEW_SECRET);
 
-    await user.click(screen.getByTestId('submitActionButton'));
+    await save();
 
-    const card = screen.getByTestId('jwtSecret2');
     await waitFor(() =>
-      expect(within(card).getByText('Give this secret a name so you can tell it apart.')).toBeInTheDocument()
+      expect(within(card(1)).getByText('Give this secret a name so you can tell it apart.')).toBeInTheDocument()
     );
-    expect(
-      within(screen.getByTestId('jwtSecret1')).queryByText('Give this secret a name so you can tell it apart.')
-    ).not.toBeInTheDocument();
+  });
+
+  it('asks for a secret when only a name is filled in', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('addJwtSecret')).toBeInTheDocument());
+    await user.click(screen.getByTestId('addJwtSecret'));
+    fill(nameOf(1), '2026');
+
+    await save();
+
+    await waitFor(() => expect(within(card(1)).getByText('Use at least 32 characters.')).toBeInTheDocument());
+    expect(notification).not.toHaveBeenCalled();
   });
 
   it('states the minimum secret length', async () => {
@@ -351,18 +385,29 @@ describe('JWT signature secrets', () => {
 
   it('refuses a secret shorter than 32 characters, under that card only, and does not save', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
-    render(wrapper(on));
+    render(wrapper(savedWith(SAVED, JWT_SECRETS)));
 
-    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_2')).toBeInTheDocument());
-    fill('jwt_signature_secret_2_name', '2026');
-    fill('jwt_signature_secret_2', ` ${'a'.repeat(31)} `);
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    fill(secretOf(2), ` ${'a'.repeat(31)} `);
 
-    await user.click(screen.getByTestId('submitActionButton'));
+    await save();
 
-    await waitFor(() =>
-      expect(within(screen.getByTestId('jwtSecret2')).getByText('Use at least 32 characters.')).toBeInTheDocument()
-    );
-    expect(within(screen.getByTestId('jwtSecret1')).queryByText('Use at least 32 characters.')).not.toBeInTheDocument();
+    await waitFor(() => expect(within(card(2)).getByText('Use at least 32 characters.')).toBeInTheDocument());
+    expect(within(card(1)).queryByText('Use at least 32 characters.')).not.toBeInTheDocument();
+    expect(notification).not.toHaveBeenCalled();
+  });
+
+  it('refuses two secrets with the same name, flagging the repeat, and does not save', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper(savedWith(SAVED, JWT_SECRETS)));
+
+    await waitFor(() => expect(screen.getByTestId('jwtSecret2')).toBeInTheDocument());
+    fill(nameOf(2), ' 2025 ');
+
+    await save();
+
+    await waitFor(() => expect(within(card(2)).getByText('Another secret already has this name.')).toBeInTheDocument());
+    expect(within(card(1)).queryByText('Another secret already has this name.')).not.toBeInTheDocument();
     expect(notification).not.toHaveBeenCalled();
   });
 
@@ -373,39 +418,30 @@ describe('JWT signature secrets', () => {
     render(
       wrapper([
         ...savedWith(SAVED, {}),
-        updateWebChannelCredential(
-          { ...SAVED, jwt_signature_secret_1_name: '2025', jwt_signature_secret_2_name: '' },
-          { jwt_signature_secret_1: secret, jwt_signature_secret_2: '' }
-        ),
+        updateWebChannelCredential(SAVED, { jwt_signature_secrets: [{ name: '2025', secret }] }),
       ])
     );
 
-    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1')).toBeInTheDocument());
-    fill('jwt_signature_secret_1_name', '2025');
-    fill('jwt_signature_secret_1', secret);
+    await waitFor(() => expect(screen.getByTestId('addJwtSecret')).toBeInTheDocument());
+    await user.click(screen.getByTestId('addJwtSecret'));
+    fill(nameOf(1), '2025');
+    fill(secretOf(1), secret);
 
-    await user.click(screen.getByTestId('submitActionButton'));
+    await save();
 
     await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
     expect(screen.queryByText('Use at least 32 characters.')).not.toBeInTheDocument();
   });
 
-  it('allows both secrets to stay empty', async () => {
+  it('saves an empty list when no secret is set', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
-    render(
-      wrapper([
-        ...savedWith(SAVED, {}),
-        updateWebChannelCredential({ ...SAVED, ...EMPTY_JWT_SECRET_NAMES }, EMPTY_JWT_SECRETS),
-      ])
-    );
+    render(wrapper([...savedWith(SAVED, {}), updateWebChannelCredential(SAVED, NO_JWT_SECRETS)]));
 
-    await waitFor(() => expect(screen.getByTestId('jwt_signature_secret_1')).toHaveValue(''));
-    fill('display_name', SAVED.display_name);
+    await waitFor(() => expect(screen.getByTestId('jwtSecretsEmpty')).toBeInTheDocument());
 
-    await user.click(screen.getByTestId('submitActionButton'));
+    await save();
 
     await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
-    expect(screen.queryByText('Use at least 32 characters.')).not.toBeInTheDocument();
   });
 });

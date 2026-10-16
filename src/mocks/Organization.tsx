@@ -1438,40 +1438,17 @@ const WEB_CHANNEL_KEYS = JSON.stringify({
   about_website: { view_only: false, type: 'string', label: 'Website', default: null, position: 7 },
   about_email: { view_only: false, type: 'string', label: 'Contact email', default: null, position: 8 },
   about_hours: { view_only: false, type: 'string', label: 'Hours', default: null, position: 9 },
-  jwt_signature_secret_1_name: {
-    view_only: false,
-    type: 'string',
-    label: 'JWT signature secret 1 name',
-    default: null,
-    position: 10,
-    helper_text: 'A name of your choice to tell this secret apart, for example the year it was issued.',
-  },
-  jwt_signature_secret_2_name: {
-    view_only: false,
-    type: 'string',
-    label: 'JWT signature secret 2 name',
-    default: null,
-    position: 11,
-    helper_text: 'A name of your choice to tell this secret apart, for example the year it was issued.',
-  },
 });
 
 const WEB_CHANNEL_SECRETS = JSON.stringify({
-  jwt_signature_secret_1: {
+  jwt_signature_secrets: {
     view_only: false,
-    type: 'string',
-    label: 'JWT signature secret 1',
-    default: null,
+    type: 'list',
+    label: 'JWT signature secrets',
+    default: [],
     position: 1,
-    helper_text: 'Shared HS256 secret your backend signs login tokens (JWT) with.',
-  },
-  jwt_signature_secret_2: {
-    view_only: false,
-    type: 'string',
-    label: 'JWT signature secret 2',
-    default: null,
-    position: 2,
-    helper_text: 'Shared HS256 secret your backend signs login tokens (JWT) with.',
+    helper_text:
+      'Shared HS256 secrets your backend signs login tokens (JWT) with. A token signed by any of them is accepted.',
   },
 });
 

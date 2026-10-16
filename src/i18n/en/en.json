@@ -1265,8 +1265,12 @@
   "e.g. Tap 2026": "e.g. Tap 2026",
   "JWT signature secrets": "JWT signature secrets",
   "Give this secret a name so you can tell it apart.": "Give this secret a name so you can tell it apart.",
-  "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only. Use a random secret of at least 32 characters.": "Your backend signs contacts' login tokens (JWT) with one of these secrets. Either one works; leave both empty for phone + OTP only. Use a random secret of at least 32 characters.",
   "Use at least 32 characters.": "Use at least 32 characters.",
   "Secret {{slot}}": "Secret {{slot}}",
-  "To rotate: fill the empty slot, switch your backend, then clear the old one.": "To rotate: fill the empty slot, switch your backend, then clear the old one."
+  "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating.": "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating.",
+  "To rotate: add the new secret, switch your backend to it, then remove the old one.": "To rotate: add the new secret, switch your backend to it, then remove the old one.",
+  "Add secret": "Add secret",
+  "Remove secret": "Remove secret",
+  "No secrets yet. Contacts sign in with phone + OTP only.": "No secrets yet. Contacts sign in with phone + OTP only.",
+  "Another secret already has this name.": "Another secret already has this name."
 }
