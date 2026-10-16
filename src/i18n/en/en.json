@@ -1260,5 +1260,17 @@
   "Channel cannot be changed later after creation": "Channel cannot be changed later after creation",
   "This flow was not published": "This flow was not published",
   "Go back and edit": "Go back and edit",
-  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish."
+  "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.": "The nodes below cannot run on this flow's channel, so they need to be removed before you can publish.",
+  "Secret": "Secret",
+  "e.g. 2026": "e.g. 2026",
+  "JWT signature secrets": "JWT signature secrets",
+  "Give this secret a name so you can tell it apart.": "Give this secret a name so you can tell it apart.",
+  "Use at least 32 characters.": "Use at least 32 characters.",
+  "Secret {{slot}}": "Secret {{slot}}",
+  "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating.": "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating.",
+  "To rotate: add the new secret, switch your backend to it, then remove the old one.": "To rotate: add the new secret, switch your backend to it, then remove the old one.",
+  "Add secret": "Add secret",
+  "Remove secret": "Remove secret",
+  "No secrets yet. Contacts sign in with phone + OTP only.": "No secrets yet. Contacts sign in with phone + OTP only.",
+  "Another secret already has this name.": "Another secret already has this name."
 }

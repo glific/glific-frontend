@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Field } from 'formik';
+import { Field, FieldArray, getIn } from 'formik';
+import AddIcon from '@mui/icons-material/Add';
 
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -8,6 +9,7 @@ import * as Yup from 'yup';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
+import { Button } from 'components/UI/Form/Button/Button';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
 import { ColorInput } from 'components/UI/Form/ColorInput/ColorInput';
 import { FileUpload } from 'components/UI/Form/FileUpload/FileUpload';
@@ -16,13 +18,15 @@ import { DELETE_ORGANIZATION, CREATE_CREDENTIAL, UPDATE_CREDENTIAL } from 'graph
 import { copyToClipboard } from 'common/utils';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
+import DeleteIcon from 'assets/images/icons/Delete/Red.svg?react';
 import styles from './WebChannel.module.css';
 
 const SHORTCODE = 'web_channel';
 const SettingIcon = <Settingicon />;
 
-// The order the page saves, and the only keys it writes — a credential edited elsewhere keeps
-// whatever else it holds rather than having it dropped by a save from this form.
+// The keys this page edits, in the order a new credential saves them. The server replaces keys
+// and secrets wholesale on update, so a save merges these over whatever the saved credential
+// already holds rather than dropping values this form does not show.
 const FIELDS = [
   'logo_url',
   'display_name',
@@ -35,7 +39,43 @@ const FIELDS = [
   'about_hours',
 ];
 
+const JWT_SECRETS = 'jwt_signature_secrets';
+
+type JwtSecret = { name: string; secret: string };
+
+// The key a card keeps for as long as it is on screen, so removing one never hands another
+// card its revealed state. It is never saved.
+type JwtSecretEntry = JwtSecret & { uiKey: number };
+
+let nextUiKey = 0;
+const newJwtSecretEntry = (name = '', secret = ''): JwtSecretEntry => ({ name, secret, uiKey: nextUiKey++ });
+
+// The fixed slots an earlier version of this page saved; the server reads only the list now.
+const LEGACY_JWT_KEYS = ['jwt_signature_secret_1_name', 'jwt_signature_secret_2_name'];
+const LEGACY_JWT_SECRETS = ['jwt_signature_secret_1', 'jwt_signature_secret_2'];
+
+const omit = (values: Record<string, any>, names: string[]) =>
+  Object.fromEntries(Object.entries(values).filter(([name]) => !names.includes(name)));
+
+const parseJson = (value?: string | null) => (value ? JSON.parse(value) : {});
+
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
+// HS256 needs a key of at least 32 bytes; the server ignores a shorter secret.
+const MIN_SECRET_LENGTH = 32;
+
+// One secret normally, a second only while rotating; the server reads no more than two.
+const MAX_JWT_SECRETS = 2;
+
+const toJwtSecrets = (entries: any): JwtSecretEntry[] =>
+  Array.isArray(entries)
+    ? entries.slice(0, MAX_JWT_SECRETS).map((entry) => newJwtSecretEntry(entry?.name ?? '', entry?.secret ?? ''))
+    : [];
+
+const trimJwtSecrets = (entries: JwtSecretEntry[] = []): JwtSecret[] =>
+  entries
+    .map(({ name, secret }) => ({ name: name.trim(), secret: secret.trim() }))
+    .filter(({ name, secret }) => name || secret);
 
 const queries = {
   getItemQuery: GET_CREDENTIAL,
@@ -87,6 +127,123 @@ const Section = ({ title, description }: { title: string; description?: string }
   </div>
 );
 
+// Input reads its error by the field's own name, which misses the nested path of a list entry.
+const NestedInput = ({ field, form, ...props }: any) => {
+  const scoped = {
+    ...form,
+    errors: { [field.name]: getIn(form.errors, field.name) },
+    touched: { [field.name]: getIn(form.touched, field.name) },
+  };
+
+  return <Input field={field} form={scoped} {...props} />;
+};
+
+const NestedSecretInput = ({ field, form, ...props }: any) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <NestedInput
+      field={field}
+      form={form}
+      {...props}
+      type="password"
+      togglePassword={visible}
+      endAdornmentCallback={() => setVisible(!visible)}
+    />
+  );
+};
+
+const JwtSecretCard = ({ index, onRemove }: { index: number; onRemove: () => void }) => {
+  const { t } = useTranslation();
+  const slot = index + 1;
+  const nameField = `${JWT_SECRETS}.${index}.name`;
+  const secretField = `${JWT_SECRETS}.${index}.secret`;
+
+  return (
+    <fieldset className={styles.SecretCard} data-testid={`jwtSecret${slot}`}>
+      <legend className={styles.SecretCardTitle}>
+        {t('Secret {{slot}}', { slot })}
+        <button
+          type="button"
+          className={styles.RemoveSecret}
+          aria-label={t('Remove secret')}
+          data-testid="removeJwtSecret"
+          onClick={onRemove}
+        >
+          <DeleteIcon />
+        </button>
+      </legend>
+      <div className={styles.SecretCardFields}>
+        <label className={styles.SecretCardLabel} htmlFor={nameField}>
+          {t('Name')}
+        </label>
+        <Field
+          component={NestedInput}
+          name={nameField}
+          type="text"
+          placeholder={t('e.g. 2026')}
+          inputProp={{ id: nameField, 'data-testid': 'jwtSecretName' }}
+        />
+        <label className={styles.SecretCardLabel} htmlFor={secretField}>
+          {t('Secret')}
+        </label>
+        <Field
+          component={NestedSecretInput}
+          name={secretField}
+          placeholder=""
+          autoComplete="new-password"
+          inputProp={{ id: secretField, 'data-testid': 'jwtSecretValue' }}
+        />
+      </div>
+    </fieldset>
+  );
+};
+
+const JwtSecrets = ({ form }: any) => {
+  const { t } = useTranslation();
+  const entries: JwtSecretEntry[] = form.values[JWT_SECRETS] ?? [];
+
+  return (
+    <FieldArray
+      name={JWT_SECRETS}
+      render={(arrayHelpers) => (
+        <div data-testid="jwtSecrets">
+          {entries.length === 0 && (
+            <div className={styles.SecretsEmpty} data-testid="jwtSecretsEmpty">
+              {t('No secrets yet. Contacts sign in with phone + OTP only.')}
+            </div>
+          )}
+          {entries.map((entry, index) => (
+            <JwtSecretCard key={entry.uiKey} index={index} onRemove={() => arrayHelpers.remove(index)} />
+          ))}
+          {entries.length < MAX_JWT_SECRETS && (
+            <Button
+              variant="outlined"
+              color="primary"
+              className={styles.AddSecret}
+              startIcon={<AddIcon />}
+              data-testid="addJwtSecret"
+              onClick={() => arrayHelpers.push(newJwtSecretEntry())}
+            >
+              {t('Add secret')}
+            </Button>
+          )}
+        </div>
+      )}
+    />
+  );
+};
+
+const JwtSecretsNote = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div className={styles.SectionDescription}>
+      {t('To rotate: add the new secret, switch your backend to it, then remove the old one.')}
+    </div>
+  );
+};
+
 const BrandColors = ({ keys }: { keys: any }) => {
   const { t } = useTranslation();
 
@@ -127,6 +284,7 @@ export const WebChannel = () => {
   // Mirrors the form's own `isActive` so the field list can be rebuilt as it is toggled;
   // formFields is computed outside Formik and cannot read its values.
   const [isActive, setIsActive] = useState(false);
+  const saved = useRef<{ keys: any; secrets: any }>({ keys: {}, secrets: {} });
 
   const { data: providerData, loading: providerLoading } = useQuery(GET_PROVIDERS, {
     variables: { filter: { shortcode: SHORTCODE } },
@@ -138,15 +296,19 @@ export const WebChannel = () => {
 
   const orgShortcode = organizationData?.organization?.organization?.shortcode;
 
-  const keys = providerData?.providers?.[0] ? JSON.parse(providerData.providers[0].keys) : null;
+  const provider = providerData?.providers?.[0];
+  const keys = provider ? JSON.parse(provider.keys) : null;
 
   const setCredential = (item: any) => {
-    const saved = item?.keys ? JSON.parse(item.keys) : {};
+    const savedKeys = parseJson(item?.keys);
+    const savedSecrets = parseJson(item?.secrets);
     const active = !!item?.isActive;
 
+    saved.current = { keys: savedKeys, secrets: savedSecrets };
     setIsActive(active);
     setStates({
-      ...Object.fromEntries(FIELDS.map((name) => [name, saved[name] ?? keys?.[name]?.default ?? ''])),
+      ...Object.fromEntries(FIELDS.map((name) => [name, savedKeys[name] ?? keys?.[name]?.default ?? ''])),
+      [JWT_SECRETS]: toJwtSecrets(savedSecrets[JWT_SECRETS]),
       isActive: active,
     });
   };
@@ -176,6 +338,36 @@ export const WebChannel = () => {
       excludeEmptyString: true,
     }),
     about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
+    [JWT_SECRETS]: Yup.array().when('isActive', {
+      is: true,
+      then: (schema) =>
+        schema.test('jwt-secrets', '', (entries, context) => {
+          const seen = new Set<string>();
+          const error = (index: number, field: keyof JwtSecret, message: string) =>
+            context.createError({ path: `${JWT_SECRETS}[${index}].${field}`, message });
+
+          const errors = (entries ?? []).flatMap((entry: any, index: number) => {
+            const name = entry?.name?.trim() ?? '';
+            const secret = entry?.secret?.trim() ?? '';
+            const entryErrors = [];
+
+            if (secret && !name) {
+              entryErrors.push(error(index, 'name', t('Give this secret a name so you can tell it apart.')));
+            }
+            if (name && seen.has(name)) {
+              entryErrors.push(error(index, 'name', t('Another secret already has this name.')));
+            }
+            if ((name || secret) && secret.length < MIN_SECRET_LENGTH) {
+              entryErrors.push(error(index, 'secret', t('Use at least 32 characters.')));
+            }
+            if (name) seen.add(name);
+
+            return entryErrors;
+          });
+
+          return errors.length ? new Yup.ValidationError(errors) : true;
+        }),
+    }),
   });
 
   const textField = (name: string, label?: string) => ({
@@ -242,18 +434,37 @@ export const WebChannel = () => {
     textField('about_website', t('Website')),
     textField('about_email', t('Contact email')),
     textField('about_hours', t('Hours')),
+    {
+      component: Section,
+      name: '__sectionJwtSecrets',
+      title: t('JWT signature secrets'),
+      description: t(
+        "Your backend signs contacts' login tokens (HS256 JWT) with one of these secrets; a token signed with any of them is accepted. Use a random secret of at least 32 characters. Keep one secret, and a second only while rotating."
+      ),
+    },
+    { component: JwtSecrets, name: '__jwtSecrets' },
+    { component: JwtSecretsNote, name: '__jwtSecretsNote' },
   ];
 
   const setPayload = (payload: any) => ({
     shortcode: SHORTCODE,
     isActive: !!payload.isActive,
-    keys: JSON.stringify(Object.fromEntries(FIELDS.map((name) => [name, payload[name] ?? '']))),
-    secrets: JSON.stringify({}),
+    keys: JSON.stringify({
+      ...omit(saved.current.keys, LEGACY_JWT_KEYS),
+      ...Object.fromEntries(FIELDS.map((name) => [name, payload[name] ?? ''])),
+    }),
+    secrets: JSON.stringify({
+      ...omit(saved.current.secrets, LEGACY_JWT_SECRETS),
+      [JWT_SECRETS]: trimJwtSecrets(payload[JWT_SECRETS]),
+    }),
   });
 
   const afterSave = (data: any) => {
-    const saved = data?.createCredential?.credential ?? data?.updateCredential?.credential;
-    if (saved) setCredentialId(saved.id);
+    const credential = data?.createCredential?.credential ?? data?.updateCredential?.credential;
+    if (!credential) return;
+
+    setCredentialId(credential.id);
+    saved.current = { keys: parseJson(credential.keys), secrets: parseJson(credential.secrets) };
   };
 
   // Everything except the toggle and the address is configuration for a channel that is off.
