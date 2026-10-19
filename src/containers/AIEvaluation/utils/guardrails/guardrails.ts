@@ -145,7 +145,7 @@ const asObject = (value: unknown): JsonObject | null =>
 const stringsIn = (value: unknown) =>
   Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : null;
 
-const parseJson = (value: unknown): unknown => {
+export const parseJson = (value: unknown): unknown => {
   if (typeof value !== 'string') return value;
   try {
     return JSON.parse(value);
