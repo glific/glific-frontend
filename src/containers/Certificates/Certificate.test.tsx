@@ -172,4 +172,52 @@ describe('Certificate', () => {
       expect(screen.queryByTestId('dialogBox')).not.toBeInTheDocument();
     });
   });
+
+  describe('slide id validation', () => {
+    const presentationUrl = 'https://docs.google.com/presentation/d/1fBrDFDCD2iwnaKg8sxKd45lRbqLuBFvsZbSH1sjm7aI/edit';
+    const slideIdError = 'Invalid URL: please select a specific slide (URL should not end with slide=id.p)';
+
+    const enterUrl = async (url: string) => {
+      render(wrapper());
+
+      await waitFor(() => {
+        expect(screen.getByText('Certificates')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId('newItemButton'));
+
+      await waitFor(() => {
+        expect(screen.getByText('Create a new Certificate')).toBeInTheDocument();
+      });
+
+      const urlInput = screen.getAllByRole('textbox')[2];
+      fireEvent.change(urlInput, { target: { value: url } });
+      fireEvent.blur(urlInput);
+    };
+
+    test.each([
+      `${presentationUrl}#slide=id.gc6f9fe735_0_0`,
+      `${presentationUrl}?slide=id.h5354e71374cd0ed6_14_0#slide=id.h5354e71374cd0ed6_14_0`,
+      `${presentationUrl}#slide=id.SLIDES_API-123_0`,
+    ])('accepts %s', async (url) => {
+      await enterUrl(url);
+
+      await waitFor(() => {
+        expect(screen.queryByText(slideIdError)).not.toBeInTheDocument();
+        expect(screen.queryByText('to resolve', { exact: false })).not.toBeInTheDocument();
+      });
+    });
+
+    test.each([`${presentationUrl}#slide=id.p`, `${presentationUrl}?slide=id.p#slide=id.p`, presentationUrl])(
+      'rejects %s',
+      async (url) => {
+        await enterUrl(url);
+
+        await waitFor(() => {
+          expect(screen.getByText(slideIdError)).toBeInTheDocument();
+          expect(screen.getByText('to resolve', { exact: false })).toBeInTheDocument();
+        });
+      }
+    );
+  });
 });

@@ -16,7 +16,7 @@ const dialogMessage = "You won't be able to use this certificate again.";
 const redirectionLink = 'certificates';
 const icon = <CertificateIcon />;
 const presentationRegex = /^https:\/\/docs\.google\.com\/presentation\/d\/[a-zA-Z0-9_-]+\/edit.*$/;
-const idRegex = /slide=id\.g[a-zA-Z0-9_]*$/;
+const idRegex = /slide=id\.(?!p$)[a-zA-Z0-9_-]+$/;
 
 const queries = {
   getItemQuery: GET_CERTIFICATE,
@@ -46,7 +46,11 @@ const Certificate = () => {
       .test('is-valid-presentation-link', 'Invalid URL, Please add a Google Slides link.', (value) =>
         presentationRegex.test(value)
       )
-      .test('has-valid-id', 'Invalid URL: URL ending with slide=id.p', (value) => idRegex.test(value)),
+      .test(
+        'has-valid-id',
+        'Invalid URL: please select a specific slide (URL should not end with slide=id.p)',
+        (value) => idRegex.test(value)
+      ),
   });
 
   const formFields = [
