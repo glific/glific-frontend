@@ -682,3 +682,36 @@ export const getEvaluationScoresInvalidRowsMock = (id = '2') => ({
     },
   },
 });
+
+export const guardrailTraces = [
+  {
+    trace_id: 'item_0_0',
+    question_id: 1,
+    question: 'What is the definition of health, Himanshu?',
+    ground_truth_answer: 'Health is complete well-being.',
+    llm_answer: '',
+    guardrail: 'blocked: PII detected in the text.',
+    input_to_llm: null,
+    output_from_llm: null,
+    scores: [],
+  },
+  {
+    trace_id: 'item_3_0',
+    question_id: 2,
+    question: 'What is the sequence of taxonomic categories?',
+    ground_truth_answer: 'Species → Genus → Family → Order → Class → Phylum → Kingdom.',
+    llm_answer: 'Species, Genus, Family, Order, Class, Phylum, Kingdom.',
+    guardrail: 'applied',
+    input_to_llm: 'What is the sequence of taxonomic categories?',
+    output_from_llm: null,
+    scores: [{ name: 'Adherence to Ground Truth', value: 5, comment: 'Exact sequence.' }],
+  },
+  {
+    trace_id: 'item_4_0',
+    question_id: 3,
+    question: 'What is taxonomy?',
+    ground_truth_answer: 'Naming and classifying organisms.',
+    llm_answer: 'The science of naming and classifying organisms.',
+    scores: [{ name: 'Adherence to Ground Truth', value: 4, comment: '' }],
+  },
+];

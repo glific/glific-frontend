@@ -20,9 +20,16 @@ export interface EvaluationTraceScore {
   comment: string;
 }
 
+export interface EvaluationTraceGuardrail {
+  status: string;
+  reason: string;
+  inputToLlm: string | null;
+  outputFromLlm: string | null;
+}
 export interface EvaluationTraceAnswer {
   answer: string;
   scores: EvaluationTraceScore[];
+  guardrail: EvaluationTraceGuardrail | null;
 }
 
 export interface EvaluationTrace {
