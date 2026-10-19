@@ -1,18 +1,46 @@
 import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails';
-import { actionFromConfig, isTranslationKey, piiDetailGroups, scopeFallbackMessage } from './guardrails';
+import type { GuardrailTopicSuggestion } from 'containers/AIEvaluation/types/guardrailType';
+import {
+  actionFromConfig,
+  isTranslationKey,
+  parseGuardrailSpecs,
+  piiDetailGroups,
+  safeLink,
+  scopeFallbackMessage,
+  topicsFromConfiguration,
+  topicsToConfiguration,
+} from './guardrails';
 
 describe('piiDetailGroups', () => {
-  test('reads every kind into one list, ticked as the default says, ticked ones first', () => {
+  test('splits pattern-matched kinds from model-guessed ones, ticked as the default says', () => {
     const groups = piiDetailGroups(PII_REMOVER_CONFIG);
 
-    expect(groups).toHaveLength(1);
-    const [{ options }] = groups;
-    expect(options).toHaveLength(15);
-    expect(options.filter((option) => option.selected)).toHaveLength(12);
+    expect(groups.map((group) => group.id)).toEqual(['pattern-matched', 'model-guessed']);
+    const [matched, guessed] = groups;
 
-    expect(options.slice(0, 12).every((option) => option.selected)).toBe(true);
-    expect(options.slice(12).map((option) => option.id)).toEqual(['LOCATION', 'NRP', 'PERSON']);
+    expect(matched.note).toBeUndefined();
+    expect(matched.options).toHaveLength(12);
+    expect(matched.options.every((option) => option.selected)).toBe(true);
+
+    // the model-guessed kinds carry a note on how reliable they are, and none is in the default
+    expect(guessed.note).toBe(
+      'Redacted using English model: misses many Indian names and sometimes masks ordinary words'
+    );
+    expect(guessed.options.map((option) => [option.id, option.selected])).toEqual([
+      ['LOCATION', false],
+      ['NRP', false],
+      ['PERSON', false],
+    ]);
     expect(piiDetailGroups(JSON.stringify(PII_REMOVER_CONFIG))).toEqual(groups);
+  });
+
+  test('ticked ones come first within a group, and an empty group is left out', () => {
+    const groups = piiDetailGroups({
+      properties: { entity_types: { items: { enum: ['LOCATION', 'PERSON'] }, default: ['PERSON'] } },
+    });
+
+    expect(groups.map((group) => group.id)).toEqual(['model-guessed']);
+    expect(groups[0].options.map((option) => option.id)).toEqual(['PERSON', 'LOCATION']);
   });
 
   test('a kind it has no name for reads as words', () => {
@@ -60,6 +88,61 @@ describe('scopeFallbackMessage', () => {
     expect(scopeFallbackMessage(TOPIC_RELEVANCE_LLM_CONFIG)).toBe('');
     expect(scopeFallbackMessage({ properties: { fallback_message: { default: 'Sirf sehat.' } } })).toBe('Sirf sehat.');
     expect(scopeFallbackMessage('not json')).toBe('');
+  });
+});
+
+describe('parseGuardrailSpecs', () => {
+  test('reads a JSON string or an already-parsed list, dropping entries without a type', () => {
+    const specs = [{ type: 'pii_remover' }, { on_fail: 'fix' }, { type: '' }, 'nope'];
+
+    expect(parseGuardrailSpecs(JSON.stringify(specs))).toEqual([{ type: 'pii_remover' }]);
+    expect(parseGuardrailSpecs(specs)).toEqual([{ type: 'pii_remover' }]);
+  });
+
+  test('anything that is not a list gives no specs', () => {
+    expect(parseGuardrailSpecs(null)).toEqual([]);
+    expect(parseGuardrailSpecs('not json')).toEqual([]);
+    expect(parseGuardrailSpecs({ type: 'pii_remover' })).toEqual([]);
+  });
+});
+
+describe('topics configuration', () => {
+  const suggestions: GuardrailTopicSuggestion[] = [
+    {
+      id: 'suggest-politics',
+      label: 'Legal & financial advice',
+      description: 'legal proceedings, investment advice, loans, tax filing',
+    },
+  ];
+
+  test('round-trips topics, one per line, keeping commas inside a description', () => {
+    const topics = [
+      { id: 'topic-suggest-politics', label: 'Legal & financial advice', description: 'loans, tax filing' },
+      { id: 'custom-cricket-1', label: 'Cricket', description: '' },
+    ];
+
+    const configuration = topicsToConfiguration(topics);
+    expect(configuration).toBe('Legal & financial advice — loans, tax filing\nCricket');
+    expect(topicsFromConfiguration(configuration, suggestions)).toEqual([
+      { id: 'topic-suggest-politics', label: 'Legal & financial advice', description: 'loans, tax filing' },
+      { id: 'custom-cricket-1', label: 'Cricket', description: '' },
+    ]);
+  });
+
+  test('a configuration that is not text gives no topics', () => {
+    expect(topicsFromConfiguration(undefined, suggestions)).toEqual([]);
+  });
+});
+
+describe('safeLink', () => {
+  test('keeps web addresses and drops every other kind of link', () => {
+    expect(safeLink('https://projecttech4devai.github.io/kaapi-docs/guardrails/pii')).toBe(
+      'https://projecttech4devai.github.io/kaapi-docs/guardrails/pii'
+    );
+    expect(safeLink('javascript:alert(1)')).toBeNull();
+    expect(safeLink('data:text/html,<script>alert(1)</script>')).toBeNull();
+    expect(safeLink('not a url')).toBeNull();
+    expect(safeLink(null)).toBeNull();
   });
 });
 

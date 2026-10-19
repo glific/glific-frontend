@@ -21,6 +21,7 @@ import {
   mergeVersionUpdate,
   nextPublishLabel,
 } from 'containers/AIEvaluation/utils/assistantVersions';
+import { EMPTY_GUARDRAIL_SPECS, parseGuardrailSpecs } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import {
   DEFAULT_MODEL_CONFIG,
   configForModel,
@@ -43,6 +44,7 @@ import {
 } from './components';
 import { Guardrails, KnowledgeBase, PersonaPrompt, TryItOut, Evaluation } from './Tabs';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
+import type { GuardrailSpecs } from 'containers/AIEvaluation/types/guardrailType';
 import type { KnowledgeBaseFile } from 'containers/AIEvaluation/types/knowledgeBaseType';
 import styles from './AssistantDetail.module.css';
 
@@ -77,6 +79,10 @@ const editorStateFromVersion = (version: AssistantVersion): EditorState => {
       ...(settings.effort ? { effort: settings.effort as ModelConfig['effort'] } : {}),
     },
     files: filesFromVectorStore(version.vectorStore ?? null),
+    guardrails: {
+      input: parseGuardrailSpecs(version.inputGuardrails),
+      output: parseGuardrailSpecs(version.outputGuardrails),
+    },
   };
 };
 
@@ -89,6 +95,7 @@ const editorStateFromAssistant = (assistant: any): EditorState => ({
     ...(assistant.effort ? { effort: assistant.effort as ModelConfig['effort'] } : {}),
   },
   files: filesFromVectorStore(assistant.vectorStore ?? null),
+  guardrails: EMPTY_GUARDRAIL_SPECS,
 });
 
 export const AssistantDetail = () => {
@@ -102,10 +109,12 @@ export const AssistantDetail = () => {
   const [prompt, setPrompt] = useState('');
   const [modelConfig, setModelConfig] = useState<ModelConfig>(DEFAULT_MODEL_CONFIG);
   const [knowledgeBaseFiles, setKnowledgeBaseFiles] = useState<KnowledgeBaseFile[]>([]);
-  const [baseline, setBaseline] = useState<{ prompt: string; config: ModelConfig; files: KnowledgeBaseFile[] }>({
+  const [guardrails, setGuardrails] = useState<GuardrailSpecs>(EMPTY_GUARDRAIL_SPECS);
+  const [baseline, setBaseline] = useState<EditorState>({
     prompt: '',
     config: DEFAULT_MODEL_CONFIG,
     files: [],
+    guardrails: EMPTY_GUARDRAIL_SPECS,
   });
   const [uploadingFiles, setUploadingFiles] = useState<string[]>([]);
   const [draftName, setDraftName] = useState('');
@@ -253,6 +262,7 @@ export const AssistantDetail = () => {
     setPrompt(loaded.prompt);
     setModelConfig(loaded.config);
     setKnowledgeBaseFiles(loaded.files);
+    setGuardrails(loaded.guardrails);
     setBaseline(loaded);
   }, [data, selectedVersion]);
 
@@ -276,6 +286,7 @@ export const AssistantDetail = () => {
   const dirtyTabs: Partial<Record<TabKey, boolean>> = {
     persona: prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config),
     knowledgeBase: filesChanged,
+    guardrails: JSON.stringify(guardrails) !== JSON.stringify(baseline.guardrails),
   };
   const isDirty = Object.values(dirtyTabs).some(Boolean);
 
@@ -300,6 +311,7 @@ export const AssistantDetail = () => {
     setPrompt(baseline.prompt);
     setModelConfig(baseline.config);
     setKnowledgeBaseFiles(baseline.files);
+    setGuardrails(baseline.guardrails);
     setDiscardOpen(false);
   };
 
@@ -318,6 +330,8 @@ export const AssistantDetail = () => {
       model: modelConfig.model,
       ...(takesTemperature && modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
       ...(takesEffort && modelConfig.effort ? { effort: modelConfig.effort } : {}),
+      inputGuardrails: JSON.stringify(guardrails.input),
+      outputGuardrails: JSON.stringify(guardrails.output),
     };
 
     try {
@@ -360,7 +374,7 @@ export const AssistantDetail = () => {
         setErrorMessage(errors[0]);
         return;
       }
-      setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles });
+      setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles, guardrails });
       setAwaitingVersionAbove(sortedVersions[0] ?? null);
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {
@@ -502,7 +516,7 @@ export const AssistantDetail = () => {
         legacy={vectorStore?.legacy ?? false}
       />
     ),
-    guardrails: <Guardrails />,
+    guardrails: <Guardrails value={guardrails} onChange={setGuardrails} />,
     tryItOut: (
       <TryItOut
         hasVersions={versions.length > 0}

@@ -4,6 +4,7 @@ import type {
   EvaluationRun,
   EvaluationTrace,
   EvaluationTraceAnswer,
+  EvaluationTraceGuardrail,
   JsonRecord,
   ScoreBand,
 } from 'containers/AIEvaluation/types/evaluationType';
@@ -159,6 +160,29 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
         comment: typeof score.comment === 'string' ? score.comment : '',
       }));
 
+  const nonEmpty = (value: unknown) => (typeof value === 'string' && value !== '' ? value : null);
+
+  const readGuardrail = (row: JsonRecord, index?: number): EvaluationTraceGuardrail | null => {
+    const pick = (key: string) => {
+      const value = row[key];
+      return Array.isArray(value) && index !== undefined ? value[index] : value;
+    };
+
+    const raw = nonEmpty(pick('guardrail'));
+    if (!raw) return null;
+
+    const [rawStatus, ...reason] = raw.split(':');
+    const status = rawStatus.trim().toLowerCase();
+    if (!status) return null;
+
+    return {
+      status,
+      reason: reason.join(':').trim(),
+      inputToLlm: nonEmpty(pick('input_to_llm')),
+      outputFromLlm: nonEmpty(pick('output_from_llm')),
+    };
+  };
+
   const readAnswers = (row: JsonRecord): EvaluationTraceAnswer[] => {
     if (Array.isArray(row.llm_answers)) {
       // grouped: scores[i] belongs to llm_answers[i]
@@ -166,10 +190,13 @@ export const parseEvaluationScores = (raw: unknown): EvaluationTrace[] => {
       return row.llm_answers.map((answer: unknown, index: number) => ({
         answer: typeof answer === 'string' ? answer : '',
         scores: readScores(grouped[index]),
+        guardrail: readGuardrail(row, index),
       }));
     }
 
-    return [{ answer: text(row, 'llm_answer', 'answer'), scores: readScores(row.scores) }];
+    return [
+      { answer: text(row, 'llm_answer', 'answer'), scores: readScores(row.scores), guardrail: readGuardrail(row) },
+    ];
   };
 
   return traces

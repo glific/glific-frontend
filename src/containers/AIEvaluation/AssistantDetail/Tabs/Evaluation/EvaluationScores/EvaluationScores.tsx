@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import BlockIcon from '@mui/icons-material/Block';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -15,6 +17,7 @@ import type {
   EvaluationScoresFormat,
   EvaluationTrace,
   EvaluationTraceAnswer,
+  EvaluationTraceGuardrail,
   EvaluationTraceScore,
 } from 'containers/AIEvaluation/types/evaluationType';
 import { SegmentedControl } from 'components/UI/SegmentedControl/SegmentedControl';
@@ -48,14 +51,32 @@ export const EvaluationScores = ({
   const scoreOf = (answer: EvaluationTraceAnswer, name: string) =>
     answer.scores.find((entry) => entry.name === name)?.value ?? null;
 
+  const hasGuardrails = traces.some((trace) => trace.answers.some((answer) => answer.guardrail));
+
+  const guardrailText = (guardrail: EvaluationTraceGuardrail | null) =>
+    guardrail ? [guardrail.status, guardrail.reason].filter(Boolean).join(': ') : '';
+
   const exportScores = () => {
     const rows = [
-      [t('Question'), t('Expected answer'), t('Assistant answer'), ...metricNames],
+      [
+        t('Question'),
+        t('Expected answer'),
+        t('Assistant answer'),
+        ...(hasGuardrails ? [t('Guardrail'), t('Input to LLM'), t('Output from LLM')] : []),
+        ...metricNames,
+      ],
       ...traces.flatMap((trace) =>
         trace.answers.map((answer) => [
           trace.question,
           trace.expected,
           answer.answer,
+          ...(hasGuardrails
+            ? [
+                guardrailText(answer.guardrail),
+                answer.guardrail?.inputToLlm ?? '',
+                answer.guardrail?.outputFromLlm ?? '',
+              ]
+            : []),
           ...metricNames.map((name) => {
             const score = scoreOf(answer, name);
             return score == null ? '' : String(score);
@@ -85,13 +106,59 @@ export const EvaluationScores = ({
     </span>
   );
 
+  const guardrailNote = (guardrail: EvaluationTraceGuardrail | null) => {
+    if (!guardrail) return null;
+
+    const blocked = guardrail.status === 'blocked';
+    const label = { blocked: t('Blocked by guardrail'), applied: t('Guardrails applied') }[guardrail.status];
+    const hasDetails = guardrail.inputToLlm !== null || guardrail.outputFromLlm !== null;
+
+    return (
+      <div className={styles.Guardrail} data-testid="answerGuardrail">
+        <span className={`${styles.GuardrailBadge} ${blocked ? styles.GuardrailBlocked : styles.GuardrailApplied}`}>
+          {blocked ? (
+            <BlockIcon className={styles.GuardrailIcon} />
+          ) : (
+            <ShieldOutlinedIcon className={styles.GuardrailIcon} />
+          )}
+          {label ?? guardrail.status}
+        </span>
+        {guardrail.reason && <span className={styles.GuardrailReason}>{guardrail.reason}</span>}
+        {hasDetails && (
+          <Tooltip
+            title={
+              <dl className={styles.GuardrailDetails}>
+                <dt>{t('Input to LLM')}</dt>
+                <dd>{guardrail.inputToLlm ?? '—'}</dd>
+                <dt>{t('Output from LLM')}</dt>
+                <dd>{guardrail.outputFromLlm ?? '—'}</dd>
+              </dl>
+            }
+            placement="top"
+            tooltipClass={styles.ReasonTooltip}
+            interactive
+          >
+            <InfoOutlinedIcon className={styles.ReasonIcon} data-testid="guardrailDetails" />
+          </Tooltip>
+        )}
+      </div>
+    );
+  };
+
+  const answerText = (answer?: EvaluationTraceAnswer) => (
+    <div className={styles.Answer} data-testid="assistantAnswer">
+      {answer?.answer ? <MarkdownAnswer text={answer.answer} /> : '—'}
+    </div>
+  );
+
   // in grouped view the judge's marks sit under the answer they belong to, not in their own columns
   const answerCell = (answer?: EvaluationTraceAnswer) => {
     if (!answer) return <span className={styles.NoScore}>—</span>;
 
     return (
       <div className={styles.AnswerCell}>
-        <div className={styles.Answer}>{answer.answer ? <MarkdownAnswer text={answer.answer} /> : '—'}</div>
+        {answerText(answer)}
+        {guardrailNote(answer.guardrail)}
         {answer.scores.length > 0 && (
           <div className={styles.AnswerScores}>
             {answer.scores.map((score) => (
@@ -130,9 +197,14 @@ export const EvaluationScores = ({
       ...(grouped
         ? Array.from({ length: answerCount }, (_, position) => answerCell(trace.answers[position]))
         : [
-            <div className={styles.Answer}>
-              {trace.answers[0]?.answer ? <MarkdownAnswer text={trace.answers[0].answer} /> : '—'}
-            </div>,
+            trace.answers[0]?.guardrail ? (
+              <div className={styles.AnswerCell}>
+                {answerText(trace.answers[0])}
+                {guardrailNote(trace.answers[0].guardrail)}
+              </div>
+            ) : (
+              answerText(trace.answers[0])
+            ),
             ...metricNames.map((name) => scoreWithReason(trace.answers[0]?.scores.find((e) => e.name === name))),
           ]),
     ],
