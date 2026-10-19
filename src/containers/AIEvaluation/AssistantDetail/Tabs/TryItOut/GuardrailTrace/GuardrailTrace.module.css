@@ -1,0 +1,123 @@
+.Trace {
+  align-self: flex-start;
+  max-width: 74%;
+}
+
+.Toggle {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-sm);
+  border: 1px solid;
+  border-radius: var(--app-radius-pill);
+  cursor: pointer;
+  font-size: var(--app-font-size-xs);
+}
+
+.TogglePassed {
+  border-color: var(--app-color-border-brand);
+  background-color: rgb(var(--app-color-green-primary-rgb) / 8%);
+  color: var(--app-color-brand-primary);
+}
+
+.ToggleFlagged {
+  border-color: var(--app-color-attention-strong);
+  background-color: rgb(var(--app-color-amber-secondary-rgb) / 12%);
+  color: var(--app-color-attention-strong);
+}
+
+.ShieldIcon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+}
+
+.Icon {
+  width: var(--app-size-icon-sm);
+  height: var(--app-size-icon-sm);
+}
+
+.ToggleTitle {
+  font-weight: 700;
+}
+
+.Summary {
+  font-weight: 500;
+}
+
+.Body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-3xl);
+  font-size: var(--app-font-size-sm);
+}
+
+.Stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+}
+
+.StageTitle {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--app-color-text-tertiary);
+}
+
+.TextRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-sm);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-hover);
+}
+
+.TextRow.Changed {
+  background-color: rgb(var(--app-color-amber-secondary-rgb) / 12%);
+}
+
+.TextLabel {
+  font-weight: 600;
+  color: var(--app-color-text-tertiary);
+}
+
+.Text {
+  color: var(--app-color-text-heading);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.Check {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-sm);
+}
+
+.Outcome {
+  padding: 0 var(--app-space-sm);
+  border: 1px solid;
+  border-radius: var(--app-radius-pill);
+  font-weight: 600;
+}
+
+.Outcome.Passed {
+  border-color: var(--app-color-brand-primary);
+  color: var(--app-color-brand-primary);
+}
+
+.Outcome.Flagged {
+  border-color: var(--app-color-attention-strong);
+  color: var(--app-color-attention-strong);
+}
+
+.CheckName {
+  font-weight: 600;
+  color: var(--app-color-text-heading);
+}
+
+.CheckError {
+  color: var(--app-color-text-tertiary);
+}

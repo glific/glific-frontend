@@ -1,3 +1,4 @@
+import type { GuardrailSpecs } from './guardrailType';
 import type { KnowledgeBaseFile } from './knowledgeBaseType';
 
 export interface ModelParamSpec {
@@ -46,6 +47,8 @@ export interface AssistantVersion {
   model: string;
   prompt: string;
   settings: unknown;
+  inputGuardrails?: unknown;
+  outputGuardrails?: unknown;
   status: string;
   isLive: boolean;
   insertedAt: string;
@@ -63,6 +66,7 @@ export interface EditorState {
   prompt: string;
   config: ModelConfig;
   files: KnowledgeBaseFile[];
+  guardrails: GuardrailSpecs;
 }
 
 export interface AssistantListItem {

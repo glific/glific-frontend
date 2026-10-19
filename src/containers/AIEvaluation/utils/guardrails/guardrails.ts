@@ -4,8 +4,12 @@ import type {
   GuardrailDetailGroup,
   GuardrailDetailOption,
   GuardrailRule,
+  GuardrailSpec,
+  GuardrailSpecs,
   GuardrailStage,
   GuardrailTier,
+  GuardrailTopic,
+  GuardrailTopicSuggestion,
   GuardrailValidator,
   TranslationKey,
 } from 'containers/AIEvaluation/types/guardrailType';
@@ -17,6 +21,8 @@ export const GUARDRAIL_ACTION_LABEL = {
 } as const satisfies Record<GuardrailAction, string>;
 
 const BLOCKING_ON_FAIL = ['exception', 'rephrase'];
+
+const MODEL_GUESSED_ENTITIES = ['PERSON', 'LOCATION', 'NRP'];
 
 export const GUARDRAIL_STAGE_COPY = {
   incoming: {
@@ -139,14 +145,16 @@ const asObject = (value: unknown): JsonObject | null =>
 const stringsIn = (value: unknown) =>
   Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : null;
 
-const readSchema = (config: unknown): JsonObject | null => {
-  if (typeof config !== 'string') return asObject(config);
+export const parseJson = (value: unknown): unknown => {
+  if (typeof value !== 'string') return value;
   try {
-    return asObject(JSON.parse(config));
+    return JSON.parse(value);
   } catch {
     return null;
   }
 };
+
+const readSchema = (config: unknown): JsonObject | null => asObject(parseJson(config));
 
 /**
  * A config property, with a nullable `anyOf: [X, { type: "null" }]` unwrapped to X — keeping the
@@ -170,6 +178,11 @@ const enumOf = (schema: JsonObject | null, name: string): string[] => {
   return stringsIn(source?.enum) ?? stringsIn(asObject(asObject(schema?.$defs)?.[ref ?? ''])?.enum) ?? [];
 };
 
+const selectedFirst = (options: GuardrailDetailOption[]) => [
+  ...options.filter((option) => option.selected),
+  ...options.filter((option) => !option.selected),
+];
+
 export const piiDetailGroups = (config: unknown): GuardrailDetailGroup[] => {
   const schema = readSchema(config);
   const codes = enumOf(schema, 'entity_types');
@@ -182,12 +195,16 @@ export const piiDetailGroups = (config: unknown): GuardrailDetailGroup[] => {
     selected: defaults ? defaults.includes(code) : true,
   }));
 
-  return [
+  const guessed = (option: GuardrailDetailOption) => MODEL_GUESSED_ENTITIES.includes(option.id);
+  const groups: GuardrailDetailGroup[] = [
+    { id: 'pattern-matched', options: selectedFirst(options.filter((option) => !guessed(option))) },
     {
-      id: 'entity-types',
-      options: [...options.filter((option) => option.selected), ...options.filter((option) => !option.selected)],
+      id: 'model-guessed',
+      note: 'Redacted using English model: misses many Indian names and sometimes masks ordinary words',
+      options: selectedFirst(options.filter(guessed)),
     },
   ];
+  return groups.filter((group) => group.options.length > 0);
 };
 
 export const actionFromConfig = (config: unknown): GuardrailAction => {
@@ -206,6 +223,16 @@ const controlFromConfig = (control: GuardrailControl, config: unknown): Guardrai
   return control;
 };
 
+export const safeLink = (link: string | null): string | null => {
+  if (!link) return null;
+  try {
+    const { protocol } = new URL(link);
+    return protocol === 'https:' || protocol === 'http:' ? link : null;
+  } catch {
+    return null;
+  }
+};
+
 export const buildGuardrailRules = (validators: GuardrailValidator[]): GuardrailRule[] =>
   GUARDRAIL_PRESENTATION.flatMap((rule) => {
     const validator = validators.find((entry) => entry.type === rule.type);
@@ -214,17 +241,129 @@ export const buildGuardrailRules = (validators: GuardrailValidator[]): Guardrail
     return [
       {
         ...rule,
-        link: validator.link,
+        link: safeLink(validator.link),
         action: actionFromConfig(validator.config),
         control: controlFromConfig(rule.control, validator.config),
       },
     ];
   });
 
+export const EMPTY_GUARDRAIL_SPECS: GuardrailSpecs = { input: [], output: [] };
+
+export const parseGuardrailSpecs = (value: unknown): GuardrailSpec[] => {
+  const list = parseJson(value);
+  if (!Array.isArray(list)) return [];
+  return list.filter((entry): entry is GuardrailSpec => {
+    const type = asObject(entry)?.type;
+    return typeof type === 'string' && type !== '';
+  });
+};
+
 export const slugify = (label: string) =>
   label
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
+
+const TOPIC_DESCRIPTION_SEPARATOR = ' — ';
+
+export const topicsToConfiguration = (topics: GuardrailTopic[]) =>
+  topics
+    .map((topic) =>
+      topic.description ? `${topic.label}${TOPIC_DESCRIPTION_SEPARATOR}${topic.description}` : topic.label
+    )
+    .join('\n');
+
+export const topicsFromConfiguration = (
+  configuration: unknown,
+  suggestions: GuardrailTopicSuggestion[]
+): GuardrailTopic[] => {
+  if (typeof configuration !== 'string') return [];
+
+  return configuration
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line, index) => {
+      const [label, ...rest] = line.split(TOPIC_DESCRIPTION_SEPARATOR);
+      const suggestion = suggestions.find((entry) => entry.label.toLowerCase() === label.toLowerCase());
+      return {
+        id: suggestion ? `topic-${suggestion.id}` : `custom-${slugify(label)}-${index}`,
+        label,
+        description: rest.join(TOPIC_DESCRIPTION_SEPARATOR),
+      };
+    });
+};
+
+const specListFor = (stage: GuardrailStage): keyof GuardrailSpecs => (stage === 'incoming' ? 'input' : 'output');
+
+const EDITED_PARAMS = ['entity_types', 'configuration', 'fallback_message'];
+
+const paramsFromControl = (control: GuardrailControl): Record<string, unknown> => {
+  if (control.kind === 'detailTypes' && control.groups.length > 0) {
+    return {
+      entity_types: control.groups.flatMap((group) =>
+        group.options.filter((option) => option.selected).map((option) => option.id)
+      ),
+    };
+  }
+
+  if (control.kind === 'topics') {
+    const configuration = topicsToConfiguration(control.disallowedTopics);
+    return {
+      ...(configuration ? { configuration } : {}),
+      ...(control.setReply.trim() ? { fallback_message: control.setReply } : {}),
+    };
+  }
+
+  return {};
+};
+
+export const buildSavedGuardrails = (rules: GuardrailRule[], previous: GuardrailSpecs): GuardrailSpecs => {
+  const shownTypes = new Set<string>(rules.map((rule) => rule.type));
+
+  const specsFor = (list: keyof GuardrailSpecs): GuardrailSpec[] => [
+    ...rules
+      .filter((rule) => rule.enabled && specListFor(rule.stage) === list)
+      .map((rule) => {
+        const saved = previous[list].find((spec) => spec.type === rule.type) ?? {};
+        const kept = Object.fromEntries(Object.entries(saved).filter(([key]) => !EDITED_PARAMS.includes(key)));
+        return { ...kept, type: rule.type, ...paramsFromControl(rule.control) };
+      }),
+    ...previous[list].filter((spec) => !shownTypes.has(spec.type)),
+  ];
+
+  return { input: specsFor('input'), output: specsFor('output') };
+};
+
+const controlWithSpec = (control: GuardrailControl, spec: GuardrailSpec): GuardrailControl => {
+  if (control.kind === 'detailTypes') {
+    const chosen = stringsIn(spec.entity_types);
+    if (!chosen) return control;
+    return {
+      kind: 'detailTypes',
+      groups: control.groups.map((group) => ({
+        ...group,
+        options: selectedFirst(group.options.map((option) => ({ ...option, selected: chosen.includes(option.id) }))),
+      })),
+    };
+  }
+
+  if (control.kind === 'topics') {
+    return {
+      ...control,
+      disallowedTopics: topicsFromConfiguration(spec.configuration, control.suggestedTopics),
+      setReply: typeof spec.fallback_message === 'string' ? spec.fallback_message : control.setReply,
+    };
+  }
+
+  return control;
+};
+
+export const rulesWithSpecs = (rules: GuardrailRule[], specs: GuardrailSpecs): GuardrailRule[] =>
+  rules.map((rule) => {
+    const spec = specs[specListFor(rule.stage)].find((entry) => entry.type === rule.type);
+    return spec ? { ...rule, enabled: true, control: controlWithSpec(rule.control, spec) } : rule;
+  });
 
 export const isTranslationKey = (text: string): text is TranslationKey => Object.hasOwn(en, text);

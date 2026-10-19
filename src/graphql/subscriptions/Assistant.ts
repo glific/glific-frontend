@@ -7,6 +7,12 @@ export const ASSISTANT_CHAT_RESPONSE = gql`
       conversationId
       jobId
       requestId
+      inputFromUser
+      inputToLlm
+      outputFromLlm
+      outputToUser
+      inputGuardrail
+      outputGuardrail
       errors {
         key
         message
@@ -25,6 +31,8 @@ export const ASSISTANT_CONFIG_VERSION_UPDATED = gql`
       model
       prompt
       settings
+      inputGuardrails
+      outputGuardrails
       status
       isLive
       description

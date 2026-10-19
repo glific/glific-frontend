@@ -40,18 +40,20 @@ export const DetailTypesEditor = ({ groups, onChange }: DetailTypesEditorProps) 
 
   return (
     <GuardrailEditor summary={summary} toggleTestId="editDetailTypesToggle" bodyTestId="detailTypesEditorBody">
-      <div className={styles.EditorIntro}>
-        {t(
-          'Choose which kinds of personal details this check should look for. Works with sensible defaults even if you skip this.'
-        )}
-      </div>
-
-      {groups.map((group) => {
+      {groups.map((group, index) => {
         const groupSelected = group.options.filter((option) => option.selected).length;
 
         return (
           <div className={styles.DetailGroup} key={group.id}>
+            {/* the intro and each group's note share a line with that group's Select all / Clear */}
             <div className={styles.DetailGroupHeader}>
+              <div className={styles.EditorIntro}>
+                {index === 0 &&
+                  t(
+                    'Choose which kinds of personal details this check should look for. Works with sensible defaults even if you skip this.'
+                  )}
+                {group.note && <div>{t(group.note)}</div>}
+              </div>
               <span className={styles.DetailGroupActions}>
                 <button type="button" onClick={() => setGroupSelection(group.id, true)}>
                   {t('Select all')}

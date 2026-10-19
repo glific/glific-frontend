@@ -29,6 +29,7 @@ export interface GuardrailDetailOption {
 
 export interface GuardrailDetailGroup {
   id: string;
+  note?: TranslationKey;
   options: GuardrailDetailOption[];
 }
 
@@ -80,7 +81,22 @@ export interface GuardrailFlowStep {
   reachedBy: 'none' | 'arrow' | 'stopped';
 }
 
-export interface GuardrailsPanelProps {
+export interface GuardrailSpec {
+  type: string;
+  [param: string]: unknown;
+}
+
+export interface GuardrailSpecs {
+  input: GuardrailSpec[];
+  output: GuardrailSpec[];
+}
+
+export interface GuardrailsProps {
+  value: GuardrailSpecs;
+  onChange: (value: GuardrailSpecs) => void;
+}
+
+export interface GuardrailsPanelProps extends GuardrailsProps {
   initialRules: GuardrailRule[];
 }
 
