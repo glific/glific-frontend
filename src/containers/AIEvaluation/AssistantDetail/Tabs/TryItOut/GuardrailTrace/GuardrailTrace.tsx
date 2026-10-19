@@ -4,25 +4,24 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
 import GppMaybeOutlinedIcon from '@mui/icons-material/GppMaybeOutlined';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
-import type { GuardrailCheck, GuardrailTraceProps } from 'containers/AIEvaluation/types/sandboxType';
+import type { TranslationKey } from 'containers/AIEvaluation/types/guardrailType';
+import type {
+  GuardrailCheck,
+  GuardrailTraceProps,
+  GuardrailTraceStageProps,
+} from 'containers/AIEvaluation/types/sandboxType';
 import styles from './GuardrailTrace.module.css';
 
-const CHECK_TITLE: Record<string, string> = {
+const CHECK_TITLE: Record<string, TranslationKey> = {
   PIIRemover: 'Privacy Protection',
   LexicalSlur: 'Content Safety',
+  TopicRelevanceLLM: 'Scope Control',
+  GenderAssumptionBias: 'Gender Neutrality',
 };
 
-const isFlagged = (check: GuardrailCheck) => check.outcome === 'FAIL';
+const isFlagged = (check: GuardrailCheck) => check.outcome !== 'PASS';
 
-interface StageProps {
-  title: string;
-  before: { label: string; text: string | null };
-  after: { label: string; text: string | null };
-  checks: GuardrailCheck[];
-  testId: string;
-}
-
-const Stage = ({ title, before, after, checks, testId }: StageProps) => {
+const Stage = ({ title, before, after, checks, testId }: GuardrailTraceStageProps) => {
   const { t } = useTranslation();
   if (checks.length === 0 && before.text === null && after.text === null) return null;
 
@@ -50,7 +49,7 @@ const Stage = ({ title, before, after, checks, testId }: StageProps) => {
           <span className={`${styles.Outcome} ${isFlagged(check) ? styles.Flagged : styles.Passed}`}>
             {isFlagged(check) ? t('Flagged') : t('Passed')}
           </span>
-          <span className={styles.CheckName}>{CHECK_TITLE[check.name] ?? check.name}</span>
+          <span className={styles.CheckName}>{CHECK_TITLE[check.name] ? t(CHECK_TITLE[check.name]) : check.name}</span>
           {check.error && <span className={styles.CheckError}>— {check.error}</span>}
         </div>
       ))}

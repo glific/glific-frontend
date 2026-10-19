@@ -166,6 +166,11 @@ export const TryItOut = ({
     }, LATE_REPLY_GRACE_MS);
   };
 
+  const replyText = (result: AssistantChatResponse) => {
+    if (result.outputToUser === '') return t('The reply was blocked by a guardrail.');
+    return result.outputToUser || result.answer || t('Could not get a reply. Try sending it again.');
+  };
+
   const handleResponse = (result: AssistantChatResponse) => {
     if (result.conversationId) conversationIdRef.current = result.conversationId;
 
@@ -181,7 +186,7 @@ export const TryItOut = ({
     });
     finish({
       role: 'assistant',
-      text: result.outputToUser || result.answer || t('Could not get a reply. Try sending it again.'),
+      text: replyText(result),
       ...(guardrails ? { guardrails } : {}),
     });
   };

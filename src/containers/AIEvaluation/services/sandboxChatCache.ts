@@ -6,7 +6,7 @@ import {
   resolveKey,
   sandboxKeys,
 } from '../utils/sandbox/sandbox';
-import { toGuardrailTrace } from '../AssistantDetail/Tabs/TryItOut/GuardrailTrace';
+import { toGuardrailTrace } from '../AssistantDetail/Tabs/TryItOut/GuardrailTrace/parseGuardrailTrace';
 
 const MAX_CACHED_MESSAGES = 50;
 

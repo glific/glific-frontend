@@ -927,6 +927,53 @@ describe('guardrails on a reply', () => {
     expect(await screen.findByTestId('assistantMessage')).toHaveTextContent('Call Ram at <PHONE_NUMBER>.');
   });
 
+  test('a reply the output guardrail emptied never shows the raw answer', async () => {
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1' }),
+      replyMock({ ...guardedReply, answer: 'Call Ram at 8979220110.', outputToUser: '' }),
+    ]);
+    ask();
+
+    const reply = await screen.findByTestId('assistantMessage');
+    expect(reply).toHaveTextContent('The reply was blocked by a guardrail.');
+    expect(reply).not.toHaveTextContent('8979220110');
+  });
+
+  test('every validator Kaapi reports is shown under its Guardrails tab name', async () => {
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1' }),
+      replyMock({
+        ...guardedReply,
+        inputGuardrail: JSON.stringify([{ name: 'TopicRelevanceLLM', outcome: 'PASS', error: null }]),
+        outputGuardrail: JSON.stringify([{ name: 'GenderAssumptionBias', outcome: 'PASS', error: null }]),
+      }),
+    ]);
+    ask();
+
+    fireEvent.click(await screen.findByTestId('guardrailTraceToggle'));
+    expect(screen.getByTestId('guardrailTraceInput')).toHaveTextContent('Scope Control');
+    expect(screen.getByTestId('guardrailTraceOutput')).toHaveTextContent('Gender Neutrality');
+  });
+
+  test('a check that errored is shown as flagged, not passed', async () => {
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1' }),
+      replyMock({
+        ...guardedReply,
+        inputToLlm: guardedReply.inputFromUser,
+        inputGuardrail: JSON.stringify([{ name: 'PIIRemover', outcome: 'ERROR', error: 'Timed out' }]),
+        outputGuardrail: null,
+      }),
+    ]);
+    ask();
+
+    const toggle = await screen.findByTestId('guardrailTraceToggle');
+    expect(within(toggle).getByTestId('guardrailTraceFlaggedIcon')).toBeInTheDocument();
+    fireEvent.click(toggle);
+    expect(screen.getByTestId('guardrailCheck')).toHaveTextContent('Flagged');
+    expect(screen.getByTestId('guardrailCheck')).toHaveTextContent('Timed out');
+  });
+
   test('a reply without guardrail metadata shows no trace', async () => {
     renderTab({}, [sendMock({ answer: null, requestId: 'r1' }), replyMock({ answer: 'Hello.', requestId: 'r1' })]);
     ask();

@@ -43,6 +43,14 @@ export interface GuardrailTraceProps {
   trace: SandboxGuardrailTrace;
 }
 
+export interface GuardrailTraceStageProps {
+  title: string;
+  before: { label: string; text: string | null };
+  after: { label: string; text: string | null };
+  checks: GuardrailCheck[];
+  testId: string;
+}
+
 export interface UseAssistantChatResponseOptions {
   enabled: boolean;
   onResponse: (result: AssistantChatResponse) => void;

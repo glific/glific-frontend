@@ -1067,6 +1067,7 @@
   "Passed": "Passed",
   "{{count}} flagged": "{{count}} flagged",
   "All checks passed": "All checks passed",
+  "The reply was blocked by a guardrail.": "The reply was blocked by a guardrail.",
   "Incoming message": "Incoming message",
   "User sent": "User sent",
   "Assistant received": "Assistant received",

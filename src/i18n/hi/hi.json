@@ -931,6 +931,7 @@
   "Passed": "पास",
   "{{count}} flagged": "{{count}} फ़्लैग किए गए",
   "All checks passed": "सभी जाँच पास",
+  "The reply was blocked by a guardrail.": "जवाब को एक गार्डरेल ने रोक दिया।",
   "Incoming message": "आने वाला संदेश",
   "User sent": "उपयोगकर्ता ने भेजा",
   "Assistant received": "असिस्टेंट को मिला",
