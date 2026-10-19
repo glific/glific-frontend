@@ -21,7 +21,8 @@ describe('what the guardrails did with each answer', () => {
     renderScores();
     const note = within(rowFor(0)).getByTestId('answerGuardrail');
 
-    expect(within(rowFor(0)).getAllByText('—').length).toBeGreaterThan(0);
+    // the answer cell itself is blank, not just some empty metric cell beside it
+    expect(within(rowFor(0)).getByTestId('assistantAnswer')).toHaveTextContent(/^—$/);
     expect(note).toHaveTextContent('Blocked by guardrail');
     expect(note).toHaveTextContent('PII detected in the text.');
     // nothing reached the model, so there is nothing more to show

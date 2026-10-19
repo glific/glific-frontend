@@ -146,7 +146,9 @@ export const EvaluationScores = ({
   };
 
   const answerText = (answer?: EvaluationTraceAnswer) => (
-    <div className={styles.Answer}>{answer?.answer ? <MarkdownAnswer text={answer.answer} /> : '—'}</div>
+    <div className={styles.Answer} data-testid="assistantAnswer">
+      {answer?.answer ? <MarkdownAnswer text={answer.answer} /> : '—'}
+    </div>
   );
 
   // in grouped view the judge's marks sit under the answer they belong to, not in their own columns
@@ -195,10 +197,14 @@ export const EvaluationScores = ({
       ...(grouped
         ? Array.from({ length: answerCount }, (_, position) => answerCell(trace.answers[position]))
         : [
-            <div className={styles.AnswerCell}>
-              {answerText(trace.answers[0])}
-              {guardrailNote(trace.answers[0]?.guardrail ?? null)}
-            </div>,
+            trace.answers[0]?.guardrail ? (
+              <div className={styles.AnswerCell}>
+                {answerText(trace.answers[0])}
+                {guardrailNote(trace.answers[0].guardrail)}
+              </div>
+            ) : (
+              answerText(trace.answers[0])
+            ),
             ...metricNames.map((name) => scoreWithReason(trace.answers[0]?.scores.find((e) => e.name === name))),
           ]),
     ],

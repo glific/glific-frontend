@@ -248,17 +248,17 @@
 
 .GuardrailDetails {
   margin: 0;
+}
 
-  dt {
-    font-weight: 700;
-  }
+.GuardrailDetails dt {
+  font-weight: 700;
+}
 
-  dd {
-    margin: 0 0 var(--app-space-sm);
-    white-space: pre-wrap;
-  }
+.GuardrailDetails dd {
+  margin: 0 0 var(--app-space-sm);
+  white-space: pre-wrap;
+}
 
-  dd:last-child {
-    margin-bottom: 0;
-  }
+.GuardrailDetails dd:last-child {
+  margin-bottom: 0;
 }
