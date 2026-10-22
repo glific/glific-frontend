@@ -75,10 +75,16 @@ const queries = {
 export const HSMList = () => {
   const [importing, setImporting] = useState(false);
   const [raiseToGupshupTemplate, setRaiseToGupshupTemplate] = useState<any>(null);
-  const [filters, setFilters] = useState<any>({ ...statusFilter, APPROVED: true });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = useState<any>(() => {
+    const statusParam = searchParams.get('status')?.toUpperCase();
+    if (statusParam && statusParam in statusFilter) {
+      return { ...statusFilter, [statusParam]: true };
+    }
+    return { ...statusFilter, APPROVED: true };
+  });
   const [selectedTag, setSelectedTag] = useState<any>(null);
   const [syncTemplateLoad, setSyncTemplateLoad] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -231,7 +237,19 @@ export const HSMList = () => {
   const appliedFilters: any = { isHsm: true, status: filterValue };
 
   const setCopyDialog = (id: any) => {
-    navigate(`/template/${id}/edit`, { state: 'copy' });
+    const statusParam = searchParams.get('status');
+    const state: any = { mode: 'copy' };
+    if (selectedTag?.label) {
+      state.tag = selectedTag;
+    }
+    if (statusParam) {
+      state.status = statusParam;
+    }
+    if (selectedTag?.label || statusParam) {
+      navigate(`/template/${id}/edit`, { state });
+    } else {
+      navigate(`/template/${id}/edit`, { state: 'copy' });
+    }
   };
 
   const copyUuid = (_id: string, item: any) => {
@@ -251,7 +269,13 @@ export const HSMList = () => {
   };
 
   const handleCheckedBox = (event: any) => {
-    setFilters({ ...statusFilter, [event.target.value.toUpperCase()]: true });
+    const selectedStatus = event.target.value.toUpperCase();
+    setFilters({ ...statusFilter, [selectedStatus]: true });
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set('status', selectedStatus);
+      return next;
+    });
   };
 
   const syncHSMButton = (
@@ -271,8 +295,16 @@ export const HSMList = () => {
   const dialogMessage = t('It will stop showing when you draft a customized message');
 
   const navigateToCreate = () => {
+    const statusParam = searchParams.get('status');
+    const state: any = {};
     if (selectedTag?.label) {
-      navigate('/template/add', { state: { tag: selectedTag } });
+      state.tag = selectedTag;
+    }
+    if (statusParam) {
+      state.status = statusParam;
+    }
+    if (Object.keys(state).length > 0) {
+      navigate('/template/add', { state });
     } else {
       navigate('/template/add');
     }
@@ -280,6 +312,13 @@ export const HSMList = () => {
   const button = { show: true, label: t('Create'), action: navigateToCreate };
 
   useEffect(() => {
+    const statusParam = searchParams.get('status')?.toUpperCase();
+    if (statusParam && statusParam in statusFilter) {
+      setFilters({ ...statusFilter, [statusParam]: true });
+    } else {
+      setFilters({ ...statusFilter, APPROVED: true });
+    }
+
     const tagValue = searchParams.get('tag');
 
     if (tagValue && tags) {
@@ -316,15 +355,15 @@ export const HSMList = () => {
         optionLabel="label"
         multiple={false}
         onChange={(value: any) => {
-          if (value) {
-            setSearchParams({
-              tag: value.label,
-            });
-          } else {
-            setSearchParams({
-              tag: '',
-            });
-          }
+          setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            if (value?.label) {
+              next.set('tag', value.label);
+            } else {
+              next.delete('tag');
+            }
+            return next;
+          });
         }}
         form={{ setFieldValue: () => {} }}
         field={{
@@ -347,7 +386,19 @@ export const HSMList = () => {
   );
 
   const handleView = (id: any) => {
-    navigate(`/template/${id}/edit`);
+    const statusParam = searchParams.get('status');
+    const state: any = {};
+    if (selectedTag?.label) {
+      state.tag = selectedTag;
+    }
+    if (statusParam) {
+      state.status = statusParam;
+    }
+    if (Object.keys(state).length > 0) {
+      navigate(`/template/${id}/edit`, { state });
+    } else {
+      navigate(`/template/${id}/edit`);
+    }
   };
   let additionalAction: any = () => [
     {

@@ -1,7 +1,7 @@
 import { render, waitFor, within, fireEvent, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router';
 import { HSM } from './HSM';
 import { getVariables, getExampleFromBody, getTemplateAndButtons } from './HSM.helper';
 import {
@@ -671,5 +671,81 @@ describe('getExampleFromBody', () => {
   test('leaves the placeholder untouched when no example value has been entered for it', () => {
     const body = 'Hi {{4}}';
     expect(getExampleFromBody(body, [{ id: 4, text: '' }])).toBe('Hi {{4}}');
+  });
+});
+
+describe('Back button retention', () => {
+  const LocationDisplay = () => {
+    const location = useLocation();
+    return <div data-testid="location-display">{location.pathname + location.search}</div>;
+  };
+
+  const renderHSMWithState = (state?: any) => {
+    const MOCKS = [...mocks, getHSMTemplateTypeText, getHSMTemplateTypeText];
+    return render(
+      <MockedProvider mocks={MOCKS} addTypename={false}>
+        <MemoryRouter initialEntries={[{ pathname: '/templates/1/edit', state }]}>
+          <Routes>
+            <Route path="/templates/:id/edit" element={<HSM />} />
+            <Route path="/template" element={<LocationDisplay />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+  };
+
+  test('Approved retained: navigates back to /template?status=APPROVED', async () => {
+    renderHSMWithState({ status: 'APPROVED' });
+    await waitFor(() => {
+      expect(screen.getByTestId('back-button')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('back-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('location-display')).toHaveTextContent('/template?status=APPROVED');
+    });
+  });
+
+  test('Pending retained: navigates back to /template?status=PENDING', async () => {
+    renderHSMWithState({ status: 'PENDING' });
+    await waitFor(() => {
+      expect(screen.getByTestId('back-button')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('back-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('location-display')).toHaveTextContent('/template?status=PENDING');
+    });
+  });
+
+  test('Rejected retained: navigates back to /template?status=REJECTED', async () => {
+    renderHSMWithState({ status: 'REJECTED' });
+    await waitFor(() => {
+      expect(screen.getByTestId('back-button')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('back-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('location-display')).toHaveTextContent('/template?status=REJECTED');
+    });
+  });
+
+  test('Failed retained: navigates back to /template?status=FAILED', async () => {
+    renderHSMWithState({ status: 'FAILED' });
+    await waitFor(() => {
+      expect(screen.getByTestId('back-button')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('back-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('location-display')).toHaveTextContent('/template?status=FAILED');
+    });
+  });
+
+  test('tag + status retained: navigates back to /template?status=REJECTED&tag=Messages', async () => {
+    renderHSMWithState({ status: 'REJECTED', tag: { label: 'Messages', id: '1' } });
+    await waitFor(() => {
+      expect(screen.getByTestId('back-button')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('back-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('location-display')).toHaveTextContent('/template?status=REJECTED&tag=Messages');
+    });
   });
 });
