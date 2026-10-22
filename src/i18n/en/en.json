@@ -1000,6 +1000,8 @@
   "Save Version": "Save Version",
   "Discard unsaved changes?": "Discard unsaved changes?",
   "Discard changes": "Discard changes",
+  "Saving creates a new minor version (e.g. 1.1, 1.2) that you can test. Going live promotes it to the next major version (e.g. 2.0) and makes it live in your flows.": "Saving creates a new minor version (e.g. 1.1, 1.2) that you can test. Going live promotes it to the next major version (e.g. 2.0) and makes it live in your flows.",
+  "Discard Changes": "Discard Changes",
   "Keep editing": "Keep editing",
   "Any edits made since your last save will be lost.": "Any edits made since your last save will be lost.",
   "Reverts the prompt, model, settings, knowledge base and guardrails back to what they were before you started editing. This can't be undone.": "Reverts the prompt, model, settings, knowledge base and guardrails back to what they were before you started editing. This can't be undone.",
