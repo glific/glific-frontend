@@ -1498,7 +1498,9 @@ export const getWebChannelCredential = (keys: any = null, secrets: any = {}) => 
   },
 });
 
-export const createWebChannelCredential = (keys: any, secrets: any) => ({
+// `savedSecrets` is what the server answers with, which differs from what was sent when it
+// generates a signing secret.
+export const createWebChannelCredential = (keys: any, secrets: any, savedSecrets: any = secrets) => ({
   request: {
     query: CREATE_CREDENTIAL,
     variables: {
@@ -1513,14 +1515,48 @@ export const createWebChannelCredential = (keys: any, secrets: any) => ({
   result: {
     data: {
       createCredential: {
-        credential: { id: '9', keys: JSON.stringify(keys), secrets: JSON.stringify(secrets) },
+        credential: { id: '9', keys: JSON.stringify(keys), secrets: JSON.stringify(savedSecrets) },
         errors: null,
       },
     },
   },
 });
 
-export const updateWebChannelCredential = (keys: any, secrets: any) => ({
+export const updateWebChannelCredential = (
+  keys: any,
+  secrets: any,
+  savedSecrets: any = secrets,
+  isActive: boolean = true
+) => ({
+  request: {
+    query: UPDATE_CREDENTIAL,
+    variables: {
+      id: '9',
+      input: {
+        shortcode: 'web_channel',
+        isActive,
+        keys: JSON.stringify(keys),
+        secrets: JSON.stringify(secrets),
+      },
+    },
+  },
+  result: {
+    data: {
+      updateCredential: {
+        credential: {
+          id: '9',
+          provider: { shortcode: 'web_channel' },
+          keys: JSON.stringify(keys),
+          secrets: JSON.stringify(savedSecrets),
+          isActive,
+        },
+        errors: null,
+      },
+    },
+  },
+});
+
+export const updateWebChannelCredentialError = (keys: any, secrets: any, message: string) => ({
   request: {
     query: UPDATE_CREDENTIAL,
     variables: {
@@ -1536,14 +1572,8 @@ export const updateWebChannelCredential = (keys: any, secrets: any) => ({
   result: {
     data: {
       updateCredential: {
-        credential: {
-          id: '9',
-          provider: { shortcode: 'web_channel' },
-          keys: JSON.stringify(keys),
-          secrets: JSON.stringify(secrets),
-          isActive: true,
-        },
-        errors: null,
+        credential: null,
+        errors: [{ key: 'secrets', message }],
       },
     },
   },
