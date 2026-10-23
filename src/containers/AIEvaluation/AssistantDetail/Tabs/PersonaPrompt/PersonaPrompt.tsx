@@ -13,11 +13,7 @@ import { setNotification } from 'common/notification';
 import { getOrganizationServices } from 'services/AuthService';
 import type { AssistantModel, ModelConfig, ModelParamSpec } from 'containers/AIEvaluation/types/assistantType';
 import { configForModel, getModel, getParamSpec, groupModelsByCategory } from '../../assistantModels';
-import {
-  PromptAnswers,
-  PromptGeneratorModal,
-  initialPromptAnswers,
-} from 'containers/Assistants/CreateAssistant/PromptGeneratorModal';
+import { PromptAnswers, PromptGeneratorModal, initialPromptAnswers } from './PromptGeneratorModal/PromptGeneratorModal';
 import styles from './PersonaPrompt.module.css';
 
 export interface PersonaPromptProps {
