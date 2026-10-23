@@ -1,8 +1,10 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useTranslation } from 'react-i18next';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import type { SelectMenuOption } from 'components/UI/SelectMenu/SelectMenu';
 import { SelectMenu } from 'components/UI/SelectMenu/SelectMenu';
+import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import type { AssistantVersion } from 'containers/AIEvaluation/types/assistantType';
 import { BAND_LABEL, formatScore, scoreBand } from 'containers/AIEvaluation/utils/evaluation/evaluation';
 import { BAND_ICON } from 'containers/AIEvaluation/utils/evaluation/bandIcon';
@@ -172,6 +174,15 @@ export const VersionBar = ({
               description: versionMeta(version),
             }))}
           />
+
+          <Tooltip
+            title={t(
+              'Saving creates a new minor version (e.g. 1.1, 1.2) that you can test. Going live promotes it to the next major version (e.g. 2.0) and makes it live in your flows.'
+            )}
+            placement="bottom"
+          >
+            <InfoOutlinedIcon className={styles.VersionHelp} data-testid="versionHelp" />
+          </Tooltip>
 
           <div className={styles.LiveNote} data-testid="liveNote">
             {statusNote() && <>{statusNote()} · </>}

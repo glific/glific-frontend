@@ -611,7 +611,7 @@ describe('Unsaved changes', () => {
     await edit();
 
     expect(screen.getByTestId('unsavedChanges')).toHaveTextContent('Unsaved changes');
-    expect(screen.getByTestId('discardButton')).toBeInTheDocument();
+    expect(screen.getByTestId('discardButton')).toHaveTextContent('Discard Changes');
     expect(screen.getByTestId('saveVersionButton')).toBeInTheDocument();
     expect(screen.queryByTestId('publishButton')).not.toBeInTheDocument();
   });
@@ -1453,6 +1453,16 @@ describe('version status', () => {
     expect(screen.getByTestId('versionPill')).not.toHaveTextContent('LIVE');
     expect(screen.getByTestId('publishButton')).not.toBeDisabled();
   });
+});
+
+test('the version pill explains minor and major versions on hover', async () => {
+  renderDetail();
+
+  fireEvent.mouseOver(await screen.findByTestId('versionHelp'));
+
+  expect(await screen.findByText(/Saving creates a new minor version/)).toHaveTextContent(
+    'Going live promotes it to the next major version'
+  );
 });
 
 describe('switching versions', () => {

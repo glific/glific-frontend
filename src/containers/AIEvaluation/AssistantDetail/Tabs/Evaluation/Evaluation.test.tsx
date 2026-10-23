@@ -2122,7 +2122,8 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
     failureReason: null,
     results:
       '{"summary_scores":[{"name":"Adherence to Ground Truth","avg":4.6},' +
-      '{"name":"Adherence to Knowledge Base","avg":4},{"name":"Adherence to Prompt","avg":5}]}',
+      '{"name":"Adherence to Knowledge Base","avg":4},{"name":"Adherence to Prompt","avg":5}],' +
+      '"latency":{"response":{"avg_latency_ms":6000,"call_count":9}}}',
     duplicationFactor: 1,
     goldenQa: { id: 'g1', name: 'core_set', duplicationFactor: 1 },
     assistantConfigVersion: { id: 'v1', majorVersion: 1, minorVersion: 0, assistant: { id: 'a1', name: 'A' } },
@@ -2177,12 +2178,14 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
       'Ground truth',
       'Knowledge base',
       'Prompt',
+      'Avg response time',
       'When',
     ],
-    ['1.0', 'core_set', '1', 'Completed', '4.5', '4.6', '4.0', '5.0', '2026-08-10 15:30'],
-    ['2.0', 'core_set', '1', 'Failed', '', '', '', '', '2026-08-10 15:30'],
+    // the response time reads as it does in the table, so nobody has to convert milliseconds
+    ['1.0', 'core_set', '1', 'Completed', '4.5', '4.6', '4.0', '5.0', '6.0 s', '2026-08-10 15:30'],
+    ['2.0', 'core_set', '1', 'Failed', '', '', '', '', '', '2026-08-10 15:30'],
     // a run still going says so rather than reading as complete with no scores
-    ['3.0', 'core_set', '1', 'Running', '', '', '', '', '2026-08-10 15:30'],
+    ['3.0', 'core_set', '1', 'Running', '', '', '', '', '', '2026-08-10 15:30'],
   ]);
 
   expect((createObjectURL.mock.calls[0][0] as Blob).size).toBe(new Blob([`\uFEFF${csv}`]).size);
@@ -2214,6 +2217,43 @@ test('History lists this assistant’s runs only, not the whole organisation’s
   expect(rows).toHaveLength(1);
   expect(rows[0]).toHaveTextContent('mine');
   expect(rows[0]).not.toHaveTextContent('someone_elses');
+});
+
+test('a run that reports latency shows it on its result and in History; one that does not, shows a dash', async () => {
+  const timed = {
+    ...runFor('r1', 'a1', 'timed'),
+    results: JSON.stringify({
+      summary_scores: [{ name: 'Adherence to Ground Truth', avg: 4.7 }],
+      latency: { avg_latency_ms: 1250.5, call_count: 50, response: { avg_latency_ms: 1800, call_count: 25 } },
+    }),
+  };
+  const untimed = { ...runFor('r2', 'a1', 'untimed'), insertedAt: '2026-08-09T10:00:00Z' };
+
+  render(
+    <MockedProvider
+      mocks={[
+        listMock(oneSet),
+        {
+          request: { query: LIST_AI_EVALUATIONS, variables: runVariables },
+          result: { data: { aiEvaluations: [timed, untimed] } },
+          maxUsageCount: Number.POSITIVE_INFINITY,
+        },
+        scoresMock('r1'),
+      ]}
+    >
+      <Evaluation assistantId="a1" versionId="v-r1" versionLabel="1.0" assistantName="Assistant" />
+    </MockedProvider>
+  );
+
+  expect(await screen.findByTestId('evaluationLatency')).toHaveTextContent('Avg response time 1.8 s');
+
+  fireEvent.click(await screen.findByTestId('evaluationSubTabs-history'));
+  const rows = await screen.findAllByTestId('evaluationRun');
+  const timedRow = rows.find((row) => row.textContent?.includes('timed') && !row.textContent?.includes('untimed'));
+  const untimedRow = rows.find((row) => row.textContent?.includes('untimed'));
+
+  expect(within(timedRow!).getByTestId('evaluationLatency')).toHaveTextContent('1.8 s');
+  expect(within(untimedRow!).queryByTestId('evaluationLatency')).not.toBeInTheDocument();
 });
 
 test('a run finishing in the background lands without the reader reloading', async () => {

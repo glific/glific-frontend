@@ -160,6 +160,14 @@ button.VersionPillLive {
   flex-shrink: 0;
 }
 
+.VersionHelp {
+  flex-shrink: 0;
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
+  cursor: help;
+}
+
 .LiveNote {
   margin-left: auto;
   font-size: var(--app-font-size-xs);
