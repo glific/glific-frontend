@@ -2178,7 +2178,7 @@ test('Export CSV on History downloads every run as a CSV file', async () => {
       'Ground truth',
       'Knowledge base',
       'Prompt',
-      'Response time',
+      'Avg response time',
       'When',
     ],
     // the response time reads as it does in the table, so nobody has to convert milliseconds

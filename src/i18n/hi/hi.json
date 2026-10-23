@@ -1008,7 +1008,6 @@
   "Duplication Factor": "पूछा गया",
   "Overall": "कुल",
   "Avg response time": "औसत जवाब समय",
-  "Response time": "जवाब का समय",
   "The final score for this run — a weighted average of the three checks beside it.": "इस रन का अंतिम स्कोर — बगल के तीनों चेक का भारित औसत।",
   "Ground truth": "सही उत्तर से मेल",
   "Prompt": "प्रॉम्प्ट",

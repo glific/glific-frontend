@@ -104,7 +104,7 @@ export const EvaluationHistory = ({
         t('Ground truth'),
         t('Knowledge base'),
         t('Prompt'),
-        t('Response time'),
+        t('Avg response time'),
         t('When'),
       ],
       ...runs.map((run) => {
@@ -199,7 +199,11 @@ export const EvaluationHistory = ({
             { label: metricHeader(t('Ground truth'), 'groundTruth'), className: styles.MetricColumn },
             { label: metricHeader(t('Knowledge base'), 'knowledgeBase'), className: styles.MetricColumn },
             { label: metricHeader(t('Prompt'), 'prompt'), className: styles.MetricColumn },
-            { label: t('Response time'), className: styles.LatencyColumn },
+            {
+              // the first space is made non-breaking, so the only place left to wrap is before the last word
+              label: <span className={styles.LatencyHeader}>{t('Avg response time').replace(' ', '\u00a0')}</span>,
+              className: styles.LatencyColumn,
+            },
             { label: t('When') },
           ]}
           rows={rows}

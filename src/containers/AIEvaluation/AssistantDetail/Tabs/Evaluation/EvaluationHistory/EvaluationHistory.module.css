@@ -52,6 +52,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--app-space-sm);
+  white-space: nowrap;
 }
 
 .Version {
@@ -65,6 +66,7 @@
 }
 
 .HistoryTable .DuplicationColumn,
+.HistoryTable .LatencyColumn,
 .HistoryTable .MetricColumn,
 .HistoryTable .OverallColumn {
   text-align: center;
@@ -75,9 +77,10 @@
   width: 9rem;
 }
 
-.HistoryTable .LatencyColumn {
-  text-align: center;
-  white-space: nowrap;
+/* as narrow as its widest unbreakable part, so "Avg response" sits over "time" whatever the font or casing */
+.LatencyHeader {
+  display: inline-block;
+  width: min-content;
 }
 
 .HistoryTable td.OverallColumn {
