@@ -77,7 +77,6 @@
   width: 9rem;
 }
 
-/* as narrow as its widest unbreakable part, so "Avg response" sits over "time" whatever the font or casing */
 .LatencyHeader {
   display: inline-block;
   width: min-content;

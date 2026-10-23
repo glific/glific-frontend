@@ -200,7 +200,6 @@ export const EvaluationHistory = ({
             { label: metricHeader(t('Knowledge base'), 'knowledgeBase'), className: styles.MetricColumn },
             { label: metricHeader(t('Prompt'), 'prompt'), className: styles.MetricColumn },
             {
-              // the first space is made non-breaking, so the only place left to wrap is before the last word
               label: <span className={styles.LatencyHeader}>{t('Avg response time').replace(' ', '\u00a0')}</span>,
               className: styles.LatencyColumn,
             },
