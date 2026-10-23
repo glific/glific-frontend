@@ -1141,6 +1141,8 @@
   "on-demand runs against your curated questions.": "on-demand runs against your curated questions.",
   "Duplication Factor": "Duplication Factor",
   "Overall": "Overall",
+  "Avg response time": "Avg response time",
+  "Response time": "Response time",
   "The final score for this run — a weighted average of the three checks beside it.": "The final score for this run — a weighted average of the three checks beside it.",
   "Ground truth": "Ground truth",
   "Prompt": "Prompt",

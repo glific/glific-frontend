@@ -75,6 +75,11 @@
   width: 9rem;
 }
 
+.HistoryTable .LatencyColumn {
+  text-align: center;
+  white-space: nowrap;
+}
+
 .HistoryTable td.OverallColumn {
   border-right: 1px solid var(--app-color-border);
   background-color: var(--app-color-surface-page);
