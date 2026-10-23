@@ -1,4 +1,4 @@
-import { V2_SERVICES, bodyMentions, loginWithServices } from './assistant-flow';
+import { DEFAULT_SERVICES, bodyMentions, loginWithServices } from './assistant-flow';
 import { MODELS, UPLOADED_FILE } from './assistant-fixtures';
 
 export const NEW_ASSISTANT_ID = '42';
@@ -123,7 +123,7 @@ export const stubCreateAssistantApi = () => {
 };
 
 export const openCreatePage = () => {
-  loginWithServices(V2_SERVICES);
+  loginWithServices(DEFAULT_SERVICES);
   stubCreateAssistantApi();
 
   cy.visit(CREATE_PATH);

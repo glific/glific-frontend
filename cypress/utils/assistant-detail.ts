@@ -1,6 +1,6 @@
 import {
   BELOW_STICKY_HEADER,
-  V2_SERVICES,
+  DEFAULT_SERVICES,
   bodyMentions,
   loginWithServices,
 } from './assistant-flow';
@@ -297,7 +297,7 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
 
 // opens the page without assuming it has an assistant, or versions, to show
 export const openAssistantPage = (options: StubOptions = {}) => {
-  loginWithServices(V2_SERVICES);
+  loginWithServices(DEFAULT_SERVICES);
   stubAssistantApi(options);
   cy.visit(DETAIL_PATH);
 };
