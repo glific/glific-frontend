@@ -44,7 +44,7 @@ export const HeaderActions = ({
           disabled={saving}
           data-testid="discardButton"
         >
-          {t('Close')}
+          {t('Discard Changes')}
         </Button>
         <Button
           variant="contained"

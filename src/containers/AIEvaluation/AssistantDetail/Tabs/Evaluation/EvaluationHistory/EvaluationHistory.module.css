@@ -52,6 +52,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--app-space-sm);
+  white-space: nowrap;
 }
 
 .Version {
@@ -65,6 +66,7 @@
 }
 
 .HistoryTable .DuplicationColumn,
+.HistoryTable .LatencyColumn,
 .HistoryTable .MetricColumn,
 .HistoryTable .OverallColumn {
   text-align: center;
@@ -73,6 +75,11 @@
 .HistoryTable .MetricColumn,
 .HistoryTable .OverallColumn {
   width: 9rem;
+}
+
+.LatencyHeader {
+  display: inline-block;
+  width: min-content;
 }
 
 .HistoryTable td.OverallColumn {

@@ -1,0 +1,30 @@
+.Chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-2xs) var(--app-space-lg);
+  border-radius: var(--app-radius-pill);
+  background-color: var(--app-color-surface-raised);
+  box-shadow: var(--app-shadow-raised);
+  color: var(--app-color-text-heading);
+  font-size: var(--app-font-size-sm);
+}
+
+.Icon {
+  width: var(--app-size-icon-md);
+  height: var(--app-size-icon-md);
+  color: var(--app-color-text-tertiary);
+}
+
+.Value {
+  font-weight: 700;
+}
+
+.Text {
+  color: var(--app-color-text-heading);
+  white-space: nowrap;
+}
+
+.None {
+  color: var(--app-color-text-tertiary);
+}
