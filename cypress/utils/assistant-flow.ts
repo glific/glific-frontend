@@ -1,4 +1,3 @@
-// the assistant flow needs no org flags; specs that test a gated extra add it on top
 export const DEFAULT_SERVICES: Record<string, boolean> = {};
 export const BELOW_STICKY_HEADER = { scrollBehavior: 'center' } as const;
 export const SEARCH_FIELD = '[data-testid="searchInput"] input';
