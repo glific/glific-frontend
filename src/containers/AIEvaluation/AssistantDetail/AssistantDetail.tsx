@@ -25,6 +25,7 @@ import {
   canSaveGuardrails,
   EMPTY_GUARDRAIL_SPECS,
   parseGuardrailSpecs,
+  sameGuardrails,
 } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import { getOrganizationServices } from 'services/AuthService';
 import {
@@ -295,7 +296,7 @@ export const AssistantDetail = () => {
   const dirtyTabs: Partial<Record<TabKey, boolean>> = {
     persona: prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config),
     knowledgeBase: filesChanged,
-    guardrails: JSON.stringify(savableGuardrails) !== JSON.stringify(baseline.guardrails),
+    guardrails: !sameGuardrails(savableGuardrails, baseline.guardrails),
   };
   const isDirty = Object.values(dirtyTabs).some(Boolean);
 

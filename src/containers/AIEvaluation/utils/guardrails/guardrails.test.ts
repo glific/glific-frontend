@@ -7,6 +7,7 @@ import {
   parseGuardrailSpecs,
   piiDetailGroups,
   safeLink,
+  sameGuardrails,
   scopeFallbackMessage,
   topicsFromConfiguration,
   topicsToConfiguration,
@@ -182,5 +183,33 @@ describe('canSaveGuardrails', () => {
     expect(canSaveGuardrails({ input: [{ type: 'topic_relevance_llm', configuration: 'Politics' }], output: [] })).toBe(
       true
     );
+  });
+});
+
+describe('sameGuardrails', () => {
+  test('ignores the order of keys, details, topics and specs', () => {
+    const saved = {
+      input: [
+        { entity_types: ['IN_AADHAAR', 'PHONE_NUMBER'], type: 'pii_remover', on_fail: 'fix' },
+        { type: 'topic_relevance_llm', configuration: 'Politics\nCricket' },
+      ],
+      output: [],
+    };
+    const rebuilt = {
+      input: [
+        { type: 'topic_relevance_llm', configuration: 'Cricket\nPolitics' },
+        { on_fail: 'fix', type: 'pii_remover', entity_types: ['PHONE_NUMBER', 'IN_AADHAAR'] },
+      ],
+      output: [],
+    };
+    expect(sameGuardrails(saved, rebuilt)).toBe(true);
+  });
+
+  test('sees a real change', () => {
+    const saved = { input: [{ type: 'pii_remover', entity_types: ['PHONE_NUMBER'] }], output: [] };
+    expect(sameGuardrails(saved, { input: [{ type: 'pii_remover', entity_types: ['IN_AADHAAR'] }], output: [] })).toBe(
+      false
+    );
+    expect(sameGuardrails(saved, { input: [], output: saved.input })).toBe(false);
   });
 });

@@ -377,3 +377,32 @@ export const canSaveGuardrails = (specs: GuardrailSpecs) => {
   if (scope && !(typeof scope.configuration === 'string' && scope.configuration.trim())) return false;
   return true;
 };
+
+const normalizedSpec = (spec: GuardrailSpec) =>
+  Object.keys(spec)
+    .sort()
+    .map((key) => {
+      const param = spec[key];
+      if (Array.isArray(param)) return [key, [...param].sort()];
+      if (key === 'configuration' && typeof param === 'string') {
+        return [
+          key,
+          param
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean)
+            .sort(),
+        ];
+      }
+      return [key, param];
+    });
+
+const normalizedSpecs = (specs: GuardrailSpec[]) =>
+  specs
+    .map(normalizedSpec)
+    .map((spec) => JSON.stringify(spec))
+    .sort();
+
+export const sameGuardrails = (a: GuardrailSpecs, b: GuardrailSpecs) =>
+  JSON.stringify([normalizedSpecs(a.input), normalizedSpecs(a.output)]) ===
+  JSON.stringify([normalizedSpecs(b.input), normalizedSpecs(b.output)]);
