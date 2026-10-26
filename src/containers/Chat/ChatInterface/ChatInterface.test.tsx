@@ -150,6 +150,53 @@ describe('Chat interface', () => {
     });
   });
 
+  test('hides Collections and the saved-search filters on Web, and restores them on WhatsApp', async () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
+
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getByText('Collections')).toBeInTheDocument();
+      expect(screen.getAllByTestId('savedSearchDiv').length).toBeGreaterThan(0);
+    });
+
+    fireEvent.click(screen.getByTestId('channelSelector-WEB'));
+
+    await waitFor(() => {
+      expect(screen.queryByText('Collections')).not.toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('savedSearchDiv')).not.toBeInTheDocument();
+    expect(screen.getByText('Searches')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('channelSelector-WHATSAPP'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Collections')).toBeInTheDocument();
+      expect(screen.getAllByTestId('savedSearchDiv').length).toBeGreaterThan(0);
+    });
+  });
+
+  test('leaves the Collections view for Contacts when Web is picked', async () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
+    mockedUsedNavigate.mockClear();
+
+    render(
+      <MockedProvider cache={cache} mocks={mocks}>
+        <MemoryRouter>
+          <ChatInterface collectionType={true} />
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('channelSelector')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('channelSelector-WEB'));
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith('/chat');
+  });
+
   test('leaves the inbox untouched for an organization without the web channel', async () => {
     render(wrapper);
 
