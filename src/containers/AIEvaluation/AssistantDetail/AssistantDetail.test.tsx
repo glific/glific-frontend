@@ -2372,6 +2372,43 @@ describe('guardrails', () => {
     await screen.findByTestId('guardrailStage-incoming');
   };
 
+  test('Privacy Protection with every detail cleared counts as no change until a detail is picked', async () => {
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-privacy-protection'));
+    expect(screen.getByTestId('saveVersionButton')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+    screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('saveVersionButton')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('detailOption-PHONE_NUMBER'));
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+    expect(screen.getByTestId('saveVersionButton')).toBeInTheDocument();
+  });
+
+  test('Scope Control counts as a change only once a topic is added, whether or not a reply is written', async () => {
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-scope-control'));
+    expect(screen.queryByTestId('saveVersionButton')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('editTopicsToggle'));
+    // a reply on its own blocks nothing, so it is not enough
+    fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: 'I only help with farming.' } });
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('saveVersionButton')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: '' } });
+    fireEvent.click(screen.getByTestId('suggestedTopic-suggest-politics-religion'));
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+    expect(screen.getByTestId('saveVersionButton')).toBeInTheDocument();
+  });
+
   test('turning a guardrail on marks the tab unsaved and is sent with the save', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
     const save = {

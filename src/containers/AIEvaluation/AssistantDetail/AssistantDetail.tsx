@@ -21,7 +21,12 @@ import {
   mergeVersionUpdate,
   nextPublishLabel,
 } from 'containers/AIEvaluation/utils/assistantVersions';
-import { EMPTY_GUARDRAIL_SPECS, parseGuardrailSpecs } from 'containers/AIEvaluation/utils/guardrails/guardrails';
+import {
+  canSaveGuardrails,
+  EMPTY_GUARDRAIL_SPECS,
+  parseGuardrailSpecs,
+} from 'containers/AIEvaluation/utils/guardrails/guardrails';
+import { getOrganizationServices } from 'services/AuthService';
 import {
   DEFAULT_MODEL_CONFIG,
   configForModel,
@@ -283,10 +288,14 @@ export const AssistantDetail = () => {
 
   const filesChanged = JSON.stringify(knowledgeBaseFiles) !== JSON.stringify(baseline.files);
 
+  // an incomplete guardrail counts as no change, so it is neither flagged nor saved
+  const guardrailsReady = !getOrganizationServices('aiGuardrailEnabled') || canSaveGuardrails(guardrails);
+  const savableGuardrails = guardrailsReady ? guardrails : baseline.guardrails;
+
   const dirtyTabs: Partial<Record<TabKey, boolean>> = {
     persona: prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config),
     knowledgeBase: filesChanged,
-    guardrails: JSON.stringify(guardrails) !== JSON.stringify(baseline.guardrails),
+    guardrails: JSON.stringify(savableGuardrails) !== JSON.stringify(baseline.guardrails),
   };
   const isDirty = Object.values(dirtyTabs).some(Boolean);
 
@@ -330,8 +339,8 @@ export const AssistantDetail = () => {
       model: modelConfig.model,
       ...(takesTemperature && modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
       ...(takesEffort && modelConfig.effort ? { effort: modelConfig.effort } : {}),
-      inputGuardrails: JSON.stringify(guardrails.input),
-      outputGuardrails: JSON.stringify(guardrails.output),
+      inputGuardrails: JSON.stringify(savableGuardrails.input),
+      outputGuardrails: JSON.stringify(savableGuardrails.output),
     };
 
     try {
@@ -374,7 +383,7 @@ export const AssistantDetail = () => {
         setErrorMessage(errors[0]);
         return;
       }
-      setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles, guardrails });
+      setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles, guardrails: savableGuardrails });
       setAwaitingVersionAbove(sortedVersions[0] ?? null);
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {

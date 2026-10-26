@@ -76,15 +76,33 @@ export const GuardrailsPanel = ({ initialRules, value, onChange }: GuardrailsPan
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
   const toggleHowItWorks = () => setHowItWorksOpen((open) => !open);
   const emitted = useRef(value);
+  const loadedRules = useRef(rules);
 
   useEffect(() => {
     if (value === emitted.current) return;
     emitted.current = value;
-    setRules(rulesWithSpecs(initialRules, value));
+    const loaded = rulesWithSpecs(initialRules, value);
+    loadedRules.current = loaded;
+    setRules(loaded);
   }, [value]);
 
+  const nothingPicked = (control?: GuardrailRule['control']) =>
+    control?.kind === 'detailTypes' &&
+    control.groups.length > 0 &&
+    control.groups.every((group) => group.options.every((option) => !option.selected));
+
+  const restoredControl = (rule: GuardrailRule) => {
+    const loaded = loadedRules.current.find((entry) => entry.id === rule.id)?.control;
+    if (!nothingPicked(loaded)) return loaded ?? rule.control;
+    return initialRules.find((entry) => entry.id === rule.id)?.control ?? rule.control;
+  };
+
   const updateRule = (id: string, patch: Partial<GuardrailRule>) => {
-    const next = rules.map((rule) => (rule.id === id ? ({ ...rule, ...patch } as GuardrailRule) : rule));
+    const next = rules.map((rule) => {
+      if (rule.id !== id) return rule;
+      const control = patch.enabled && nothingPicked(rule.control) ? restoredControl(rule) : rule.control;
+      return { ...rule, control, ...patch } as GuardrailRule;
+    });
     const specs = buildSavedGuardrails(next, value);
     setRules(next);
     emitted.current = specs;

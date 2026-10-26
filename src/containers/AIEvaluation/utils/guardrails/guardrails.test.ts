@@ -2,6 +2,7 @@ import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails
 import type { GuardrailTopicSuggestion } from 'containers/AIEvaluation/types/guardrailType';
 import {
   actionFromConfig,
+  canSaveGuardrails,
   isTranslationKey,
   parseGuardrailSpecs,
   piiDetailGroups,
@@ -151,5 +152,35 @@ describe('isTranslationKey', () => {
     expect(isTranslationKey('Aadhaar number')).toBe(true);
     expect(isTranslationKey('Crypto Wallet')).toBe(false);
     expect(isTranslationKey('toString')).toBe(false);
+  });
+});
+
+describe('canSaveGuardrails', () => {
+  test('no guardrails, or ones that are set up, can be saved', () => {
+    expect(canSaveGuardrails({ input: [], output: [] })).toBe(true);
+    expect(
+      canSaveGuardrails({
+        input: [
+          { type: 'pii_remover', entity_types: ['PHONE_NUMBER'] },
+          { type: 'topic_relevance_llm', configuration: 'Politics' },
+        ],
+        output: [],
+      })
+    ).toBe(true);
+  });
+
+  test('Privacy Protection with every detail cleared cannot be saved; with no list it keeps the defaults', () => {
+    expect(canSaveGuardrails({ input: [{ type: 'pii_remover', entity_types: [] }], output: [] })).toBe(false);
+    expect(canSaveGuardrails({ input: [{ type: 'pii_remover' }], output: [] })).toBe(true);
+  });
+
+  test('Scope Control needs a topic; the set reply alone is not enough, and is optional once a topic is there', () => {
+    expect(canSaveGuardrails({ input: [{ type: 'topic_relevance_llm' }], output: [] })).toBe(false);
+    expect(
+      canSaveGuardrails({ input: [{ type: 'topic_relevance_llm', fallback_message: 'Only farming.' }], output: [] })
+    ).toBe(false);
+    expect(canSaveGuardrails({ input: [{ type: 'topic_relevance_llm', configuration: 'Politics' }], output: [] })).toBe(
+      true
+    );
   });
 });
