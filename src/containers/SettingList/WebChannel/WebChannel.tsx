@@ -1,34 +1,43 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Field } from 'formik';
+import { Link } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import * as Yup from 'yup';
 
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Checkbox } from 'components/UI/Form/Checkbox/Checkbox';
-import { ColorInput } from 'components/UI/Form/ColorInput/ColorInput';
+import { ColorInput, normalizeHex } from 'components/UI/Form/ColorInput/ColorInput';
 import { FileUpload } from 'components/UI/Form/FileUpload/FileUpload';
 import { GET_PROVIDERS, GET_CREDENTIAL, GET_ORGANIZATION_SHORTCODE } from 'graphql/queries/Organization';
 import { DELETE_ORGANIZATION, CREATE_CREDENTIAL, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
 import { copyToClipboard } from 'common/utils';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
+import { contrastRatio, isHexColour, isNearWhite, readableOn } from './branding';
 import styles from './WebChannel.module.css';
 
 const SHORTCODE = 'web_channel';
+
 const SettingIcon = <Settingicon />;
+
+// What the backend's Flag.web_channel_enabled? turns away once the credential is inactive.
+const whatStops = (t: TFunction) =>
+  t(
+    "Contacts can't sign in to the web chat or connect to it. Anyone who opens a link to it, including links in your web flows, is told the chat is unavailable and shown your WhatsApp number instead. Your settings are kept."
+  );
 
 // The keys this page edits, in the order a new credential saves them. The server replaces keys
 // and secrets wholesale on update, so a save merges these over whatever the saved credential
-// already holds rather than dropping values this form does not show.
+// already holds rather than dropping values this form does not show — including the
+// secondary_color an earlier version of this page edited.
 const FIELDS = [
   'logo_url',
   'display_name',
   'primary_color',
-  'secondary_color',
   'about_description',
   'about_address',
   'about_website',
@@ -53,6 +62,22 @@ const omit = (values: Record<string, any>, names: string[]) =>
 const parseJson = (value?: string | null) => (value ? JSON.parse(value) : {});
 
 const HEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
+const MAX_DISPLAY_NAME = 30;
+const MAX_DESCRIPTION = 140;
+
+// The server adds https:// to a bare domain, so "example.org" is as valid here as a full URL.
+const isWebsite = (value?: string) => {
+  const trimmed = value?.trim();
+  if (!trimmed) return true;
+
+  try {
+    const url = new URL(/^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`);
+    return /^[^.\s]+(\.[^.\s]+)+$/.test(url.hostname);
+  } catch {
+    return false;
+  }
+};
 
 // HS256 needs a key of at least 32 bytes; the server ignores a shorter secret.
 const MIN_SECRET_LENGTH = 32;
@@ -98,7 +123,7 @@ const WebChannelUrl = ({ shortcode }: { shortcode?: string }) => {
 
   return (
     <div className={styles.UrlPanel} data-testid="webChannelUrl">
-      <div className={styles.UrlLabel}>{t('Your web channel address')}</div>
+      <div className={styles.UrlLabel}>{t('Test link · internal only')}</div>
       <div className={styles.UrlRow}>
         <a href={url} target="_blank" rel="noreferrer" className={styles.Url}>
           {url}
@@ -106,7 +131,12 @@ const WebChannelUrl = ({ shortcode }: { shortcode?: string }) => {
         <CopyIcon className={styles.CopyIcon} data-testid="copyWebChannelUrl" onClick={() => copyToClipboard(url)} />
       </div>
       <div className={styles.SectionDescription}>
-        {t('Share this link with your contacts. It opens the chat in their browser.')}
+        {t(
+          'Use it to check how your chat looks. Contacts reach the chat through links in your web flows, not this one.'
+        )}{' '}
+        <Link to="/flow" className={styles.Url} data-testid="flowsLink">
+          {t('Go to Flows')}
+        </Link>
       </div>
     </div>
   );
@@ -146,35 +176,62 @@ const SigningSecretInput = ({ hasSavedSecret, ...props }: any) => {
   );
 };
 
-const BrandColors = ({ keys }: { keys: any }) => {
+const OffNotice = () => {
   const { t } = useTranslation();
 
   return (
-    <div className={styles.ColorRow}>
-      <div className={styles.ColorField}>
-        <div className={styles.ColorLabel}>{t('Primary')}</div>
-        <Field component={ColorInput} name="primary_color" fallback={keys?.primary_color?.default} />
-      </div>
-      <div className={styles.ColorField}>
-        <div className={styles.ColorLabel}>{t('Secondary')}</div>
-        <Field component={ColorInput} name="secondary_color" fallback={keys?.secondary_color?.default} />
-      </div>
+    <div className={styles.OffNotice} data-testid="webChannelOffNotice">
+      <strong>{t('The web channel is off.')}</strong> {whatStops(t)}
     </div>
   );
 };
 
-const ColorNote = () => {
+const CountedInput = ({ maxLength, helperText, ...props }: any) => (
+  <Input
+    {...props}
+    inputProp={{ ...props.inputProp, maxLength }}
+    helperText={
+      <span className={styles.Counted}>
+        <span>{helperText}</span>
+        <span data-testid={`${props.field.name}Count`}>
+          {props.field.value?.length ?? 0}/{maxLength}
+        </span>
+      </span>
+    }
+  />
+);
+
+const ColourPreview = ({ form }: { form: { values: any } }) => {
   const { t } = useTranslation();
+  const colour = normalizeHex(form.values.primary_color ?? '');
+
+  if (!isHexColour(colour)) return null;
+
+  if (isNearWhite(colour)) {
+    return (
+      <div className={styles.ColourWarning} data-testid="colourTooLight">
+        {t('This colour is too close to white. The top of the chat would blend into the page.')}
+      </div>
+    );
+  }
+
+  const foreground = readableOn(colour);
+  const ratio = contrastRatio(colour, foreground);
+  const verdict = ratio >= 4.5 ? t('Text on this colour is easy to read') : t('Text on this colour is hard to read');
 
   return (
-    <div className={styles.Note}>
-      {/* Restates the guarantee Branding.readable_on/1 implements. If one changes the other
-          has to, or the page is promising something the widget no longer does. */}
-      <strong>{t('Primary')}</strong> {t('drives the header, buttons, sent-message bubbles and links.')} <br />
-      <strong>{t('Secondary')}</strong>{' '}
-      {t(
-        'is decorative only — chip borders, selected rings and trust accents, never text. Header text auto-flips dark or light to stay legible on your primary colour.'
-      )}
+    <div className={styles.Preview} data-testid="colourPreview">
+      <div className={styles.PreviewHeader} style={{ backgroundColor: colour, color: foreground }}>
+        {form.values.display_name || t('Your organisation')}
+      </div>
+      <div className={styles.PreviewBody}>
+        <span className={styles.PreviewButton} style={{ backgroundColor: colour, color: foreground }}>
+          {t('Send')}
+        </span>
+        <span className={styles.PreviewVerdict} data-testid="colourVerdict">
+          {`${verdict} (${ratio.toFixed(1)}:1)`}
+        </span>
+      </div>
     </div>
   );
 };
@@ -186,6 +243,7 @@ export const WebChannel = () => {
   // Mirrors the form's own `isActive` so the field list can be rebuilt as it is toggled;
   // formFields is computed outside Formik and cannot read its values.
   const [isActive, setIsActive] = useState(false);
+  const [savedActive, setSavedActive] = useState(false);
   const saved = useRef<{ keys: any; secrets: any }>({ keys: {}, secrets: {} });
   const [savedSecret, setSavedSecret] = useState('');
   // Mirrors the form's secret so saving a replacement can ask for confirmation first.
@@ -215,6 +273,7 @@ export const WebChannel = () => {
     setSavedSecret(secret);
     setSecretDraft(secret);
     setIsActive(active);
+    setSavedActive(active);
     setStates({
       ...Object.fromEntries(FIELDS.map((name) => [name, savedKeys[name] ?? keys?.[name]?.default ?? ''])),
       [SIGNING_SECRET]: secret,
@@ -231,22 +290,39 @@ export const WebChannel = () => {
 
   if (providerLoading || credentialLoading) return <Loading whiteBackground />;
 
-  // Nothing below the toggle is on screen while the channel is off, so requiring it would
-  // reject a save the admin cannot see the reason for.
-  const requiredWhenActive = (schema: Yup.StringSchema, message: string) =>
-    schema.when('isActive', { is: true, then: (active) => active.required(message) });
+  // Nothing below the toggle is on screen while the channel is off, so any rule on it would
+  // reject a save the admin cannot see the reason for — including turning the channel off.
+  const whenActive = (rules: (active: Yup.StringSchema) => Yup.StringSchema) =>
+    Yup.string().when('isActive', { is: true, then: rules });
 
   const validationSchema = Yup.object().shape({
-    display_name: requiredWhenActive(Yup.string(), t('Display name is required.')),
-    primary_color: requiredWhenActive(Yup.string(), t('Primary colour is required.')).matches(HEX, {
-      message: t('Enter a colour like #4C3BCF.'),
-      excludeEmptyString: true,
-    }),
-    secondary_color: requiredWhenActive(Yup.string(), t('Secondary colour is required.')).matches(HEX, {
-      message: t('Enter a colour like #FF8A3D.'),
-      excludeEmptyString: true,
-    }),
-    about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
+    logo_url: whenActive((active) => active.required(t('Add a display picture.'))),
+    display_name: whenActive((active) =>
+      active
+        .required(t('Display name is required.'))
+        .max(MAX_DISPLAY_NAME, t('Use at most {{max}} characters.', { max: MAX_DISPLAY_NAME }))
+    ),
+    primary_color: whenActive((active) =>
+      active
+        .required(t('Brand colour is required.'))
+        .matches(HEX, { message: t('Enter a colour like #4C3BCF.'), excludeEmptyString: true })
+        .test(
+          'not-near-white',
+          t('Pick a colour that is not this close to white.'),
+          (value) => !isHexColour(normalizeHex(value ?? '')) || !isNearWhite(normalizeHex(value ?? ''))
+        )
+    ),
+    about_description: whenActive((active) =>
+      active
+        .required(t('Description is required.'))
+        .max(MAX_DESCRIPTION, t('Use at most {{max}} characters.', { max: MAX_DESCRIPTION }))
+    ),
+    about_website: whenActive((active) =>
+      active.required(t('Website is required.')).test('website', t('Enter a link like www.example.org.'), isWebsite)
+    ),
+    about_email: Yup.string()
+      .nullable()
+      .when('isActive', { is: true, then: (active) => active.email(t('Enter a valid email address.')) }),
     // Blank is fine only while there is no secret yet, since the server then generates one.
     [SIGNING_SECRET]: Yup.string().when('isActive', {
       is: true,
@@ -262,12 +338,13 @@ export const WebChannel = () => {
     }),
   });
 
-  const textField = (name: string, label?: string) => ({
+  const textField = (name: string, label: string, helperText: string, example: string) => ({
     component: Input,
     name,
     type: 'text',
     label,
-    placeholder: '',
+    helperText,
+    placeholder: example,
     inputProp: { 'data-testid': name },
   });
 
@@ -283,12 +360,13 @@ export const WebChannel = () => {
         title: t('Your branding and business profile apply to the web chat only while this is on.'),
       },
     },
+    { component: OffNotice, name: '__offNotice', skip: !(credentialId && !savedActive && !isActive) },
     { component: WebChannelUrl, name: '__webChannelUrl', shortcode: orgShortcode },
     {
       component: Section,
       name: '__sectionDisplayPicture',
       title: t('Display picture'),
-      description: t('Shown as the avatar in chat and the hero logo on the OTP sign-in page.'),
+      description: t('Your logo, shown as the avatar in the chat and on the sign-in page. A square image works best.'),
     },
     {
       component: FileUpload,
@@ -302,30 +380,76 @@ export const WebChannel = () => {
       component: Section,
       name: '__sectionDisplayName',
       title: t('Display name'),
-      description: t('The organisation name contacts see in the chat header and on the sign-in page.'),
+      description: t('The name contacts see at the top of the chat and on the sign-in page.'),
     },
-    textField('display_name'),
+    {
+      ...textField(
+        'display_name',
+        '',
+        t('Usually your organisation name, or a short form of it.'),
+        t('e.g. Akshar Foundation')
+      ),
+      component: CountedInput,
+      maxLength: MAX_DISPLAY_NAME,
+    },
     {
       component: Section,
-      name: '__sectionBrandColours',
-      title: t('Brand colours'),
-      description: t('Two colours theme the whole contact-facing surface.'),
+      name: '__sectionBrandColour',
+      title: t('Brand colour'),
+      description: t(
+        'Fills the top of the chat and its buttons. Glific picks dark or light text to go on it, so it stays readable.'
+      ),
     },
-    { component: BrandColors, name: '__brandColours', keys },
-    { component: ColorNote, name: '__colourNote' },
+    {
+      component: ColorInput,
+      name: 'primary_color',
+      fallback: keys?.primary_color?.default,
+    },
+    { component: ColourPreview, name: '__colourPreview' },
     {
       component: Section,
       name: '__sectionAbout',
       title: t('About the organisation'),
       description: t(
-        'The read-only business info contacts can open from the chat menu — the web equivalent of a WhatsApp business profile.'
+        'The business info contacts can open from the chat menu — the web equivalent of a WhatsApp business profile.'
       ),
     },
-    { ...textField('about_description', t('Description')), textArea: true, rows: 3 },
-    textField('about_address', t('Address')),
-    textField('about_website', t('Website')),
-    textField('about_email', t('Contact email')),
-    textField('about_hours', t('Hours')),
+    {
+      ...textField(
+        'about_description',
+        t('Description'),
+        t('One or two lines on what your organisation does and who it helps.'),
+        t('e.g. We help young people find their first job through free skills courses.')
+      ),
+      component: CountedInput,
+      maxLength: MAX_DESCRIPTION,
+      textArea: true,
+      rows: 3,
+    },
+    textField(
+      'about_website',
+      t('Website'),
+      t('Contacts can open it from your profile in the chat.'),
+      t('e.g. www.example.org')
+    ),
+    textField(
+      'about_address',
+      t('Address'),
+      t('Optional. Where contacts can find you.'),
+      t('e.g. 12 MG Road, Pune, Maharashtra')
+    ),
+    textField(
+      'about_email',
+      t('Contact email'),
+      t('Optional. Where contacts can write to you.'),
+      t('e.g. hello@example.org')
+    ),
+    textField(
+      'about_hours',
+      t('Any other info'),
+      t('Optional. Anything else contacts should know, such as when you reply.'),
+      t('e.g. We reply Monday to Saturday, 9am to 6pm.')
+    ),
     {
       component: Section,
       name: '__sectionJwtSecret',
@@ -369,9 +493,22 @@ export const WebChannel = () => {
   };
 
   const replacesSecret = isActive && !!savedSecret && secretDraft.trim() !== savedSecret;
+  const turnsOff = savedActive && !isActive;
 
-  // Everything except the toggle and the address is configuration for a channel that is off.
-  const fields = formFields.map((field) => (field.name === 'isActive' ? field : { ...field, skip: !isActive }));
+  // Everything except the toggle and the off notice is configuration for a channel that is off.
+  const fields = formFields.map((field) =>
+    ['isActive', '__offNotice'].includes(field.name) ? field : { ...field, skip: !isActive }
+  );
+
+  const confirmation = turnsOff
+    ? { show: true, title: t('Turn off the web channel?'), message: whatStops(t) }
+    : {
+        show: replacesSecret,
+        title: t('Replace the signing secret?'),
+        message: t(
+          'Every web user of your organisation is signed out as soon as you save. Switch your backend to the new secret at the same time.'
+        ),
+      };
 
   return (
     <FormLayout
@@ -398,13 +535,7 @@ export const WebChannel = () => {
       entityId={credentialId}
       credentialShortcode={SHORTCODE}
       customStyles={styles.Form}
-      confirmationState={{
-        show: replacesSecret,
-        title: t('Replace the signing secret?'),
-        message: t(
-          'Every web user of your organisation is signed out as soon as you save. Switch your backend to the new secret at the same time.'
-        ),
-      }}
+      confirmationState={confirmation}
     />
   );
 };

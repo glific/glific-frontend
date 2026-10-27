@@ -32,6 +32,10 @@ const SAVED = {
   about_hours: 'Mon-Sat, 9am-7pm IST',
 };
 
+// What this page edits. SAVED also carries the secondary colour an earlier version saved, which
+// a save has to keep even though nothing on the page shows it any more.
+const { secondary_color: _secondary, ...EDITED } = SAVED;
+
 const SECRET = 'shared-signing-secret-0123456789abcdef';
 const NEW_SECRET = 'new-signing-secret-0123456789abcdef';
 const signedWith = (secret: string) => ({ jwt_signature_secrets: [{ name: 'Signing secret', secret }] });
@@ -49,13 +53,17 @@ const wrapper = (mocks: any[]) => (
 const off = [getWebChannelProvider, getWebChannelCredential(), getWebChannelCredential()];
 const on = [getWebChannelProvider, getWebChannelCredential(SAVED), getWebChannelCredential(SAVED)];
 
-const SECTIONS = ['Display picture', 'Display name', 'Brand colours', 'About the organisation', 'JWT signature secret'];
+const SECTIONS = ['Display picture', 'Display name', 'Brand colour', 'About the organisation', 'JWT signature secret'];
 
-const savedWith = (keys: any, secrets: any) => [
+const savedWith = (keys: any, secrets: any, isActive = true) => [
   getWebChannelProvider,
-  getWebChannelCredential(keys, secrets),
-  getWebChannelCredential(keys, secrets),
+  getWebChannelCredential(keys, secrets, isActive),
+  getWebChannelCredential(keys, secrets, isActive),
 ];
+
+const toggle = () => user.click(screen.getByTestId('checkboxLabel').querySelector('input') as HTMLElement);
+const save = () => user.click(screen.getByTestId('submitActionButton'));
+const fill = (testId: string, value: string) => fireEvent.change(screen.getByTestId(testId), { target: { value } });
 
 describe('the active toggle', () => {
   it('starts off for an organisation that has never configured the channel', async () => {
@@ -105,14 +113,17 @@ describe('the web channel address', () => {
     expect(webChannelUrl('tides', 'localhost')).toBe('https://web.tides.glific.com');
   });
 
-  it("shows the address an organisation's contacts reach", async () => {
+  it('shows the address as an internal test link, and points to Flows for the links contacts use', async () => {
     render(wrapper(on));
 
     await waitFor(() => expect(screen.getByTestId('webChannelUrl')).toBeInTheDocument());
     expect(screen.getByTestId('webChannelUrl')).toHaveTextContent('https://web.tides.glific.com');
+    expect(screen.getByText('Test link · internal only')).toBeInTheDocument();
+    expect(screen.getByText(/Contacts reach the chat through links in your web flows/)).toBeInTheDocument();
+    expect(screen.getByTestId('flowsLink')).toHaveAttribute('href', '/flow');
   });
 
-  it('copies the address, since it is meant to be shared', async () => {
+  it('copies the address', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
     const writeText = vi.fn(() => Promise.resolve());
     // defineProperty rather than assignment: navigator.clipboard is getter-only in jsdom.
@@ -136,13 +147,13 @@ describe('<WebChannel />', () => {
     await user.click(screen.getByTestId('checkboxLabel').querySelector('input') as HTMLElement);
 
     await waitFor(() => expect(screen.getByTestId('colorHex-primary_color')).toHaveValue('#4c3bcf'));
-    expect(screen.getByTestId('colorHex-secondary_color')).toHaveValue('#ff8a3d');
   });
 
-  it('states the contrast guarantee the widget makes, beside the colours it applies to', async () => {
+  it('offers one brand colour, not a second', async () => {
     render(wrapper(on));
 
-    await waitFor(() => expect(screen.getByText(/auto-flips dark or light/)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('colorHex-primary_color')).toBeInTheDocument());
+    expect(screen.queryByTestId('colorHex-secondary_color')).not.toBeInTheDocument();
   });
 
   it('restores what was saved', async () => {
@@ -178,21 +189,18 @@ describe('<WebChannel />', () => {
   it('saves every field as the credential keys', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
 
-    render(wrapper([...off, createWebChannelCredential(SAVED, NO_JWT_SECRETS)]));
+    render(wrapper([...off, createWebChannelCredential(EDITED, NO_JWT_SECRETS)]));
 
     await waitFor(() => expect(screen.getByText('Web channel is active')).toBeInTheDocument());
     await user.click(screen.getByTestId('checkboxLabel').querySelector('input') as HTMLElement);
     await waitFor(() => expect(screen.getByTestId('colorHex-primary_color')).toBeInTheDocument());
 
-    // fireEvent rather than user.type: nine fields typed a keystroke at a time took five
+    // fireEvent rather than user.type: eight fields typed a keystroke at a time took five
     // seconds locally and blew the 10s limit on CI. What this test is about is the payload,
     // not the typing — the keystroke-level behaviour is covered by the colour tests above.
-    const fill = (testId: string, value: string) => fireEvent.change(screen.getByTestId(testId), { target: { value } });
-
     fill('fileUrlInput', SAVED.logo_url);
     fill('display_name', SAVED.display_name);
     fill('colorHex-primary_color', SAVED.primary_color);
-    fill('colorHex-secondary_color', SAVED.secondary_color);
     fill('about_description', SAVED.about_description);
     fill('about_address', SAVED.about_address);
     fill('about_website', SAVED.about_website);
@@ -343,6 +351,7 @@ describe('JWT signature secret', () => {
     await waitFor(() => expect(screen.queryByTestId('signingSecretValue')).not.toBeInTheDocument());
 
     await save();
+    await user.click(await screen.findByTestId('ok-button'));
 
     await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
     expect(screen.queryByText('Replace the signing secret?')).not.toBeInTheDocument();
@@ -415,5 +424,225 @@ describe('JWT signature secret', () => {
     await save();
 
     await waitFor(() => expect(errorMessage).toHaveBeenCalledWith({ key: 'secrets', message }));
+  });
+});
+
+describe('organisation details', () => {
+  it('gives every field helper text and an example', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('display_name')).toBeInTheDocument());
+    ['display_name', 'about_description', 'about_website', 'about_address', 'about_email', 'about_hours'].forEach(
+      (name) => expect(screen.getByTestId(name).getAttribute('placeholder')).toMatch(/^e\.g\. /)
+    );
+    expect(screen.getByText(/Anything else contacts should know/)).toBeInTheDocument();
+    expect(screen.getByText(/A square image works best/)).toBeInTheDocument();
+  });
+
+  it('labels the free-form field "Any other info" rather than "Hours"', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByText('Any other info')).toBeInTheDocument());
+    expect(screen.queryByText('Hours')).not.toBeInTheDocument();
+  });
+
+  it('will not save without a picture, name, description and website', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('display_name')).toBeInTheDocument());
+    fill('fileUrlInput', '');
+    fill('display_name', '');
+    fill('about_description', '');
+    fill('about_website', '');
+
+    await save();
+
+    await waitFor(() => expect(screen.getByText('Display name is required.')).toBeInTheDocument());
+    expect(screen.getByText('Add a display picture.')).toBeInTheDocument();
+    expect(screen.getByText('Description is required.')).toBeInTheDocument();
+    expect(screen.getByText('Website is required.')).toBeInTheDocument();
+    expect(notification).not.toHaveBeenCalled();
+  });
+
+  it('counts characters against the name and description limits', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('display_nameCount')).toHaveTextContent('18/30'));
+    expect(screen.getByTestId('display_name')).toHaveAttribute('maxLength', '30');
+    expect(screen.getByTestId('about_description')).toHaveAttribute('maxLength', '140');
+
+    fill('about_description', 'a'.repeat(140));
+
+    await waitFor(() => expect(screen.getByTestId('about_descriptionCount')).toHaveTextContent('140/140'));
+  });
+
+  it('refuses a name or description over its limit, such as one saved before the limit existed', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('display_name')).toBeInTheDocument());
+    fill('display_name', 'a'.repeat(31));
+    fill('about_description', 'a'.repeat(141));
+
+    await save();
+
+    // The test setup's t() does not interpolate, so both limits read as the raw key.
+    await waitFor(() => expect(screen.getAllByText('Use at most {{max}} characters.')).toHaveLength(2));
+    expect(notification).not.toHaveBeenCalled();
+  });
+
+  it('refuses a website that is not a link, and accepts a bare domain', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(
+      wrapper([...on, updateWebChannelCredential({ ...SAVED, about_website: 'example.org/about' }, NO_JWT_SECRETS)])
+    );
+
+    await waitFor(() => expect(screen.getByTestId('about_website')).toBeInTheDocument());
+    fill('about_website', 'not a link');
+    await save();
+
+    await waitFor(() => expect(screen.getByText('Enter a link like www.example.org.')).toBeInTheDocument());
+    expect(notification).not.toHaveBeenCalled();
+
+    fill('about_website', 'example.org/about');
+    await save();
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+});
+
+describe('brand colour readability', () => {
+  it('previews the header and a button with the text colour the chat will use', async () => {
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('colourPreview')).toBeInTheDocument());
+    const header = screen.getByText('Example Foundation', { selector: 'div' });
+    expect(header).toHaveStyle({ backgroundColor: '#4C3BCF', color: '#fafafa' });
+    expect(screen.getByTestId('colourVerdict')).toHaveTextContent('Text on this colour is easy to read');
+  });
+
+  it('flips the text dark on a light colour like yellow, and still saves it', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper([...on, updateWebChannelCredential({ ...SAVED, primary_color: '#FFFF00' }, NO_JWT_SECRETS)]));
+
+    await waitFor(() => expect(screen.getByTestId('colourPreview')).toBeInTheDocument());
+    fill('colorHex-primary_color', '#FFFF00');
+
+    await waitFor(() =>
+      expect(screen.getByText('Example Foundation', { selector: 'div' })).toHaveStyle({ color: '#18181b' })
+    );
+
+    await save();
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+
+  it('blocks saving a colour that is too close to white', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByTestId('colourPreview')).toBeInTheDocument());
+    fill('colorHex-primary_color', '#F8F8F8');
+
+    await waitFor(() => expect(screen.getByTestId('colourTooLight')).toBeInTheDocument());
+    expect(screen.queryByTestId('colourPreview')).not.toBeInTheDocument();
+
+    await save();
+
+    await waitFor(() => expect(screen.getByText('Pick a colour that is not this close to white.')).toBeInTheDocument());
+    expect(notification).not.toHaveBeenCalled();
+  });
+});
+
+describe('turning the channel off', () => {
+  it('asks first, saying what stops working', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper([...on, updateWebChannelCredential(SAVED, NO_JWT_SECRETS, NO_JWT_SECRETS, false)]));
+
+    await waitFor(() => expect(screen.getByText('Display picture')).toBeInTheDocument());
+    await toggle();
+    await save();
+
+    await waitFor(() => expect(screen.getByText('Turn off the web channel?')).toBeInTheDocument());
+    expect(screen.getAllByText(/Contacts can't sign in to the web chat/).length).toBeGreaterThan(0);
+    expect(notification).not.toHaveBeenCalled();
+
+    await user.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+    await waitFor(() => expect(screen.getByTestId('webChannelOffNotice')).toBeInTheDocument());
+  });
+
+  it('saves nothing when the confirmation is cancelled', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper(on));
+
+    await waitFor(() => expect(screen.getByText('Display picture')).toBeInTheDocument());
+    await toggle();
+    await save();
+
+    await waitFor(() => expect(screen.getByText('Turn off the web channel?')).toBeInTheDocument());
+    await user.click(screen.getByTestId('cancel-button'));
+
+    await waitFor(() => expect(screen.queryByText('Turn off the web channel?')).not.toBeInTheDocument());
+    expect(notification).not.toHaveBeenCalled();
+  });
+
+  it('keeps a notice on the page while the channel is off, until it is turned back on', async () => {
+    render(wrapper(savedWith(SAVED, JWT_SECRETS, false)));
+
+    await waitFor(() => expect(screen.getByTestId('webChannelOffNotice')).toBeInTheDocument());
+    expect(screen.getByTestId('webChannelOffNotice')).toHaveTextContent('The web channel is off.');
+
+    await toggle();
+
+    await waitFor(() => expect(screen.queryByTestId('webChannelOffNotice')).not.toBeInTheDocument());
+  });
+
+  it('shows no notice to an organisation that has never set the channel up', async () => {
+    render(wrapper(off));
+
+    await waitFor(() => expect(screen.getByText('Web channel is active')).toBeInTheDocument());
+    expect(screen.queryByTestId('webChannelOffNotice')).not.toBeInTheDocument();
+  });
+
+  // Rules on fields that are hidden while the channel is off cannot be allowed to block turning it
+  // off — the admin would see no reason the save failed.
+  it('turns off a channel whose saved details break the newer rules', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    const outdated = {
+      ...SAVED,
+      display_name: 'a'.repeat(31),
+      about_description: 'a'.repeat(141),
+      primary_color: '#F8F8F8',
+      about_website: 'not a link',
+      about_email: 'not an email',
+    };
+
+    render(
+      wrapper([
+        ...savedWith(outdated, NO_JWT_SECRETS),
+        updateWebChannelCredential(outdated, NO_JWT_SECRETS, NO_JWT_SECRETS, false),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByText('Display picture')).toBeInTheDocument());
+    await toggle();
+    await save();
+    await user.click(await screen.findByTestId('ok-button'));
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+
+  it('does not ask when the channel is saved while still on', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(wrapper([...on, updateWebChannelCredential(SAVED, NO_JWT_SECRETS)]));
+
+    await waitFor(() => expect(screen.getByText('Display picture')).toBeInTheDocument());
+    await save();
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+    expect(screen.queryByText('Turn off the web channel?')).not.toBeInTheDocument();
   });
 });

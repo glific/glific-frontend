@@ -56,6 +56,9 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
   const isAskGlificEnabled = getOrganizationServices('askGlificEnabled');
   const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
   const [channel, setChannel] = useState<MessageChannel>(MESSAGE_CHANNELS.whatsapp);
+  const isWeb = isWebChannelEnabled && channel === MESSAGE_CHANNELS.web;
+  // Collections are a WhatsApp concept: there is no web equivalent to show.
+  const visibleTabs = isWeb ? tabs.filter((tab) => tab.label !== 'Collections') : tabs;
 
   let selectedContactId = params.contactId;
   let selectedCollectionId: any = params.collectionId;
@@ -127,9 +130,18 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
     setSimulatorId(id);
   };
 
-  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-    navigate(newValue);
+  const goToTab = (link: string) => {
+    setValue(link);
+    navigate(link);
+  };
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: string) => goToTab(newValue);
+
+  const handleChannelChange = (newChannel: MessageChannel) => {
+    setChannel(newChannel);
+    if (newChannel === MESSAGE_CHANNELS.web && selectedTab === 'collections') {
+      goToTab(tabs[0].link);
+    }
   };
 
   if (data && data.search.length === 0) {
@@ -178,13 +190,17 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
 
           {isWebChannelEnabled && (
             <div className={styles.ChannelContainer}>
-              <ChannelSelector className={styles.ChannelSelectorFullWidth} value={channel} onChange={setChannel} />
+              <ChannelSelector
+                className={styles.ChannelSelectorFullWidth}
+                value={channel}
+                onChange={handleChannelChange}
+              />
             </div>
           )}
 
           <div className={styles.TabContainer}>
             <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">
-              {tabs.map((tab) => (
+              {visibleTabs.map((tab) => (
                 <Tab
                   key={tab.label}
                   classes={{ selected: styles.TabSelected }}

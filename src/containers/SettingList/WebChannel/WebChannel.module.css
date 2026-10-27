@@ -25,25 +25,41 @@
   margin-top: var(--app-space-2xs);
 }
 
-.ColorRow {
-  display: flex;
-  gap: var(--app-space-3xl);
-  width: 100%;
+.Preview {
+  margin-top: var(--app-space-sm);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  overflow: hidden;
 }
 
-.ColorField {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.ColorLabel {
-  color: var(--app-color-text-heading);
+.PreviewHeader {
+  padding: var(--app-space-sm) var(--app-space-lg);
+  font-weight: 600;
   font-size: var(--app-font-size-sm);
-  margin-bottom: var(--app-space-2xs);
 }
 
-.Note {
-  border-left: 3px solid var(--app-color-attention);
+.PreviewBody {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-sm) var(--app-space-lg);
+  background: var(--app-color-white);
+}
+
+.PreviewButton {
+  border-radius: var(--app-radius-lg);
+  padding: var(--app-space-2xs) var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  font-weight: 600;
+}
+
+.PreviewVerdict {
+  color: var(--app-color-gray-primary);
+  font-size: var(--app-font-size-sm);
+}
+
+.ColourWarning,
+.OffNotice {
   padding: var(--app-space-sm) var(--app-space-lg);
   margin-top: var(--app-space-sm);
   color: var(--app-color-text-heading);
@@ -51,6 +67,20 @@
   line-height: 1.5;
   background: var(--app-color-surface-page);
   border-radius: 0 var(--app-radius-lg) var(--app-radius-lg) 0;
+}
+
+.ColourWarning {
+  border-left: 3px solid var(--app-color-error);
+}
+
+.OffNotice {
+  border-left: 3px solid var(--app-color-attention);
+}
+
+.Counted {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--app-space-lg);
 }
 
 .UrlPanel {

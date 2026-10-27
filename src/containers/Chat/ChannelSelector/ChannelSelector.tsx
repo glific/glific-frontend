@@ -10,11 +10,9 @@ export interface ChannelSelectorProps {
   className?: string;
 }
 
-// The selected channel is a filled pill in that channel's own colour, matching the
-// Contacts / Collections / Searches tabs below it, so the two rows read as one control.
 const options = [
-  { value: MESSAGE_CHANNELS.whatsapp, label: 'WhatsApp', activeClassName: styles.WhatsAppActive },
-  { value: MESSAGE_CHANNELS.web, label: 'Web', activeClassName: styles.WebActive },
+  { value: MESSAGE_CHANNELS.whatsapp, label: 'WhatsApp' },
+  { value: MESSAGE_CHANNELS.web, label: 'Web' },
 ];
 
 export const ChannelSelector = ({
@@ -34,7 +32,7 @@ export const ChannelSelector = ({
     options={options.map((option) => ({
       value: option.value,
       label: option.label,
-      className: option.value === value ? option.activeClassName : '',
+      className: option.value === value ? styles.Active : '',
     }))}
   />
 );
