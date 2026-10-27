@@ -368,15 +368,16 @@ export const rulesWithSpecs = (rules: GuardrailRule[], specs: GuardrailSpecs): G
 
 export const isTranslationKey = (text: string): text is TranslationKey => Object.hasOwn(en, text);
 
-export const canSaveGuardrails = (specs: GuardrailSpecs) => {
-  const all = [...specs.input, ...specs.output];
-  const pii = all.find((spec) => spec.type === 'pii_remover');
-  const scope = all.find((spec) => spec.type === 'topic_relevance_llm');
-
-  if (Array.isArray(pii?.entity_types) && pii.entity_types.length === 0) return false;
-  if (scope && !(typeof scope.configuration === 'string' && scope.configuration.trim())) return false;
-  return true;
-};
+export const incompleteGuardrails = (specs: GuardrailSpecs): string[] =>
+  [...specs.input, ...specs.output]
+    .filter((spec) => {
+      if (spec.type === 'pii_remover') return Array.isArray(spec.entity_types) && spec.entity_types.length === 0;
+      if (spec.type === 'topic_relevance_llm') {
+        return !(typeof spec.configuration === 'string' && spec.configuration.trim());
+      }
+      return false;
+    })
+    .map((spec) => spec.type);
 
 const normalizedSpec = (spec: GuardrailSpec) =>
   Object.keys(spec)

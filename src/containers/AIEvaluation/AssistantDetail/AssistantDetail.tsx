@@ -22,7 +22,7 @@ import {
   nextPublishLabel,
 } from 'containers/AIEvaluation/utils/assistantVersions';
 import {
-  canSaveGuardrails,
+  incompleteGuardrails,
   EMPTY_GUARDRAIL_SPECS,
   parseGuardrailSpecs,
   sameGuardrails,
@@ -116,6 +116,7 @@ export const AssistantDetail = () => {
   const [modelConfig, setModelConfig] = useState<ModelConfig>(DEFAULT_MODEL_CONFIG);
   const [knowledgeBaseFiles, setKnowledgeBaseFiles] = useState<KnowledgeBaseFile[]>([]);
   const [guardrails, setGuardrails] = useState<GuardrailSpecs>(EMPTY_GUARDRAIL_SPECS);
+  const [guardrailErrorsShown, setGuardrailErrorsShown] = useState(false);
   const [baseline, setBaseline] = useState<EditorState>({
     prompt: '',
     config: DEFAULT_MODEL_CONFIG,
@@ -289,14 +290,12 @@ export const AssistantDetail = () => {
 
   const filesChanged = JSON.stringify(knowledgeBaseFiles) !== JSON.stringify(baseline.files);
 
-  // an incomplete guardrail counts as no change, so it is neither flagged nor saved
-  const guardrailsReady = !getOrganizationServices('aiGuardrailEnabled') || canSaveGuardrails(guardrails);
-  const savableGuardrails = guardrailsReady ? guardrails : baseline.guardrails;
+  const unfinishedGuardrails = getOrganizationServices('aiGuardrailEnabled') ? incompleteGuardrails(guardrails) : [];
 
   const dirtyTabs: Partial<Record<TabKey, boolean>> = {
     persona: prompt !== baseline.prompt || JSON.stringify(modelConfig) !== JSON.stringify(baseline.config),
     knowledgeBase: filesChanged,
-    guardrails: !sameGuardrails(savableGuardrails, baseline.guardrails),
+    guardrails: !sameGuardrails(guardrails, baseline.guardrails),
   };
   const isDirty = Object.values(dirtyTabs).some(Boolean);
 
@@ -322,10 +321,19 @@ export const AssistantDetail = () => {
     setModelConfig(baseline.config);
     setKnowledgeBaseFiles(baseline.files);
     setGuardrails(baseline.guardrails);
+    setGuardrailErrorsShown(false);
     setDiscardOpen(false);
   };
 
   const handleSaveVersion = async () => {
+    if (unfinishedGuardrails.length > 0) {
+      setGuardrailErrorsShown(true);
+      setNotification(
+        t('Some guardrails are not set up yet. Fix the ones marked in red in the Guardrails tab.'),
+        'warning'
+      );
+      return;
+    }
     setSaving(true);
     const knowledgeBaseStoreId =
       (selectedVersion ? selectedVersion.vectorStore?.id : assistant?.vectorStore?.id) ?? null;
@@ -340,8 +348,8 @@ export const AssistantDetail = () => {
       model: modelConfig.model,
       ...(takesTemperature && modelConfig.temperature !== '' && Number.isFinite(temperature) ? { temperature } : {}),
       ...(takesEffort && modelConfig.effort ? { effort: modelConfig.effort } : {}),
-      inputGuardrails: JSON.stringify(savableGuardrails.input),
-      outputGuardrails: JSON.stringify(savableGuardrails.output),
+      inputGuardrails: JSON.stringify(guardrails.input),
+      outputGuardrails: JSON.stringify(guardrails.output),
     };
 
     try {
@@ -384,7 +392,8 @@ export const AssistantDetail = () => {
         setErrorMessage(errors[0]);
         return;
       }
-      setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles, guardrails: savableGuardrails });
+      setBaseline({ prompt, config: modelConfig, files: knowledgeBaseFiles, guardrails });
+      setGuardrailErrorsShown(false);
       setAwaitingVersionAbove(sortedVersions[0] ?? null);
       setNotification(t('Changes saved successfully'));
     } catch (err: unknown) {
@@ -526,7 +535,13 @@ export const AssistantDetail = () => {
         legacy={vectorStore?.legacy ?? false}
       />
     ),
-    guardrails: <Guardrails value={guardrails} onChange={setGuardrails} />,
+    guardrails: (
+      <Guardrails
+        value={guardrails}
+        onChange={setGuardrails}
+        invalidTypes={guardrailErrorsShown ? unfinishedGuardrails : []}
+      />
+    ),
     tryItOut: (
       <TryItOut
         hasVersions={versions.length > 0}

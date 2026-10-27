@@ -2,7 +2,7 @@ import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails
 import type { GuardrailTopicSuggestion } from 'containers/AIEvaluation/types/guardrailType';
 import {
   actionFromConfig,
-  canSaveGuardrails,
+  incompleteGuardrails,
   isTranslationKey,
   parseGuardrailSpecs,
   piiDetailGroups,
@@ -156,33 +156,35 @@ describe('isTranslationKey', () => {
   });
 });
 
-describe('canSaveGuardrails', () => {
-  test('no guardrails, or ones that are set up, can be saved', () => {
-    expect(canSaveGuardrails({ input: [], output: [] })).toBe(true);
+describe('incompleteGuardrails', () => {
+  test('no guardrails, or ones that are set up, are complete', () => {
+    expect(incompleteGuardrails({ input: [], output: [] })).toEqual([]);
     expect(
-      canSaveGuardrails({
+      incompleteGuardrails({
         input: [
           { type: 'pii_remover', entity_types: ['PHONE_NUMBER'] },
           { type: 'topic_relevance_llm', configuration: 'Politics' },
+          { type: 'gender_assumption_bias' },
         ],
         output: [],
       })
-    ).toBe(true);
+    ).toEqual([]);
   });
 
-  test('Privacy Protection with every detail cleared cannot be saved; with no list it keeps the defaults', () => {
-    expect(canSaveGuardrails({ input: [{ type: 'pii_remover', entity_types: [] }], output: [] })).toBe(false);
-    expect(canSaveGuardrails({ input: [{ type: 'pii_remover' }], output: [] })).toBe(true);
+  test('Privacy Protection with every detail cleared is incomplete; with no list it keeps the defaults', () => {
+    expect(incompleteGuardrails({ input: [{ type: 'pii_remover', entity_types: [] }], output: [] })).toEqual([
+      'pii_remover',
+    ]);
+    expect(incompleteGuardrails({ input: [{ type: 'pii_remover' }], output: [] })).toEqual([]);
   });
 
-  test('Scope Control needs a topic; the set reply alone is not enough, and is optional once a topic is there', () => {
-    expect(canSaveGuardrails({ input: [{ type: 'topic_relevance_llm' }], output: [] })).toBe(false);
+  test('Scope Control needs a topic; the set reply alone is not enough', () => {
+    expect(incompleteGuardrails({ input: [{ type: 'topic_relevance_llm' }], output: [] })).toEqual([
+      'topic_relevance_llm',
+    ]);
     expect(
-      canSaveGuardrails({ input: [{ type: 'topic_relevance_llm', fallback_message: 'Only farming.' }], output: [] })
-    ).toBe(false);
-    expect(canSaveGuardrails({ input: [{ type: 'topic_relevance_llm', configuration: 'Politics' }], output: [] })).toBe(
-      true
-    );
+      incompleteGuardrails({ input: [{ type: 'topic_relevance_llm', fallback_message: 'Only farming.' }], output: [] })
+    ).toEqual(['topic_relevance_llm']);
   });
 });
 

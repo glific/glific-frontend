@@ -20,6 +20,7 @@ export const GuardrailRuleCard = ({
   link,
   action,
   enabled,
+  invalid = false,
   onToggle,
   children,
 }: GuardrailRuleCardProps) => {
@@ -27,7 +28,11 @@ export const GuardrailRuleCard = ({
   const ActionIcon = ACTION_ICON[action];
 
   return (
-    <div className={styles.Rule} data-testid={`guardrailRule-${id}`}>
+    <div
+      className={`${styles.Rule} ${invalid ? styles.Invalid : ''}`}
+      data-testid={`guardrailRule-${id}`}
+      aria-invalid={invalid}
+    >
       <div className={styles.RuleHeader}>
         <span className={styles.RuleNumber}>{number}</span>
         <div className={styles.RuleHeading}>

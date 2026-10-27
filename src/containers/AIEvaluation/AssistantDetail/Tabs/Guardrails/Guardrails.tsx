@@ -32,7 +32,7 @@ const STAGE_ORDER: GuardrailStage[] = ['incoming', 'reply'];
 const TIER_ORDER: GuardrailTier[] = ['recommended', 'additional'];
 const ACTIONS: GuardrailAction[] = ['fix', 'block'];
 
-export const Guardrails = ({ value, onChange }: GuardrailsProps) => {
+export const Guardrails = ({ value, onChange, invalidTypes }: GuardrailsProps) => {
   const { t } = useTranslation();
   const isAiGuardrailEnabled = Boolean(getOrganizationServices('aiGuardrailEnabled'));
 
@@ -44,10 +44,10 @@ export const Guardrails = ({ value, onChange }: GuardrailsProps) => {
     );
   }
 
-  return <GuardrailsLoader value={value} onChange={onChange} />;
+  return <GuardrailsLoader value={value} onChange={onChange} invalidTypes={invalidTypes} />;
 };
 
-const GuardrailsLoader = ({ value, onChange }: GuardrailsProps) => {
+const GuardrailsLoader = ({ value, onChange, invalidTypes }: GuardrailsProps) => {
   const { t } = useTranslation();
   const { data, loading, error } = useQuery<GuardrailValidatorsData>(GET_GUARDRAIL_VALIDATORS);
 
@@ -66,11 +66,12 @@ const GuardrailsLoader = ({ value, onChange }: GuardrailsProps) => {
       initialRules={buildGuardrailRules(data.guardrailValidators?.validators ?? [])}
       value={value}
       onChange={onChange}
+      invalidTypes={invalidTypes}
     />
   );
 };
 
-export const GuardrailsPanel = ({ initialRules, value, onChange }: GuardrailsPanelProps) => {
+export const GuardrailsPanel = ({ initialRules, value, onChange, invalidTypes = [] }: GuardrailsPanelProps) => {
   const { t } = useTranslation();
   const [rules, setRules] = useState<GuardrailRule[]>(() => rulesWithSpecs(initialRules, value));
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
@@ -214,6 +215,7 @@ export const GuardrailsPanel = ({ initialRules, value, onChange }: GuardrailsPan
                           link={rule.link}
                           action={rule.action}
                           enabled={rule.enabled}
+                          invalid={invalidTypes.includes(rule.type)}
                           onToggle={(enabled) => updateRule(rule.id, { enabled })}
                         >
                           {renderControl(rule)}

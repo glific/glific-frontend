@@ -1295,5 +1295,6 @@
   "No secret yet. Glific generates one when you save with the web channel on, or you can paste your own.": "No secret yet. Glific generates one when you save with the web channel on, or you can paste your own.",
   "The signing secret can be replaced but not removed.": "The signing secret can be replaced but not removed.",
   "Replace the signing secret?": "Replace the signing secret?",
-  "Every web user of your organisation is signed out as soon as you save. Switch your backend to the new secret at the same time.": "Every web user of your organisation is signed out as soon as you save. Switch your backend to the new secret at the same time."
+  "Every web user of your organisation is signed out as soon as you save. Switch your backend to the new secret at the same time.": "Every web user of your organisation is signed out as soon as you save. Switch your backend to the new secret at the same time.",
+  "Some guardrails are not set up yet. Fix the ones marked in red in the Guardrails tab.": "Some guardrails are not set up yet. Fix the ones marked in red in the Guardrails tab."
 }
