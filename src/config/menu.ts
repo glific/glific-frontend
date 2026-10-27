@@ -18,7 +18,6 @@ export interface Menu {
   show?: boolean;
   children?: Menu[];
   new?: boolean;
-  alert?: string;
 }
 // define all the menus in the system
 const menus = (): Menu[] => [
@@ -194,14 +193,6 @@ const menus = (): Menu[] => [
         icon: 'assistant',
         type: 'sideDrawer',
         roles: managerLevel,
-      },
-      {
-        title: 'AI Evals',
-        path: '/ai-evaluations',
-        icon: 'aiEvals',
-        type: 'sideDrawer',
-        roles: managerLevel,
-        alert: 'Download your evaluation results before 18 September 2026',
       },
     ],
   },
