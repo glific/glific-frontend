@@ -1,4 +1,8 @@
-import { BELOW_STICKY_HEADER, V2_SERVICES, loginWithServices } from '../../utils/assistant-flow';
+import {
+  BELOW_STICKY_HEADER,
+  DEFAULT_SERVICES,
+  loginWithServices,
+} from '../../utils/assistant-flow';
 import {
   CREATE_PATH,
   NEW_ASSISTANT_ID,
@@ -19,7 +23,7 @@ const writePrompt = (prompt: string) => {
 
 describe('starting a new assistant', () => {
   it('the create button on the list opens a blank assistant', () => {
-    loginWithServices(V2_SERVICES);
+    loginWithServices(DEFAULT_SERVICES);
     stubCreateAssistantApi();
 
     cy.visit('/assistants');

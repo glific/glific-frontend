@@ -63,7 +63,7 @@ Commit in focused chunks; confirm with the user before pushing/opening a PR if t
 
 ## Phase 4 — CI loop
 
-Workflows that gate the PR: **Unit Testing** (job shows as the `CI` check), **Prettier** (`Check formatting`), **E2E Tests** (Cypress, sharded), **Build and Deploy to Netlify**, **Validate PR title format**, plus **codecov/patch**, **codecov/project**, and **CodeRabbit**.
+Workflows that gate the PR: **Unit Testing** (job shows as the `CI` check), **Prettier** (`Check formatting`), **E2E Tests** (Cypress, sharded), **Validate PR title format**, plus **codecov/patch**, **codecov/project**, and **CodeRabbit**.
 
 Read the authoritative rollup:
 ```bash

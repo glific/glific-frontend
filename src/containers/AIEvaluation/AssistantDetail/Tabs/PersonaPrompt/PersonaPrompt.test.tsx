@@ -13,7 +13,7 @@ const pickModel = (label: string) => {
   fireEvent.click(screen.getByTestId(`modelOption-${label}`));
 };
 
-vi.mock('containers/Assistants/CreateAssistant/PromptGeneratorModal', () => ({
+vi.mock('./PromptGeneratorModal/PromptGeneratorModal', () => ({
   initialPromptAnswers: {},
   PromptGeneratorModal: ({ onApply, onClose }: { onApply: (text: string) => void; onClose: () => void }) => (
     <div data-testid="promptGeneratorStub">

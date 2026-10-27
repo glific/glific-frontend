@@ -43,30 +43,11 @@ describe('side drawer testing', () => {
     // Todo: Fix this test
   });
 
-  describe('AI Evals menu visibility', () => {
-    const getAIToolkitChild = (title: string) =>
-      getMenus('sideDrawer', 'Manager')
-        .find((m) => m.title === 'AI toolkit')
-        ?.children?.find((c) => c.title === title);
-
-    afterEach(() => {
-      localStorage.removeItem('organizationServices');
-    });
-
-    it('always shows the AI Evals menu item at /ai-evaluations', () => {
-      setOrganizationServices(JSON.stringify({}));
-      expect(getAIToolkitChild('AI Evals')?.path).toBe('/ai-evaluations');
-      expect(getAIToolkitChild('AI Evals')?.show).toBeFalsy();
-    });
-
-    it('sends AI Assistant to the assistant flow, whatever the org has enabled', () => {
-      setOrganizationServices(JSON.stringify({}));
-      expect(getAIToolkitChild('AI Assistant')?.path).toBe('/assistants');
-    });
-
-    it('no longer carries a separate AI Evaluation v2 entry', () => {
-      setOrganizationServices(JSON.stringify({ aiEvaluationV2Enabled: true }));
-      expect(getAIToolkitChild('AI Evaluation v2')).toBeUndefined();
+  describe('AI toolkit menu', () => {
+    it('is a single tab that opens the assistants, with no submenu', () => {
+      const aiToolkit = getMenus('sideDrawer', 'Manager').find((m) => m.title === 'AI toolkit');
+      expect(aiToolkit?.path).toBe('/assistants');
+      expect(aiToolkit?.children).toBeUndefined();
     });
   });
 

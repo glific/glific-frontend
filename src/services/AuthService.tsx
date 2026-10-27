@@ -23,8 +23,6 @@ type ServiceType =
   | 'askGlificEnabled'
   | 'webChannelEnabled'
   | 'whatsappFormsEnabled'
-  | 'aiEvaluationsEnabled'
-  | 'aiEvaluationV2Enabled'
   | 'aiGuardrailEnabled'
   | 'promptGeneratorEnabled'
   | 'templateV2Enabled'
