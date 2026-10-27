@@ -32,7 +32,7 @@ const STAGE_ORDER: GuardrailStage[] = ['incoming', 'reply'];
 const TIER_ORDER: GuardrailTier[] = ['recommended', 'additional'];
 const ACTIONS: GuardrailAction[] = ['fix', 'block'];
 
-export const Guardrails = ({ value, onChange }: GuardrailsProps) => {
+export const Guardrails = ({ value, onChange, invalidTypes }: GuardrailsProps) => {
   const { t } = useTranslation();
   const isAiGuardrailEnabled = Boolean(getOrganizationServices('aiGuardrailEnabled'));
 
@@ -44,10 +44,10 @@ export const Guardrails = ({ value, onChange }: GuardrailsProps) => {
     );
   }
 
-  return <GuardrailsLoader value={value} onChange={onChange} />;
+  return <GuardrailsLoader value={value} onChange={onChange} invalidTypes={invalidTypes} />;
 };
 
-const GuardrailsLoader = ({ value, onChange }: GuardrailsProps) => {
+const GuardrailsLoader = ({ value, onChange, invalidTypes }: GuardrailsProps) => {
   const { t } = useTranslation();
   const { data, loading, error } = useQuery<GuardrailValidatorsData>(GET_GUARDRAIL_VALIDATORS);
 
@@ -66,25 +66,44 @@ const GuardrailsLoader = ({ value, onChange }: GuardrailsProps) => {
       initialRules={buildGuardrailRules(data.guardrailValidators?.validators ?? [])}
       value={value}
       onChange={onChange}
+      invalidTypes={invalidTypes}
     />
   );
 };
 
-export const GuardrailsPanel = ({ initialRules, value, onChange }: GuardrailsPanelProps) => {
+export const GuardrailsPanel = ({ initialRules, value, onChange, invalidTypes = [] }: GuardrailsPanelProps) => {
   const { t } = useTranslation();
   const [rules, setRules] = useState<GuardrailRule[]>(() => rulesWithSpecs(initialRules, value));
   const [howItWorksOpen, setHowItWorksOpen] = useState(false);
   const toggleHowItWorks = () => setHowItWorksOpen((open) => !open);
   const emitted = useRef(value);
+  const loadedRules = useRef(rules);
 
   useEffect(() => {
     if (value === emitted.current) return;
     emitted.current = value;
-    setRules(rulesWithSpecs(initialRules, value));
+    const loaded = rulesWithSpecs(initialRules, value);
+    loadedRules.current = loaded;
+    setRules(loaded);
   }, [value]);
 
+  const nothingPicked = (control?: GuardrailRule['control']) =>
+    control?.kind === 'detailTypes' &&
+    control.groups.length > 0 &&
+    control.groups.every((group) => group.options.every((option) => !option.selected));
+
+  const restoredControl = (rule: GuardrailRule) => {
+    const loaded = loadedRules.current.find((entry) => entry.id === rule.id)?.control;
+    if (!nothingPicked(loaded)) return loaded ?? rule.control;
+    return initialRules.find((entry) => entry.id === rule.id)?.control ?? rule.control;
+  };
+
   const updateRule = (id: string, patch: Partial<GuardrailRule>) => {
-    const next = rules.map((rule) => (rule.id === id ? ({ ...rule, ...patch } as GuardrailRule) : rule));
+    const next = rules.map((rule) => {
+      if (rule.id !== id) return rule;
+      const control = patch.enabled && nothingPicked(rule.control) ? restoredControl(rule) : rule.control;
+      return { ...rule, control, ...patch } as GuardrailRule;
+    });
     const specs = buildSavedGuardrails(next, value);
     setRules(next);
     emitted.current = specs;
@@ -196,6 +215,7 @@ export const GuardrailsPanel = ({ initialRules, value, onChange }: GuardrailsPan
                           link={rule.link}
                           action={rule.action}
                           enabled={rule.enabled}
+                          invalid={invalidTypes.includes(rule.type)}
                           onToggle={(enabled) => updateRule(rule.id, { enabled })}
                         >
                           {renderControl(rule)}

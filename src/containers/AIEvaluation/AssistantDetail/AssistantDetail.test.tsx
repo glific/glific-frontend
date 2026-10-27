@@ -2372,6 +2372,93 @@ describe('guardrails', () => {
     await screen.findByTestId('guardrailStage-incoming');
   };
 
+  const PRIVACY_HINT =
+    'Privacy Protection is on, but no personal details are selected. Select at least one in the Guardrails tab, or turn Privacy Protection off.';
+  const SCOPE_HINT =
+    'Scope Control is on, but no topics are added. Add at least one topic to block in the Guardrails tab, or turn Scope Control off.';
+
+  test('Privacy Protection with every detail cleared is marked red on save, and nothing is saved', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-privacy-protection'));
+    fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+    screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+
+    // any guardrail change can be saved, but nothing is flagged before a save is tried
+    expect(screen.getByTestId('unsavedChanges')).toBeInTheDocument();
+    expect(screen.getByTestId('guardrailRule-privacy-protection')).toHaveAttribute('aria-invalid', 'false');
+
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+    expect(notificationSpy).toHaveBeenCalledWith(PRIVACY_HINT, 'warning');
+    expect(notificationSpy).not.toHaveBeenCalledWith('Changes saved successfully');
+    expect(screen.getByTestId('guardrailRule-privacy-protection')).toHaveAttribute('aria-invalid', 'true');
+
+    fireEvent.click(screen.getByTestId('detailOption-PHONE_NUMBER'));
+    expect(screen.getByTestId('guardrailRule-privacy-protection')).toHaveAttribute('aria-invalid', 'false');
+    notificationSpy.mockRestore();
+  });
+
+  test('Scope Control with only a set reply is marked red when saving from another tab', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-scope-control'));
+    fireEvent.click(screen.getByTestId('editTopicsToggle'));
+    // a reply on its own blocks nothing, so it is not enough
+    fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: 'I only help with farming.' } });
+
+    fireEvent.click(screen.getByTestId('tab-persona'));
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+    expect(notificationSpy).toHaveBeenCalledWith(SCOPE_HINT, 'warning');
+
+    fireEvent.click(screen.getByTestId('tab-guardrails'));
+    expect(screen.getByTestId('guardrailRule-scope-control')).toHaveAttribute('aria-invalid', 'true');
+
+    // the editor is still open from before, as tabs stay mounted
+    fireEvent.click(screen.getByTestId('suggestedTopic-suggest-politics-religion'));
+    expect(screen.getByTestId('guardrailRule-scope-control')).toHaveAttribute('aria-invalid', 'false');
+    notificationSpy.mockRestore();
+  });
+
+  test('with both left empty, one short warning covers both', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-privacy-protection'));
+    fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+    screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+    fireEvent.click(screen.getByTestId('guardrailToggle-scope-control'));
+
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Privacy Protection and Scope Control are on but not set up. In the Guardrails tab, select at least one personal detail and add at least one topic, or turn them off.',
+      'warning'
+    );
+    notificationSpy.mockRestore();
+  });
+
+  test('Discard Changes clears the red marks', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-scope-control'));
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+    expect(screen.getByTestId('guardrailRule-scope-control')).toHaveAttribute('aria-invalid', 'true');
+
+    fireEvent.click(screen.getByTestId('discardButton'));
+    fireEvent.click(await screen.findByText('Discard changes'));
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-scope-control'));
+    expect(screen.getByTestId('guardrailRule-scope-control')).toHaveAttribute('aria-invalid', 'false');
+    notificationSpy.mockRestore();
+  });
+
   test('turning a guardrail on marks the tab unsaved and is sent with the save', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
     const save = {

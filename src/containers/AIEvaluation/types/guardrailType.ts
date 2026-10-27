@@ -91,9 +91,12 @@ export interface GuardrailSpecs {
   output: GuardrailSpec[];
 }
 
+export type ConfigurableGuardrailType = 'pii_remover' | 'topic_relevance_llm';
+
 export interface GuardrailsProps {
   value: GuardrailSpecs;
   onChange: (value: GuardrailSpecs) => void;
+  invalidTypes?: string[];
 }
 
 export interface GuardrailsPanelProps extends GuardrailsProps {
@@ -108,6 +111,7 @@ export interface GuardrailRuleCardProps {
   link: string | null;
   action: GuardrailAction;
   enabled: boolean;
+  invalid?: boolean;
   onToggle: (enabled: boolean) => void;
   children?: ReactNode;
 }

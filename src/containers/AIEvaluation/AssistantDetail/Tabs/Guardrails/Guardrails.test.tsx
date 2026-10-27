@@ -148,6 +148,30 @@ describe('a rolled-out org', () => {
       expect(screen.queryByTestId('editDetailTypesToggle')).not.toBeInTheDocument();
     });
 
+    test('turned back on with nothing picked, Privacy Protection starts from the defaults again', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+      screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('0 selected');
+
+      turnOn('privacy-protection');
+      turnOn('privacy-protection');
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('12 selected');
+    });
+
+    test('turned back on, Privacy Protection keeps what the user picked', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+      fireEvent.click(screen.getByTestId('detailOption-PHONE_NUMBER'));
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('11 selected');
+
+      turnOn('privacy-protection');
+      turnOn('privacy-protection');
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('11 selected');
+    });
+
     test('each group has its own Clear and Select all', async () => {
       await renderPanel();
       turnOn('privacy-protection');
@@ -503,6 +527,16 @@ describe('saving and loading', () => {
     const latest = onChange.mock.calls.at(-1)?.[0] as GuardrailSpecs;
     expect(latest.input).toEqual([{ type: 'pii_remover', entity_types: expect.arrayContaining(['PHONE_NUMBER']) }]);
     expect(latest.output).toEqual([{ type: 'gender_assumption_bias' }]);
+  });
+
+  test('cleared and turned back on, Privacy Protection starts from what was saved', async () => {
+    await renderPanel({ value: saved });
+    fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+    screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+
+    turnOn('privacy-protection');
+    turnOn('privacy-protection');
+    expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('2 selected');
   });
 
   test('saved specs switch their rules on and fill in what was picked', async () => {
