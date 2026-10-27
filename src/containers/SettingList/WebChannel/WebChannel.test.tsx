@@ -607,6 +607,34 @@ describe('turning the channel off', () => {
     expect(screen.queryByTestId('webChannelOffNotice')).not.toBeInTheDocument();
   });
 
+  // Rules on fields that are hidden while the channel is off cannot be allowed to block turning it
+  // off — the admin would see no reason the save failed.
+  it('turns off a channel whose saved details break the newer rules', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    const outdated = {
+      ...SAVED,
+      display_name: 'a'.repeat(31),
+      about_description: 'a'.repeat(141),
+      primary_color: '#F8F8F8',
+      about_website: 'not a link',
+      about_email: 'not an email',
+    };
+
+    render(
+      wrapper([
+        ...savedWith(outdated, NO_JWT_SECRETS),
+        updateWebChannelCredential(outdated, NO_JWT_SECRETS, NO_JWT_SECRETS, false),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByText('Display picture')).toBeInTheDocument());
+    await toggle();
+    await save();
+    await user.click(await screen.findByTestId('ok-button'));
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
+  });
+
   it('does not ask when the channel is saved while still on', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
     render(wrapper([...on, updateWebChannelCredential(SAVED, NO_JWT_SECRETS)]));

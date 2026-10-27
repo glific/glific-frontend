@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client';
 import { Link } from 'react-router';
 
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import * as Yup from 'yup';
 
 import { FormLayout } from 'containers/Form/FormLayout';
@@ -24,8 +25,10 @@ const SHORTCODE = 'web_channel';
 const SettingIcon = <Settingicon />;
 
 // What the backend's Flag.web_channel_enabled? turns away once the credential is inactive.
-const WHAT_STOPS =
-  "Contacts can't sign in to the web chat or connect to it. Anyone who opens a link to it, including links in your web flows, is told the chat is unavailable and shown your WhatsApp number instead. Your settings are kept.";
+const whatStops = (t: TFunction) =>
+  t(
+    "Contacts can't sign in to the web chat or connect to it. Anyone who opens a link to it, including links in your web flows, is told the chat is unavailable and shown your WhatsApp number instead. Your settings are kept."
+  );
 
 // The keys this page edits, in the order a new credential saves them. The server replaces keys
 // and secrets wholesale on update, so a save merges these over whatever the saved credential
@@ -178,7 +181,7 @@ const OffNotice = () => {
 
   return (
     <div className={styles.OffNotice} data-testid="webChannelOffNotice">
-      <strong>{t('The web channel is off.')}</strong> {t(WHAT_STOPS)}
+      <strong>{t('The web channel is off.')}</strong> {whatStops(t)}
     </div>
   );
 };
@@ -287,34 +290,39 @@ export const WebChannel = () => {
 
   if (providerLoading || credentialLoading) return <Loading whiteBackground />;
 
-  // Nothing below the toggle is on screen while the channel is off, so requiring it would
-  // reject a save the admin cannot see the reason for.
-  const requiredWhenActive = (schema: Yup.StringSchema, message: string) =>
-    schema.when('isActive', { is: true, then: (active) => active.required(message) });
+  // Nothing below the toggle is on screen while the channel is off, so any rule on it would
+  // reject a save the admin cannot see the reason for — including turning the channel off.
+  const whenActive = (rules: (active: Yup.StringSchema) => Yup.StringSchema) =>
+    Yup.string().when('isActive', { is: true, then: rules });
 
   const validationSchema = Yup.object().shape({
-    logo_url: requiredWhenActive(Yup.string(), t('Add a display picture.')),
-    display_name: requiredWhenActive(Yup.string(), t('Display name is required.')).max(
-      MAX_DISPLAY_NAME,
-      t('Use at most {{max}} characters.', { max: MAX_DISPLAY_NAME })
+    logo_url: whenActive((active) => active.required(t('Add a display picture.'))),
+    display_name: whenActive((active) =>
+      active
+        .required(t('Display name is required.'))
+        .max(MAX_DISPLAY_NAME, t('Use at most {{max}} characters.', { max: MAX_DISPLAY_NAME }))
     ),
-    primary_color: requiredWhenActive(Yup.string(), t('Brand colour is required.'))
-      .matches(HEX, { message: t('Enter a colour like #4C3BCF.'), excludeEmptyString: true })
-      .test(
-        'not-near-white',
-        t('Pick a colour that is not this close to white.'),
-        (value) => !isHexColour(normalizeHex(value ?? '')) || !isNearWhite(normalizeHex(value ?? ''))
-      ),
-    about_description: requiredWhenActive(Yup.string(), t('Description is required.')).max(
-      MAX_DESCRIPTION,
-      t('Use at most {{max}} characters.', { max: MAX_DESCRIPTION })
+    primary_color: whenActive((active) =>
+      active
+        .required(t('Brand colour is required.'))
+        .matches(HEX, { message: t('Enter a colour like #4C3BCF.'), excludeEmptyString: true })
+        .test(
+          'not-near-white',
+          t('Pick a colour that is not this close to white.'),
+          (value) => !isHexColour(normalizeHex(value ?? '')) || !isNearWhite(normalizeHex(value ?? ''))
+        )
     ),
-    about_website: requiredWhenActive(Yup.string(), t('Website is required.')).test(
-      'website',
-      t('Enter a link like www.example.org.'),
-      isWebsite
+    about_description: whenActive((active) =>
+      active
+        .required(t('Description is required.'))
+        .max(MAX_DESCRIPTION, t('Use at most {{max}} characters.', { max: MAX_DESCRIPTION }))
     ),
-    about_email: Yup.string().email(t('Enter a valid email address.')).nullable(),
+    about_website: whenActive((active) =>
+      active.required(t('Website is required.')).test('website', t('Enter a link like www.example.org.'), isWebsite)
+    ),
+    about_email: Yup.string()
+      .nullable()
+      .when('isActive', { is: true, then: (active) => active.email(t('Enter a valid email address.')) }),
     // Blank is fine only while there is no secret yet, since the server then generates one.
     [SIGNING_SECRET]: Yup.string().when('isActive', {
       is: true,
@@ -493,7 +501,7 @@ export const WebChannel = () => {
   );
 
   const confirmation = turnsOff
-    ? { show: true, title: t('Turn off the web channel?'), message: t(WHAT_STOPS) }
+    ? { show: true, title: t('Turn off the web channel?'), message: whatStops(t) }
     : {
         show: replacesSecret,
         title: t('Replace the signing secret?'),
