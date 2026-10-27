@@ -44,11 +44,10 @@ describe('side drawer testing', () => {
   });
 
   describe('AI toolkit menu', () => {
-    const getAIToolkitChildren = () =>
-      getMenus('sideDrawer', 'Manager').find((m) => m.title === 'AI toolkit')?.children ?? [];
-
-    it('holds only AI Assistant, which opens the assistant flow', () => {
-      expect(getAIToolkitChildren().map((c) => [c.title, c.path])).toEqual([['AI Assistant', '/assistants']]);
+    it('is a single tab that opens the assistants, with no submenu', () => {
+      const aiToolkit = getMenus('sideDrawer', 'Manager').find((m) => m.title === 'AI toolkit');
+      expect(aiToolkit?.path).toBe('/assistants');
+      expect(aiToolkit?.children).toBeUndefined();
     });
   });
 
