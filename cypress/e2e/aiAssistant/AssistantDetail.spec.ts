@@ -1,4 +1,8 @@
-import { BELOW_STICKY_HEADER, V2_SERVICES, loginWithServices } from '../../utils/assistant-flow';
+import {
+  BELOW_STICKY_HEADER,
+  DEFAULT_SERVICES,
+  loginWithServices,
+} from '../../utils/assistant-flow';
 import {
   ASSISTANT_ID,
   BUILDING_VERSIONS,
@@ -229,7 +233,7 @@ describe('more of the Model & Prompt tab', () => {
   });
 
   it('opens the prompt builder when the organisation has it', () => {
-    loginWithServices({ ...V2_SERVICES, promptGeneratorEnabled: true });
+    loginWithServices({ ...DEFAULT_SERVICES, promptGeneratorEnabled: true });
     stubAssistantApi();
     cy.visit(DETAIL_PATH);
     cy.get('[data-testid="assistantDetailContainer"]', { timeout: 10000 }).should('be.visible');
