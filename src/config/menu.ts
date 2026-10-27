@@ -186,15 +186,6 @@ const menus = (): Menu[] => [
     icon: 'assistant',
     type: 'sideDrawer',
     roles: managerLevel,
-    children: [
-      {
-        title: 'AI Assistant',
-        path: '/assistants',
-        icon: 'assistant',
-        type: 'sideDrawer',
-        roles: managerLevel,
-      },
-    ],
   },
   {
     title: 'Data Analytics',

@@ -119,10 +119,18 @@ describe('HSM Templates menu routing', () => {
   });
 });
 
-describe('AI Assistant menu', () => {
-  test('is selected on /assistants', async () => {
+describe('AI toolkit menu', () => {
+  test('is a single tab that links to /assistants', async () => {
     renderSideMenus('/assistants');
 
-    await expectMenuSelected('AI Assistant');
+    await expectMenuSelected('AI toolkit');
+    expect(getMenuItem('AI toolkit')!.closest('a')).toHaveAttribute('href', '/assistants');
+    expect(getMenuItem('AI Assistant')).toBeUndefined();
+  });
+
+  test('stays selected inside an assistant', async () => {
+    renderSideMenus('/assistants/1');
+
+    await expectMenuSelected('AI toolkit');
   });
 });
