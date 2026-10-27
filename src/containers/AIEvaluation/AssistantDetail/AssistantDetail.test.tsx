@@ -2372,7 +2372,10 @@ describe('guardrails', () => {
     await screen.findByTestId('guardrailStage-incoming');
   };
 
-  const WARNING = 'Some guardrails are not set up yet. Fix the ones marked in red in the Guardrails tab.';
+  const PRIVACY_HINT =
+    'Privacy Protection is on, but no personal details are selected. Select at least one in the Guardrails tab, or turn Privacy Protection off.';
+  const SCOPE_HINT =
+    'Scope Control is on, but no topics are added. Add at least one topic to block in the Guardrails tab, or turn Scope Control off.';
 
   test('Privacy Protection with every detail cleared is marked red on save, and nothing is saved', async () => {
     const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
@@ -2388,7 +2391,7 @@ describe('guardrails', () => {
     expect(screen.getByTestId('guardrailRule-privacy-protection')).toHaveAttribute('aria-invalid', 'false');
 
     fireEvent.click(screen.getByTestId('saveVersionButton'));
-    expect(notificationSpy).toHaveBeenCalledWith(WARNING, 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith(PRIVACY_HINT, 'warning');
     expect(notificationSpy).not.toHaveBeenCalledWith('Changes saved successfully');
     expect(screen.getByTestId('guardrailRule-privacy-protection')).toHaveAttribute('aria-invalid', 'true');
 
@@ -2409,7 +2412,7 @@ describe('guardrails', () => {
 
     fireEvent.click(screen.getByTestId('tab-persona'));
     fireEvent.click(screen.getByTestId('saveVersionButton'));
-    expect(notificationSpy).toHaveBeenCalledWith(WARNING, 'warning');
+    expect(notificationSpy).toHaveBeenCalledWith(SCOPE_HINT, 'warning');
 
     fireEvent.click(screen.getByTestId('tab-guardrails'));
     expect(screen.getByTestId('guardrailRule-scope-control')).toHaveAttribute('aria-invalid', 'true');
@@ -2417,6 +2420,24 @@ describe('guardrails', () => {
     // the editor is still open from before, as tabs stay mounted
     fireEvent.click(screen.getByTestId('suggestedTopic-suggest-politics-religion'));
     expect(screen.getByTestId('guardrailRule-scope-control')).toHaveAttribute('aria-invalid', 'false');
+    notificationSpy.mockRestore();
+  });
+
+  test('with both left empty, one short warning covers both', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-privacy-protection'));
+    fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+    screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+    fireEvent.click(screen.getByTestId('guardrailToggle-scope-control'));
+
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Privacy Protection and Scope Control are on but not set up. In the Guardrails tab, select at least one personal detail and add at least one topic, or turn them off.',
+      'warning'
+    );
     notificationSpy.mockRestore();
   });
 

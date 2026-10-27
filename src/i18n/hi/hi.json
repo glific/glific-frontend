@@ -1135,5 +1135,7 @@
   "The signing secret can be replaced but not removed.": "साइनिंग सीक्रेट को बदला जा सकता है लेकिन हटाया नहीं जा सकता।",
   "Replace the signing secret?": "साइनिंग सीक्रेट बदलें?",
   "Every web user of your organisation is signed out as soon as you save. Switch your backend to the new secret at the same time.": "सेव करते ही आपके संगठन के सभी वेब उपयोगकर्ता साइन आउट हो जाएंगे। उसी समय अपने बैकएंड को नए सीक्रेट पर स्विच करें।",
-  "Some guardrails are not set up yet. Fix the ones marked in red in the Guardrails tab.": "कुछ गार्डरेल अभी पूरे सेट नहीं हैं। गार्डरेल टैब में लाल रंग से चिह्नित गार्डरेल ठीक करें।"
+  "Privacy Protection is on, but no personal details are selected. Select at least one in the Guardrails tab, or turn Privacy Protection off.": "प्राइवेसी प्रोटेक्शन चालू है, लेकिन कोई भी निजी जानकारी चुनी नहीं गई है। गार्डरेल टैब में कम से कम एक चुनें, या प्राइवेसी प्रोटेक्शन बंद करें।",
+  "Scope Control is on, but no topics are added. Add at least one topic to block in the Guardrails tab, or turn Scope Control off.": "स्कोप कंट्रोल चालू है, लेकिन कोई विषय नहीं जोड़ा गया है। गार्डरेल टैब में ब्लॉक करने के लिए कम से कम एक विषय जोड़ें, या स्कोप कंट्रोल बंद करें।",
+  "Privacy Protection and Scope Control are on but not set up. In the Guardrails tab, select at least one personal detail and add at least one topic, or turn them off.": "प्राइवेसी प्रोटेक्शन और स्कोप कंट्रोल चालू हैं, लेकिन सेट नहीं हैं। गार्डरेल टैब में कम से कम एक निजी जानकारी चुनें और कम से कम एक विषय जोड़ें, या इन्हें बंद करें।"
 }

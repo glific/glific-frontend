@@ -91,6 +91,8 @@ export interface GuardrailSpecs {
   output: GuardrailSpec[];
 }
 
+export type ConfigurableGuardrailType = 'pii_remover' | 'topic_relevance_llm';
+
 export interface GuardrailsProps {
   value: GuardrailSpecs;
   onChange: (value: GuardrailSpecs) => void;

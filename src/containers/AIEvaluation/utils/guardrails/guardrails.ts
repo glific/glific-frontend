@@ -1,4 +1,5 @@
 import type {
+  ConfigurableGuardrailType,
   GuardrailAction,
   GuardrailControl,
   GuardrailDetailGroup,
@@ -19,6 +20,18 @@ export const GUARDRAIL_ACTION_LABEL = {
   fix: 'Fixes & passes on',
   block: 'Blocks — sends set reply',
 } as const satisfies Record<GuardrailAction, string>;
+
+const GUARDRAIL_SETUP_HINT = {
+  pii_remover:
+    'Privacy Protection is on, but no personal details are selected. Select at least one in the Guardrails tab, or turn Privacy Protection off.',
+  topic_relevance_llm:
+    'Scope Control is on, but no topics are added. Add at least one topic to block in the Guardrails tab, or turn Scope Control off.',
+} as const satisfies Record<ConfigurableGuardrailType, string>;
+
+export const guardrailSetupHint = (types: ConfigurableGuardrailType[]) =>
+  types.length > 1
+    ? 'Privacy Protection and Scope Control are on but not set up. In the Guardrails tab, select at least one personal detail and add at least one topic, or turn them off.'
+    : GUARDRAIL_SETUP_HINT[types[0]];
 
 const BLOCKING_ON_FAIL = ['exception', 'rephrase'];
 
@@ -368,16 +381,16 @@ export const rulesWithSpecs = (rules: GuardrailRule[], specs: GuardrailSpecs): G
 
 export const isTranslationKey = (text: string): text is TranslationKey => Object.hasOwn(en, text);
 
-export const incompleteGuardrails = (specs: GuardrailSpecs): string[] =>
-  [...specs.input, ...specs.output]
-    .filter((spec) => {
-      if (spec.type === 'pii_remover') return Array.isArray(spec.entity_types) && spec.entity_types.length === 0;
-      if (spec.type === 'topic_relevance_llm') {
-        return !(typeof spec.configuration === 'string' && spec.configuration.trim());
-      }
-      return false;
-    })
-    .map((spec) => spec.type);
+export const incompleteGuardrails = (specs: GuardrailSpecs): ConfigurableGuardrailType[] =>
+  [...specs.input, ...specs.output].flatMap((spec): ConfigurableGuardrailType[] => {
+    if (spec.type === 'pii_remover' && Array.isArray(spec.entity_types) && spec.entity_types.length === 0) {
+      return ['pii_remover'];
+    }
+    if (spec.type === 'topic_relevance_llm' && !(typeof spec.configuration === 'string' && spec.configuration.trim())) {
+      return ['topic_relevance_llm'];
+    }
+    return [];
+  });
 
 const normalizedSpec = (spec: GuardrailSpec) =>
   Object.keys(spec)
