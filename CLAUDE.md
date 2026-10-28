@@ -43,6 +43,7 @@ Every PR must pass these (see `.github/workflows/`). The `make-branch-ready-for-
 |-------|----------|------|
 | Unit tests + coverage | `unit-testing.yml` → Codecov | project **≥ 81.5%** (0.5% threshold); **patch: every changed line must be covered** |
 | Formatting | `prettier-check.yml` | `prettier --check` must be clean (`yarn format` to fix) |
+| Typecheck | `typecheck.yml` | `tsc --noEmit` over `src/` must be clean (`yarn typecheck`); `vite build` doesn't type-check, so this is what catches a `t()` key missing from `en.json` |
 | PR title | `pr-title-check.yml` | Conventional-commit format (e.g. `fix:`, `feat:`, `chore:`) |
 | E2E | `e2e-tests.yml` | Cypress against a live backend, sharded; `e2e-tests-slow.yml` runs the filesearch suite only on PRs labeled `e2e-slow` |
 | Cypress lint | `cypress-lint.yml` | `tsc`, ESLint, and Prettier scoped to `cypress/` (`yarn cy:typecheck` / `cy:lint` / `cy:format:check`) |

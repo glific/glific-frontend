@@ -80,6 +80,7 @@
     "serve": "vite preview",
     "cy:run": "cypress run",
     "cy:open": "cypress open",
+    "typecheck": "tsc --noEmit",
     "cy:typecheck": "tsc --noEmit -p cypress/tsconfig.json",
     "cy:lint": "eslint --config cypress/eslint.config.mjs cypress",
     "cy:lint:fix": "eslint --config cypress/eslint.config.mjs cypress --fix",
