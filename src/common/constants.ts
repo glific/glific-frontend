@@ -211,27 +211,30 @@ export const BUTTON_OPTIONS: any = [
   { id: 'WHATSAPP_FORM', label: 'WhatsApp Form' },
 ];
 
-// Gupshup sample media
+// Sample media the simulator sends, served from public/sample-media so the simulator doesn't
+// depend on a third-party host being up
+const SAMPLE_MEDIA_BASE_URL = `${window.location.origin}/sample-media`;
+
 export const SAMPLE_MEDIA_FOR_SIMULATOR = [
   {
     name: 'image',
     id: 'IMAGE',
     payload: {
-      url: 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg',
+      url: `${SAMPLE_MEDIA_BASE_URL}/sample01.jpg`,
     },
   },
   {
     name: 'audio',
     id: 'AUDIO',
     payload: {
-      url: 'https://www.buildquickbots.com/whatsapp/media/sample/audio/sample01.mp3',
+      url: `${SAMPLE_MEDIA_BASE_URL}/sample01.mp3`,
     },
   },
   {
     name: 'video',
     id: 'VIDEO',
     payload: {
-      url: 'https://www.buildquickbots.com/whatsapp/media/sample/video/sample01.mp4',
+      url: `${SAMPLE_MEDIA_BASE_URL}/sample01.mp4`,
     },
   },
   {
@@ -239,14 +242,14 @@ export const SAMPLE_MEDIA_FOR_SIMULATOR = [
     id: 'DOCUMENT',
     payload: {
       caption: 'sample pdf', // represents title of document
-      url: 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf',
+      url: `${SAMPLE_MEDIA_BASE_URL}/sample01.pdf`,
     },
   },
   {
     name: 'sticker',
     id: 'STICKER',
     payload: {
-      url: 'http://www.buildquickbots.com/whatsapp/stickers/SampleSticker01.webp',
+      url: `${SAMPLE_MEDIA_BASE_URL}/SampleSticker01.webp`,
     },
   },
   {
