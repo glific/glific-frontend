@@ -1,3 +1,5 @@
+import { SAMPLE_MEDIA } from '../../utils/sample-media';
+
 let activeLanguages: Array<{ id: string; label: string; locale: string }> = [];
 
 const languageByLabel = (label: string) => {
@@ -16,8 +18,8 @@ const languageById = (id: string) => {
   return found;
 };
 
-const imageURL = 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg';
-const documentURL = 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf';
+const imageURL = SAMPLE_MEDIA.image;
+const documentURL = SAMPLE_MEDIA.document;
 
 const mediaUrlForType = (type: string) => {
   if (type === 'IMAGE') return imageURL;

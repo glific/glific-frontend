@@ -1,13 +1,14 @@
+import { SAMPLE_MEDIA } from '../../utils/sample-media';
+
 describe('HSM Template', () => {
   const hsmTemplateName = 'Sample HSM Templates ' + +new Date();
   const sampleMessage = 'This is a sample message';
-  const imageURL = 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg';
-  const documentURL = 'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf';
+  const imageURL = SAMPLE_MEDIA.image;
+  const documentURL = SAMPLE_MEDIA.document;
   const videoURL =
     'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4';
-  const audioURL =
-    'https://actions.google.com/sounds/v1/alarms/bugle_tune.https://www.buildquickbots.com/whatsapp/media/sample/audio/sample01.mp3';
-  const stickerURL = 'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg';
+  const audioURL = SAMPLE_MEDIA.audio;
+  const stickerURL = SAMPLE_MEDIA.image;
 
   beforeEach(function () {
     // login before each test
