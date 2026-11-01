@@ -19,7 +19,7 @@ hostname=""
 until [ -n "$hostname" ] || [ $count -eq 30 ]; do
   sleep 2
   count=$((count + 1))
-  hostname=$(curl -s "http://${METRICS_ADDR}/quicktunnel" | jq -r '.hostname // empty' 2>/dev/null || true)
+  hostname=$(curl -s --max-time 5 "http://${METRICS_ADDR}/quicktunnel" | jq -r '.hostname // empty' 2>/dev/null || true)
   echo "waiting for quick tunnel hostname..."
 done
 
