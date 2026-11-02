@@ -39,7 +39,7 @@ export const TabBar = ({ activeTab, onChange, dirtyTabs = {}, runningTabs = {}, 
           data-testid={`tab-${tab.key}`}
         >
           {t(tab.label)}
-          {newTabs[tab.key] && <BetaTag label={t('New')} />}
+          {newTabs[tab.key] && <BetaTag label={t('New')} className={styles.NewTag} />}
           {dirtyTabs[tab.key] && (
             <span
               className={styles.TabDirtyDot}
