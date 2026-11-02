@@ -1,31 +1,48 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Autocomplete, Chip, Dialog, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
 import QRCode from 'react-qr-code';
 
 import DownloadIcon from 'assets/images/icons/DownloadIcon.svg?react';
 import logoSrc from 'assets/images/logo/Logo.svg';
-import { SHARE_FLOW_LINK } from 'common/constants';
+import { MESSAGE_CHANNELS, MessageChannel, SHARE_FLOW_LINK } from 'common/constants';
 import { setNotification } from 'common/notification';
-import { copyToClipboardMethod, downloadCanvasAsPNG } from 'common/utils';
+import { copyToClipboardMethod, downloadCanvasAsPNG, webChannelUrl } from 'common/utils';
 import { Button } from 'components/UI/Form/Button/Button';
+import { GET_ORGANIZATION_SHORTCODE } from 'graphql/queries/Organization';
 import { getUserSession } from 'services/AuthService';
 import styles from './ShareResponderLink.module.css';
 
 interface ShareResponderLinkProps {
   shareDialogKeywords: any[];
   handleClose: Function;
+  channel?: MessageChannel;
 }
 
-const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponderLinkProps) => {
+const ShareResponderLink = ({
+  shareDialogKeywords,
+  handleClose,
+  channel = MESSAGE_CHANNELS.whatsapp,
+}: ShareResponderLinkProps) => {
   const [selectedKeyword, setSelectedKeyword] = useState(shareDialogKeywords[0]);
   const [flowLink, setFlowLink] = useState('');
+  const isWeb = channel === MESSAGE_CHANNELS.web;
 
   const organization = getUserSession('organization');
   const botNumber = organization?.contact?.phone;
 
-  const getFlowLink = (keyword: { label: string; id: number }) =>
-    `${SHARE_FLOW_LINK}${botNumber}?text=${keyword.label}`;
+  const { data: shortcodeData } = useQuery(GET_ORGANIZATION_SHORTCODE, { skip: !isWeb });
+  const webChatAddress = shortcodeData?.organization?.organization?.shortcode
+    ? webChannelUrl(shortcodeData.organization.organization.shortcode, window.location.hostname)
+    : '';
+
+  // A web chat link sends its keyword as soon as the chat opens (?start=), where a wa.me link
+  // only pre-fills it; the web chat starts the flow only if the keyword is a web flow's.
+  const getFlowLink = (keyword: { label: string; id: number }) => {
+    if (!isWeb) return `${SHARE_FLOW_LINK}${botNumber}?text=${keyword.label}`;
+    return webChatAddress ? `${webChatAddress}/?start=${encodeURIComponent(keyword.label)}` : '';
+  };
 
   const copyToClipboard = (text: string) => {
     copyToClipboardMethod(text);
@@ -109,7 +126,7 @@ const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponder
 
   useEffect(() => {
     setFlowLink(getFlowLink(selectedKeyword));
-  }, [selectedKeyword]);
+  }, [selectedKeyword, webChatAddress]);
 
   return (
     <Dialog fullWidth maxWidth="md" open={shareDialogKeywords.length > 0} onClose={() => handleClose()}>
@@ -120,12 +137,23 @@ const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponder
 
         <div className={styles.Content}>
           <div className={styles.LinkSection}>
-            <div>
-              <Typography variant="subtitle1" className={styles.SectionTitle}>
-                Bot Number
-              </Typography>
-              <span className={styles.BotNumber}>+{botNumber}</span>
-            </div>
+            {isWeb ? (
+              <div>
+                <Typography variant="subtitle1" className={styles.SectionTitle}>
+                  Web chat
+                </Typography>
+                <span className={styles.BotNumber} data-testid="webChatAddress">
+                  {webChatAddress}
+                </span>
+              </div>
+            ) : (
+              <div>
+                <Typography variant="subtitle1" className={styles.SectionTitle}>
+                  Bot Number
+                </Typography>
+                <span className={styles.BotNumber}>+{botNumber}</span>
+              </div>
+            )}
             <div className={styles.Section}>
               <Typography variant="subtitle1" className={styles.SectionTitle}>
                 Keyword
@@ -191,7 +219,9 @@ const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponder
               </div>
 
               <Typography variant="caption" className={styles.QRCaption}>
-                Scan to open WhatsApp with the selected keyword
+                {isWeb
+                  ? 'Scan to open the web chat and start the flow'
+                  : 'Scan to open WhatsApp with the selected keyword'}
               </Typography>
             </div>
           </div>

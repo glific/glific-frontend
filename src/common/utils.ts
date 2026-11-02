@@ -312,3 +312,16 @@ export const downloadCanvasAsPNG = (canvas: HTMLCanvasElement, fileName: string,
   downloadLink.click();
   setNotification(notification);
 };
+
+/**
+ * The address this organisation's contacts reach the widget on.
+ *
+ * The domain comes from the console's own host rather than a constant, because one deployment
+ * of this console serves production and staging and the two are not on the same domain.
+ */
+export const webChannelUrl = (shortcode: string, hostname: string): string => {
+  const labels = hostname.split('.');
+  const domain = labels.length > 2 ? labels.slice(1).join('.') : 'glific.com';
+
+  return `https://web.${shortcode}.${domain}`;
+};

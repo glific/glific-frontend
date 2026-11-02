@@ -4,7 +4,8 @@ import { MemoryRouter } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
 import * as Notification from 'common/notification';
-import { WebChannel, webChannelUrl } from './WebChannel';
+import { webChannelUrl } from 'common/utils';
+import { WebChannel } from './WebChannel';
 import {
   createWebChannelCredential,
   getOrganizationShortcode,

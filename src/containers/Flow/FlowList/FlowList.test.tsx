@@ -20,7 +20,7 @@ import {
   importFlowWithoutNodeFields,
   webChannelFlows,
 } from 'mocks/Flow';
-import { getOrganizationQuery } from 'mocks/Organization';
+import { getOrganizationQuery, getOrganizationShortcode } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
 import { setOrganizationServices, setUserSession } from 'services/AuthService';
 import { FlowList } from './FlowList';
@@ -54,6 +54,7 @@ const mocks = [
   getFlowCountQuery({ isTemplate: true }),
   filterTemplateFlows,
   ...getOrganizationQuery,
+  getOrganizationShortcode,
 ];
 const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 
@@ -381,6 +382,22 @@ describe('<FlowList />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Share Responder Link')).toBeInTheDocument();
+    });
+  });
+
+  // The list hands the flow's channel to the dialog, so a web flow is shared as a web chat link.
+  test('shares a web flow as a web chat link', async () => {
+    render(flowList());
+
+    await waitFor(() => {
+      expect(screen.getByText('Preference Workflow')).toBeInTheDocument();
+    });
+
+    const row = screen.getByText('Preference Workflow').closest('tr') as HTMLElement;
+    fireEvent.click(within(row).getByTestId('shareIcon'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=help');
     });
   });
 
