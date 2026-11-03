@@ -1,9 +1,9 @@
+// @vitest-environment-options {"url": "https://tides.glific.com/"}
 import { MockedProvider } from '@apollo/client/testing';
 import ShareResponderLink from './ShareResponderLink';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import * as Utils from 'common/utils';
 import { setUserSession } from 'services/AuthService';
-import { getOrganizationShortcode } from 'mocks/Organization';
 
 describe('ShareResponderLink Component', () => {
   let wrapper: any;
@@ -79,7 +79,7 @@ describe('ShareResponderLink Component', () => {
 
   describe('for a web flow', () => {
     const webWrapper = (keywords = shareResponderLinkProps.shareDialogKeywords) => (
-      <MockedProvider mocks={[getOrganizationShortcode]}>
+      <MockedProvider mocks={[]}>
         <ShareResponderLink {...shareResponderLinkProps} shareDialogKeywords={keywords} channel="WEB" />
       </MockedProvider>
     );
@@ -116,6 +116,23 @@ describe('ShareResponderLink Component', () => {
       await waitFor(() => {
         expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=adopt%20now');
       });
+    });
+
+    // The console's own subdomain is the organisation's shortcode, so the link costs no request.
+    test('builds the link from the console address, with no request for the shortcode', async () => {
+      render(webWrapper());
+
+      expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=test');
+    });
+
+    test('uses the configured web chat address, as in local development', async () => {
+      vi.spyOn(Utils, 'webChannelUrl').mockImplementation(() => 'https://glific.test:5173');
+      render(webWrapper());
+
+      await waitFor(() => {
+        expect(screen.getByTestId('flowLink')).toHaveTextContent('https://glific.test:5173/?start=test');
+      });
+      vi.restoreAllMocks();
     });
 
     test('copies the web chat link', async () => {

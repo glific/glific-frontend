@@ -114,6 +114,13 @@ describe('the web channel address', () => {
     expect(webChannelUrl('tides', 'localhost')).toBe('https://web.tides.glific.com');
   });
 
+  // Locally the widget runs on its own port, which no formula derives from the console's host.
+  it('uses the configured address where one is set, trimmed of a trailing slash', () => {
+    expect(webChannelUrl('tides', 'glific.test', 'https://glific.test:5173')).toBe('https://glific.test:5173');
+    expect(webChannelUrl('tides', 'glific.test', 'https://glific.test:5173/')).toBe('https://glific.test:5173');
+    expect(webChannelUrl('tides', 'tides.glific.com', '')).toBe('https://web.tides.glific.com');
+  });
+
   it('shows the address as an internal test link, and points to Flows for the links contacts use', async () => {
     render(wrapper(on));
 

@@ -1,3 +1,4 @@
+// @vitest-environment-options {"url": "https://tides.glific.com/"}
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
@@ -20,7 +21,7 @@ import {
   importFlowWithoutNodeFields,
   webChannelFlows,
 } from 'mocks/Flow';
-import { getOrganizationQuery, getOrganizationShortcode } from 'mocks/Organization';
+import { getOrganizationQuery } from 'mocks/Organization';
 import testJSON from 'mocks/ImportFlow.json';
 import { setOrganizationServices, setUserSession } from 'services/AuthService';
 import { FlowList } from './FlowList';
@@ -54,7 +55,6 @@ const mocks = [
   getFlowCountQuery({ isTemplate: true }),
   filterTemplateFlows,
   ...getOrganizationQuery,
-  getOrganizationShortcode,
 ];
 const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 

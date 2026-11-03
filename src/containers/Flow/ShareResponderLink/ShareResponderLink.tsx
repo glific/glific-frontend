@@ -1,7 +1,6 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Autocomplete, Chip, Dialog, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
 import QRCode from 'react-qr-code';
 
 import DownloadIcon from 'assets/images/icons/DownloadIcon.svg?react';
@@ -10,7 +9,6 @@ import { MESSAGE_CHANNELS, MessageChannel, SHARE_FLOW_LINK } from 'common/consta
 import { setNotification } from 'common/notification';
 import { copyToClipboardMethod, downloadCanvasAsPNG, webChannelUrl } from 'common/utils';
 import { Button } from 'components/UI/Form/Button/Button';
-import { GET_ORGANIZATION_SHORTCODE } from 'graphql/queries/Organization';
 import { getUserSession } from 'services/AuthService';
 import styles from './ShareResponderLink.module.css';
 
@@ -32,16 +30,16 @@ const ShareResponderLink = ({
   const organization = getUserSession('organization');
   const botNumber = organization?.contact?.phone;
 
-  const { data: shortcodeData } = useQuery(GET_ORGANIZATION_SHORTCODE, { skip: !isWeb });
-  const webChatAddress = shortcodeData?.organization?.organization?.shortcode
-    ? webChannelUrl(shortcodeData.organization.organization.shortcode, window.location.hostname)
-    : '';
+  // The console runs on the organisation's own subdomain, the same one the backend resolves the
+  // organisation from, so its shortcode needs no request.
+  const { hostname } = window.location;
+  const webChatAddress = isWeb ? webChannelUrl(hostname.split('.')[0], hostname) : '';
 
   // A web chat link sends its keyword as soon as the chat opens (?start=), where a wa.me link
   // only pre-fills it; the web chat starts the flow only if the keyword is a web flow's.
   const getFlowLink = (keyword: { label: string; id: number }) => {
     if (!isWeb) return `${SHARE_FLOW_LINK}${botNumber}?text=${keyword.label}`;
-    return webChatAddress ? `${webChatAddress}/?start=${encodeURIComponent(keyword.label)}` : '';
+    return `${webChatAddress}/?start=${encodeURIComponent(keyword.label)}`;
   };
 
   const copyToClipboard = (text: string) => {
@@ -126,7 +124,7 @@ const ShareResponderLink = ({
 
   useEffect(() => {
     setFlowLink(getFlowLink(selectedKeyword));
-  }, [selectedKeyword, webChatAddress]);
+  }, [selectedKeyword]);
 
   return (
     <Dialog fullWidth maxWidth="md" open={shareDialogKeywords.length > 0} onClose={() => handleClose()}>
