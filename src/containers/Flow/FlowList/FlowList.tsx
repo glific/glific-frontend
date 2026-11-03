@@ -94,6 +94,7 @@ export const FlowList = () => {
   const [refreshList, setRefreshList] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [shareDialogKeywords, setShareDialogKeywords] = useState<{ label: string; id: number }[]>([]);
+  const [shareDialogChannel, setShareDialogChannel] = useState<MessageChannel | undefined>();
 
   const [releaseFlow] = useLazyQuery(RELEASE_FLOW);
 
@@ -294,8 +295,9 @@ export const FlowList = () => {
       label: t('Share'),
       icon: shareIcon,
       parameter: 'keywords',
-      dialog: (keywords: any) => {
+      dialog: (keywords: any, flow: any) => {
         if (keywords.length > 0) {
+          setShareDialogChannel(flow?.channel);
           setShareDialogKeywords(keywords.map((i: string, index: number) => ({ label: i, id: index })));
         } else {
           setNotification('No keywords found to share the responder link', 'warning');
@@ -481,7 +483,11 @@ export const FlowList = () => {
     );
   } else if (shareDialogKeywords.length > 0) {
     dialogBox = (
-      <ShareResponderLink shareDialogKeywords={shareDialogKeywords} handleClose={() => setShareDialogKeywords([])} />
+      <ShareResponderLink
+        shareDialogKeywords={shareDialogKeywords}
+        channel={shareDialogChannel}
+        handleClose={() => setShareDialogKeywords([])}
+      />
     );
   }
   useEffect(() => {

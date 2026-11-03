@@ -1,3 +1,4 @@
+// @vitest-environment-options {"url": "https://tides.glific.com/"}
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { MockedProvider } from '@apollo/client/testing';
@@ -381,6 +382,22 @@ describe('<FlowList />', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Share Responder Link')).toBeInTheDocument();
+    });
+  });
+
+  // The list hands the flow's channel to the dialog, so a web flow is shared as a web chat link.
+  test('shares a web flow as a web chat link', async () => {
+    render(flowList());
+
+    await waitFor(() => {
+      expect(screen.getByText('Preference Workflow')).toBeInTheDocument();
+    });
+
+    const row = screen.getByText('Preference Workflow').closest('tr') as HTMLElement;
+    fireEvent.click(within(row).getByTestId('shareIcon'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=help');
     });
   });
 

@@ -14,7 +14,7 @@ import { ColorInput, normalizeHex } from 'components/UI/Form/ColorInput/ColorInp
 import { FileUpload } from 'components/UI/Form/FileUpload/FileUpload';
 import { GET_PROVIDERS, GET_CREDENTIAL, GET_ORGANIZATION_SHORTCODE } from 'graphql/queries/Organization';
 import { DELETE_ORGANIZATION, CREATE_CREDENTIAL, UPDATE_CREDENTIAL } from 'graphql/mutations/Organization';
-import { copyToClipboard } from 'common/utils';
+import { copyToClipboard, webChannelUrl } from 'common/utils';
 import Settingicon from 'assets/images/icons/Settings/Settings.svg?react';
 import CopyIcon from 'assets/images/icons/Settings/Copy.svg?react';
 import { contrastRatio, isHexColour, isNearWhite, readableOn } from './branding';
@@ -99,19 +99,6 @@ const queries = {
   createItemQuery: CREATE_CREDENTIAL,
   updateItemQuery: UPDATE_CREDENTIAL,
   deleteItemQuery: DELETE_ORGANIZATION,
-};
-
-/**
- * The address this organisation's contacts reach the widget on.
- *
- * The domain comes from the console's own host rather than a constant, because one deployment
- * of this console serves production and staging and the two are not on the same domain.
- */
-export const webChannelUrl = (shortcode: string, hostname: string): string => {
-  const labels = hostname.split('.');
-  const domain = labels.length > 2 ? labels.slice(1).join('.') : 'glific.com';
-
-  return `https://web.${shortcode}.${domain}`;
 };
 
 const WebChannelUrl = ({ shortcode }: { shortcode?: string }) => {

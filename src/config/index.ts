@@ -25,6 +25,10 @@ if (BACKEND_URL) {
   SOCKET_URL = `${SOCKET_PROTOCOL}://${HOSTNAME}/socket`;
 }
 
+// Where the web chat widget runs. Derived from the console's host when unset; set it where the two
+// don't share that shape, as in local development (e.g. https://glific.test:5173).
+export const WEB_CHANNEL_URL: string | undefined = envVariables.VITE_WEB_CHANNEL_URL || undefined;
+
 export const SOCKET = SOCKET_URL;
 export const FLOW_EDITOR_API = `${GLIFIC_BACKEND_URL}/flow-editor/`;
 export const GLIFIC_API_URL = `${GLIFIC_BACKEND_URL}/api`;
