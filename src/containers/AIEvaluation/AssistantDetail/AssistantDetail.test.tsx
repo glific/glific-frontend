@@ -2366,6 +2366,13 @@ describe('guardrails', () => {
   beforeEach(() => setOrganizationServices(JSON.stringify({ aiGuardrailEnabled: true })));
   afterEach(() => setOrganizationServices(JSON.stringify({})));
 
+  test('the Guardrails tab shows a New badge while guardrails are on', async () => {
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+
+    const tab = await screen.findByTestId('tab-guardrails');
+    expect(within(tab).getByTestId('beta-tag')).toHaveTextContent('New');
+  });
+
   const openGuardrails = async () => {
     await waitFor(() => expect(screen.getByTestId('tab-guardrails')).toBeInTheDocument());
     fireEvent.click(screen.getByTestId('tab-guardrails'));
@@ -2522,4 +2529,12 @@ describe('guardrails', () => {
     await waitFor(() => expect(screen.getByTestId('guardrailToggle-content-safety')).not.toBeChecked());
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
   });
+});
+
+test('the Guardrails tab has no New badge while guardrails are off', async () => {
+  setOrganizationServices(JSON.stringify({}));
+  renderDetail();
+
+  await waitFor(() => expect(screen.getByTestId('tab-guardrails')).toBeInTheDocument());
+  expect(within(screen.getByTestId('tab-guardrails')).queryByTestId('beta-tag')).not.toBeInTheDocument();
 });
