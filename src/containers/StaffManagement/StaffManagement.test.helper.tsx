@@ -410,3 +410,32 @@ export const FILTER_USER_MOCK = {
     },
   },
 };
+
+// the seeded super-admin label uses an underscore; the other role mocks omit it
+// entirely, so they cannot catch a mismatched filter
+export const getRoleNamesWithGlificAdminMock = {
+  request: {
+    query: GET_ROLE_NAMES,
+    variables: {},
+  },
+  result: {
+    data: {
+      accessRoles: [
+        { __typename: 'AccessRole', id: '1', isReserved: true, label: 'Admin' },
+        { __typename: 'AccessRole', id: '2', isReserved: true, label: 'Staff' },
+        { __typename: 'AccessRole', id: '3', isReserved: true, label: 'Manager' },
+        { __typename: 'AccessRole', id: '4', isReserved: true, label: 'No access' },
+        { __typename: 'AccessRole', id: '5', isReserved: true, label: 'Glific_admin' },
+      ],
+    },
+  },
+};
+
+export const STAFF_MANAGEMENT_MOCKS_WITH_GLIFIC_ADMIN = [
+  GET_ROLES_MOCK,
+  GET_USER_LANGUAGE_MOCK,
+  GET_GROUPS,
+  UPDATE_USER_DEMOTE_ADMIN_MOCK,
+  ADMIN_USER_MOCK,
+  getRoleNamesWithGlificAdminMock,
+];

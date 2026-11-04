@@ -7,6 +7,7 @@ import {
   STAFF_MANAGEMENT_MOCKS_ADMIN_ROLE,
   STAFF_MANAGEMENT_MOCKS_MANAGER_ROLE,
   STAFF_MANAGEMENT_MOCKS_WITH_EMPTY_ROLES,
+  STAFF_MANAGEMENT_MOCKS_WITH_GLIFIC_ADMIN,
 } from './StaffManagement.test.helper';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
@@ -218,6 +219,35 @@ test('if the user is Admin they should not see Glific admin role in the list', a
     expect(screen.getAllByRole('option')[3]).toHaveTextContent('No access');
   });
 });
+
+test.each([['Admin'], ['Manager']])(
+  'a %s must not be offered the Glific_admin role, whatever the label separator',
+  async (role) => {
+    const roleSpy = vi.spyOn(Role, 'getUserRole');
+    roleSpy.mockImplementation(() => [role]);
+
+    render(
+      <MockedProvider mocks={STAFF_MANAGEMENT_MOCKS_WITH_GLIFIC_ADMIN} addTypename={false}>
+        <Router>
+          <StaffManagement />
+        </Router>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText('Username')).toHaveValue('Admin');
+    });
+
+    const [roles] = screen.getAllByTestId('autocomplete-element');
+    roles.focus();
+    fireEvent.keyDown(roles, { key: 'ArrowDown' });
+
+    await waitFor(() => {
+      const labels = screen.getAllByRole('option').map((option) => option.textContent);
+      expect(labels).not.toContain('Glific_admin');
+    });
+  }
+);
 
 test.skip('changing to staff role shows a checkbox', async () => {
   const utilSpy = vi.spyOn(Utils, 'organizationHasDynamicRole');
