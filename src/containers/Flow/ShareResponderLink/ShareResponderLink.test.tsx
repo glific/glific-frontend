@@ -1,3 +1,4 @@
+// @vitest-environment-options {"url": "https://tides.glific.com/"}
 import { MockedProvider } from '@apollo/client/testing';
 import ShareResponderLink from './ShareResponderLink';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -73,6 +74,75 @@ describe('ShareResponderLink Component', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('flowLink')).toHaveTextContent('wa.me/123456?text=demo');
+    });
+  });
+
+  describe('for a web flow', () => {
+    const webWrapper = (keywords = shareResponderLinkProps.shareDialogKeywords) => (
+      <MockedProvider mocks={[]}>
+        <ShareResponderLink {...shareResponderLinkProps} shareDialogKeywords={keywords} channel="WEB" />
+      </MockedProvider>
+    );
+
+    // A web chat link sends its keyword when the chat opens, where wa.me only pre-fills it.
+    test('shares the web chat link that starts the flow, not a wa.me link', async () => {
+      render(webWrapper());
+
+      await waitFor(() => {
+        expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=test');
+      });
+      expect(screen.getByTestId('webChatAddress')).toHaveTextContent('https://web.tides.glific.com');
+      expect(screen.queryByText('Bot Number')).not.toBeInTheDocument();
+      expect(screen.getByText('Scan to open the web chat and start the flow')).toBeInTheDocument();
+    });
+
+    test('follows the keyword picked from the dropdown', async () => {
+      render(webWrapper());
+      await waitFor(() => expect(screen.getByTestId('flowLink')).toHaveTextContent('?start=test'));
+
+      const autocomplete = screen.getByRole('combobox');
+      autocomplete.focus();
+      fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
+      fireEvent.click(screen.getByText('demo'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=demo');
+      });
+    });
+
+    test('encodes a keyword that is not URL-safe', async () => {
+      render(webWrapper([{ label: 'adopt now', id: 1 }]));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=adopt%20now');
+      });
+    });
+
+    // The console's own subdomain is the organisation's shortcode, so the link costs no request.
+    test('builds the link from the console address, with no request for the shortcode', async () => {
+      render(webWrapper());
+
+      expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=test');
+    });
+
+    test('uses the configured web chat address, as in local development', async () => {
+      vi.spyOn(Utils, 'webChannelUrl').mockImplementation(() => 'https://glific.test:5173');
+      render(webWrapper());
+
+      await waitFor(() => {
+        expect(screen.getByTestId('flowLink')).toHaveTextContent('https://glific.test:5173/?start=test');
+      });
+      vi.restoreAllMocks();
+    });
+
+    test('copies the web chat link', async () => {
+      const copyToClipboardSpy = vi.spyOn(Utils, 'copyToClipboardMethod').mockImplementation(() => {});
+      render(webWrapper());
+      await waitFor(() => expect(screen.getByTestId('flowLink')).toHaveTextContent('?start=test'));
+
+      fireEvent.click(screen.getByTestId('copyButton'));
+
+      expect(copyToClipboardSpy).toHaveBeenCalledWith('https://web.tides.glific.com/?start=test');
     });
   });
 });

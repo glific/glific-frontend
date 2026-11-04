@@ -4,7 +4,8 @@ import { MemoryRouter } from 'react-router';
 import userEvent from '@testing-library/user-event';
 
 import * as Notification from 'common/notification';
-import { WebChannel, webChannelUrl } from './WebChannel';
+import { webChannelUrl } from 'common/utils';
+import { WebChannel } from './WebChannel';
 import {
   createWebChannelCredential,
   getOrganizationShortcode,
@@ -111,6 +112,13 @@ describe('the web channel address', () => {
     expect(webChannelUrl('tides', 'tides.glific.com')).toBe('https://web.tides.glific.com');
     expect(webChannelUrl('tides', 'tides.staging.glific.com')).toBe('https://web.tides.staging.glific.com');
     expect(webChannelUrl('tides', 'localhost')).toBe('https://web.tides.glific.com');
+  });
+
+  // Locally the widget runs on its own port, which no formula derives from the console's host.
+  it('uses the configured address where one is set, trimmed of a trailing slash', () => {
+    expect(webChannelUrl('tides', 'glific.test', 'https://glific.test:5173')).toBe('https://glific.test:5173');
+    expect(webChannelUrl('tides', 'glific.test', 'https://glific.test:5173/')).toBe('https://glific.test:5173');
+    expect(webChannelUrl('tides', 'tides.glific.com', '')).toBe('https://web.tides.glific.com');
   });
 
   it('shows the address as an internal test link, and points to Flows for the links contacts use', async () => {

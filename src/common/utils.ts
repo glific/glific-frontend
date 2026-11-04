@@ -1,7 +1,7 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-import { FLOW_EDITOR_API } from 'config';
+import { FLOW_EDITOR_API, WEB_CHANNEL_URL } from 'config';
 import setLogs from 'config/logs';
 import { checkDynamicRole } from 'context/role';
 import {
@@ -311,4 +311,21 @@ export const downloadCanvasAsPNG = (canvas: HTMLCanvasElement, fileName: string,
   downloadLink.href = pngFile;
   downloadLink.click();
   setNotification(notification);
+};
+
+/**
+ * The address this organisation's contacts reach the widget on.
+ *
+ * The domain comes from the console's own host rather than a constant, because one deployment
+ * of this console serves production and staging and the two are not on the same domain. A
+ * configured VITE_WEB_CHANNEL_URL wins, for setups where the widget's address can't be derived,
+ * like local development, where it runs on its own port.
+ */
+export const webChannelUrl = (shortcode: string, hostname: string, configured = WEB_CHANNEL_URL): string => {
+  if (configured) return configured.replace(/\/+$/, '');
+
+  const labels = hostname.split('.');
+  const domain = labels.length > 2 ? labels.slice(1).join('.') : 'glific.com';
+
+  return `https://web.${shortcode}.${domain}`;
 };

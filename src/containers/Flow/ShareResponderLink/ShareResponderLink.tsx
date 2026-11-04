@@ -5,9 +5,9 @@ import QRCode from 'react-qr-code';
 
 import DownloadIcon from 'assets/images/icons/DownloadIcon.svg?react';
 import logoSrc from 'assets/images/logo/Logo.svg';
-import { SHARE_FLOW_LINK } from 'common/constants';
+import { MESSAGE_CHANNELS, MessageChannel, SHARE_FLOW_LINK } from 'common/constants';
 import { setNotification } from 'common/notification';
-import { copyToClipboardMethod, downloadCanvasAsPNG } from 'common/utils';
+import { copyToClipboardMethod, downloadCanvasAsPNG, webChannelUrl } from 'common/utils';
 import { Button } from 'components/UI/Form/Button/Button';
 import { getUserSession } from 'services/AuthService';
 import styles from './ShareResponderLink.module.css';
@@ -15,17 +15,32 @@ import styles from './ShareResponderLink.module.css';
 interface ShareResponderLinkProps {
   shareDialogKeywords: any[];
   handleClose: Function;
+  channel?: MessageChannel;
 }
 
-const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponderLinkProps) => {
+const ShareResponderLink = ({
+  shareDialogKeywords,
+  handleClose,
+  channel = MESSAGE_CHANNELS.whatsapp,
+}: ShareResponderLinkProps) => {
   const [selectedKeyword, setSelectedKeyword] = useState(shareDialogKeywords[0]);
   const [flowLink, setFlowLink] = useState('');
+  const isWeb = channel === MESSAGE_CHANNELS.web;
 
   const organization = getUserSession('organization');
   const botNumber = organization?.contact?.phone;
 
-  const getFlowLink = (keyword: { label: string; id: number }) =>
-    `${SHARE_FLOW_LINK}${botNumber}?text=${keyword.label}`;
+  // The console runs on the organisation's own subdomain, the same one the backend resolves the
+  // organisation from, so its shortcode needs no request.
+  const { hostname } = window.location;
+  const webChatAddress = isWeb ? webChannelUrl(hostname.split('.')[0], hostname) : '';
+
+  // A web chat link sends its keyword as soon as the chat opens (?start=), where a wa.me link
+  // only pre-fills it; the web chat starts the flow only if the keyword is a web flow's.
+  const getFlowLink = (keyword: { label: string; id: number }) => {
+    if (!isWeb) return `${SHARE_FLOW_LINK}${botNumber}?text=${keyword.label}`;
+    return `${webChatAddress}/?start=${encodeURIComponent(keyword.label)}`;
+  };
 
   const copyToClipboard = (text: string) => {
     copyToClipboardMethod(text);
@@ -120,12 +135,23 @@ const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponder
 
         <div className={styles.Content}>
           <div className={styles.LinkSection}>
-            <div>
-              <Typography variant="subtitle1" className={styles.SectionTitle}>
-                Bot Number
-              </Typography>
-              <span className={styles.BotNumber}>+{botNumber}</span>
-            </div>
+            {isWeb ? (
+              <div>
+                <Typography variant="subtitle1" className={styles.SectionTitle}>
+                  Web chat
+                </Typography>
+                <span className={styles.BotNumber} data-testid="webChatAddress">
+                  {webChatAddress}
+                </span>
+              </div>
+            ) : (
+              <div>
+                <Typography variant="subtitle1" className={styles.SectionTitle}>
+                  Bot Number
+                </Typography>
+                <span className={styles.BotNumber}>+{botNumber}</span>
+              </div>
+            )}
             <div className={styles.Section}>
               <Typography variant="subtitle1" className={styles.SectionTitle}>
                 Keyword
@@ -191,7 +217,9 @@ const ShareResponderLink = ({ shareDialogKeywords, handleClose }: ShareResponder
               </div>
 
               <Typography variant="caption" className={styles.QRCaption}>
-                Scan to open WhatsApp with the selected keyword
+                {isWeb
+                  ? 'Scan to open the web chat and start the flow'
+                  : 'Scan to open WhatsApp with the selected keyword'}
               </Typography>
             </div>
           </div>
