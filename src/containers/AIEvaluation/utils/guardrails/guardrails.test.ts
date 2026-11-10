@@ -186,6 +186,18 @@ describe('incompleteGuardrails', () => {
       incompleteGuardrails({ input: [{ type: 'topic_relevance_llm', fallback_message: 'Only farming.' }], output: [] })
     ).toEqual(['topic_relevance_llm']);
   });
+
+  test('Content Safety needs a set reply', () => {
+    expect(incompleteGuardrails({ input: [{ type: 'content_safety', on_fail: 'rephrase' }], output: [] })).toEqual([
+      'content_safety',
+    ]);
+    expect(incompleteGuardrails({ input: [{ type: 'content_safety', fallback_message: '  ' }], output: [] })).toEqual([
+      'content_safety',
+    ]);
+    expect(
+      incompleteGuardrails({ input: [{ type: 'content_safety', fallback_message: 'Be kind.' }], output: [] })
+    ).toEqual([]);
+  });
 });
 
 describe('sameGuardrails', () => {
