@@ -848,7 +848,7 @@ describe('guardrails on a reply', () => {
     outputToUser: 'I can’t help with slurs.',
     inputGuardrail: JSON.stringify([
       { name: 'PIIRemover', outcome: 'FAIL', error: 'PII detected in the text.' },
-      { name: 'LexicalSlur', outcome: 'FAIL', error: 'Mentioned toxic words: kutta' },
+      { name: 'ContentSafety', outcome: 'FAIL', error: 'Mentioned toxic words: kutta' },
     ]),
     outputGuardrail: JSON.stringify([{ name: 'PIIRemover', outcome: 'PASS', error: null }]),
   };
