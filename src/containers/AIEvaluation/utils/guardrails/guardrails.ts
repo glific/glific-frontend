@@ -56,7 +56,6 @@ export const GUARDRAIL_TIER_LABEL = {
   additional: 'Additional',
 } as const satisfies Record<GuardrailTier, string>;
 
-// action is read from the validator's on_fail unless set here
 const GUARDRAIL_PRESENTATION: (Omit<GuardrailRule, 'link' | 'action'> & { action?: GuardrailAction })[] = [
   {
     id: 'privacy-protection',
@@ -337,7 +336,6 @@ const paramsFromControl = (control: GuardrailControl): Record<string, unknown> =
   }
 
   if (control.kind === 'reply') {
-    // rephrase is what makes it send the set reply instead of only redacting
     return {
       on_fail: 'rephrase',
       ...(control.setReply.trim() ? { fallback_message: control.setReply } : {}),
