@@ -612,6 +612,7 @@ export const AssistantDetail = () => {
         onChange={setActiveTab}
         dirtyTabs={dirtyTabs}
         runningTabs={{ evaluation: evaluationRunning }}
+        newTabs={{ guardrails: Boolean(getOrganizationServices('aiGuardrailEnabled')) }}
       />
 
       <div className={activePanel ? styles.TabContent : styles.TabPanel} role="tabpanel" data-testid="tabPanel">

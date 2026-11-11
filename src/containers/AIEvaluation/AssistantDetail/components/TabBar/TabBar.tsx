@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { BetaTag } from 'components/UI/BetaTag/BetaTag';
 import type { resources } from 'i18n/config';
 import styles from './TabBar.module.css';
 
@@ -19,9 +20,10 @@ export interface TabBarProps {
   onChange: (tab: TabKey) => void;
   dirtyTabs?: Partial<Record<TabKey, boolean>>;
   runningTabs?: Partial<Record<TabKey, boolean>>;
+  newTabs?: Partial<Record<TabKey, boolean>>;
 }
 
-export const TabBar = ({ activeTab, onChange, dirtyTabs = {}, runningTabs = {} }: TabBarProps) => {
+export const TabBar = ({ activeTab, onChange, dirtyTabs = {}, runningTabs = {}, newTabs = {} }: TabBarProps) => {
   const { t } = useTranslation();
 
   return (
@@ -37,6 +39,7 @@ export const TabBar = ({ activeTab, onChange, dirtyTabs = {}, runningTabs = {} }
           data-testid={`tab-${tab.key}`}
         >
           {t(tab.label)}
+          {newTabs[tab.key] && <BetaTag label={t('New')} className={styles.NewTag} />}
           {dirtyTabs[tab.key] && (
             <span
               className={styles.TabDirtyDot}
