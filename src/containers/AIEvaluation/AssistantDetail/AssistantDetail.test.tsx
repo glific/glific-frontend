@@ -2442,9 +2442,30 @@ describe('guardrails', () => {
 
     fireEvent.click(screen.getByTestId('saveVersionButton'));
     expect(notificationSpy).toHaveBeenCalledWith(
-      'Privacy Protection and Scope Control are on but not set up. In the Guardrails tab, select at least one personal detail and add at least one topic, or turn them off.',
+      'Privacy Protection, Scope Control are on but not set up. Fix the ones marked in red in the Guardrails tab, or turn them off.',
       'warning'
     );
+    notificationSpy.mockRestore();
+  });
+
+  test('Content Safety with its reply cleared is marked red on save', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    renderDetail('/assistants/1', [...defaultMocks(), getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-content-safety'));
+    fireEvent.click(screen.getByTestId('editReplyToggle'));
+    fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: ' ' } });
+
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+    expect(notificationSpy).toHaveBeenCalledWith(
+      'Content Safety is on, but no reply is set. Add the reply to send in the Guardrails tab, or turn Content Safety off.',
+      'warning'
+    );
+    expect(screen.getByTestId('guardrailRule-content-safety')).toHaveAttribute('aria-invalid', 'true');
+
+    fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: 'Please be respectful.' } });
+    expect(screen.getByTestId('guardrailRule-content-safety')).toHaveAttribute('aria-invalid', 'false');
     notificationSpy.mockRestore();
   });
 

@@ -21,17 +21,20 @@ export const GUARDRAIL_ACTION_LABEL = {
   block: 'Blocks — sends set reply',
 } as const satisfies Record<GuardrailAction, string>;
 
-const GUARDRAIL_SETUP_HINT = {
+export const GUARDRAIL_SETUP_HINT = {
   pii_remover:
     'Privacy Protection is on, but no personal details are selected. Select at least one in the Guardrails tab, or turn Privacy Protection off.',
   topic_relevance_llm:
     'Scope Control is on, but no topics are added. Add at least one topic to block in the Guardrails tab, or turn Scope Control off.',
+  content_safety:
+    'Content Safety is on, but no reply is set. Add the reply to send in the Guardrails tab, or turn Content Safety off.',
 } as const satisfies Record<ConfigurableGuardrailType, string>;
 
-export const guardrailSetupHint = (types: ConfigurableGuardrailType[]) =>
-  types.length > 1
-    ? 'Privacy Protection and Scope Control are on but not set up. In the Guardrails tab, select at least one personal detail and add at least one topic, or turn them off.'
-    : GUARDRAIL_SETUP_HINT[types[0]];
+export const GUARDRAIL_SETUP_TITLE = {
+  pii_remover: 'Privacy Protection',
+  topic_relevance_llm: 'Scope Control',
+  content_safety: 'Content Safety',
+} as const satisfies Record<ConfigurableGuardrailType, TranslationKey>;
 
 const BLOCKING_ON_FAIL = ['exception', 'rephrase'];
 
@@ -53,7 +56,7 @@ export const GUARDRAIL_TIER_LABEL = {
   additional: 'Additional',
 } as const satisfies Record<GuardrailTier, string>;
 
-const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link' | 'action'>[] = [
+const GUARDRAIL_PRESENTATION: (Omit<GuardrailRule, 'link' | 'action'> & { action?: GuardrailAction })[] = [
   {
     id: 'privacy-protection',
     type: 'pii_remover',
@@ -66,13 +69,15 @@ const GUARDRAIL_PRESENTATION: Omit<GuardrailRule, 'link' | 'action'>[] = [
   },
   {
     id: 'content-safety',
-    type: 'uli_slur_match',
+    type: 'content_safety',
     stage: 'incoming',
     tier: 'recommended',
     title: 'Content Safety',
-    description: 'Removes abusive or hurtful words from messages.',
+    description:
+      'Catches abusive or hurtful messages in English, Hindi and Hinglish, and sends your set reply instead.',
+    action: 'block',
     enabled: false,
-    control: { kind: 'none' },
+    control: { kind: 'reply', setReply: '' },
   },
   {
     id: 'scope-control',
@@ -225,14 +230,15 @@ export const actionFromConfig = (config: unknown): GuardrailAction => {
   return typeof onFail === 'string' && BLOCKING_ON_FAIL.includes(onFail) ? 'block' : 'fix';
 };
 
-export const scopeFallbackMessage = (config: unknown) => {
+export const fallbackMessageFromConfig = (config: unknown) => {
   const fallback = propertyOf(readSchema(config), 'fallback_message')?.default;
   return typeof fallback === 'string' ? fallback : '';
 };
 
 const controlFromConfig = (control: GuardrailControl, config: unknown): GuardrailControl => {
   if (control.kind === 'detailTypes') return { kind: 'detailTypes', groups: piiDetailGroups(config) };
-  if (control.kind === 'topics') return { ...control, setReply: scopeFallbackMessage(config) };
+  if (control.kind === 'topics' || control.kind === 'reply')
+    return { ...control, setReply: fallbackMessageFromConfig(config) };
   return control;
 };
 
@@ -255,7 +261,7 @@ export const buildGuardrailRules = (validators: GuardrailValidator[]): Guardrail
       {
         ...rule,
         link: safeLink(validator.link),
-        action: actionFromConfig(validator.config),
+        action: rule.action ?? actionFromConfig(validator.config),
         control: controlFromConfig(rule.control, validator.config),
       },
     ];
@@ -329,6 +335,13 @@ const paramsFromControl = (control: GuardrailControl): Record<string, unknown> =
     };
   }
 
+  if (control.kind === 'reply') {
+    return {
+      on_fail: 'rephrase',
+      ...(control.setReply.trim() ? { fallback_message: control.setReply } : {}),
+    };
+  }
+
   return {};
 };
 
@@ -370,6 +383,10 @@ const controlWithSpec = (control: GuardrailControl, spec: GuardrailSpec): Guardr
     };
   }
 
+  if (control.kind === 'reply') {
+    return { ...control, setReply: typeof spec.fallback_message === 'string' ? spec.fallback_message : '' };
+  }
+
   return control;
 };
 
@@ -388,6 +405,12 @@ export const incompleteGuardrails = (specs: GuardrailSpecs): ConfigurableGuardra
     }
     if (spec.type === 'topic_relevance_llm' && !(typeof spec.configuration === 'string' && spec.configuration.trim())) {
       return ['topic_relevance_llm'];
+    }
+    if (
+      spec.type === 'content_safety' &&
+      !(typeof spec.fallback_message === 'string' && spec.fallback_message.trim())
+    ) {
+      return ['content_safety'];
     }
     return [];
   });

@@ -22,7 +22,8 @@ import {
   nextPublishLabel,
 } from 'containers/AIEvaluation/utils/assistantVersions';
 import {
-  guardrailSetupHint,
+  GUARDRAIL_SETUP_HINT,
+  GUARDRAIL_SETUP_TITLE,
   incompleteGuardrails,
   EMPTY_GUARDRAIL_SPECS,
   parseGuardrailSpecs,
@@ -330,7 +331,15 @@ export const AssistantDetail = () => {
   const handleSaveVersion = async () => {
     if (unfinishedGuardrails.length > 0) {
       setGuardrailErrorsShown(true);
-      setNotification(t(guardrailSetupHint(unfinishedGuardrails)), 'warning');
+      const names = unfinishedGuardrails.map((type) => t(GUARDRAIL_SETUP_TITLE[type])).join(', ');
+      setNotification(
+        unfinishedGuardrails.length > 1
+          ? t('{{names}} are on but not set up. Fix the ones marked in red in the Guardrails tab, or turn them off.', {
+              names,
+            })
+          : t(GUARDRAIL_SETUP_HINT[unfinishedGuardrails[0]]),
+        'warning'
+      );
       return;
     }
     setSaving(true);

@@ -150,18 +150,3 @@
   width: var(--app-size-icon-sm);
   height: var(--app-size-icon-sm);
 }
-
-.TopicsLanguageNote {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--app-space-2xs);
-  font-size: var(--app-font-size-xs);
-  color: var(--app-color-text-tertiary);
-}
-
-.LanguageIcon {
-  width: var(--app-size-icon-sm);
-  height: var(--app-size-icon-sm);
-  flex-shrink: 0;
-  margin-top: 0.125rem;
-}

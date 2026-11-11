@@ -14,7 +14,7 @@ import styles from './GuardrailTrace.module.css';
 
 const CHECK_TITLE: Record<string, TranslationKey> = {
   PIIRemover: 'Privacy Protection',
-  LexicalSlur: 'Content Safety',
+  ContentSafety: 'Content Safety',
   TopicRelevanceLLM: 'Scope Control',
   GenderAssumptionBias: 'Gender Neutrality',
 };

@@ -8,7 +8,7 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { GET_GUARDRAIL_VALIDATORS } from 'graphql/queries/Guardrails';
 import { getOrganizationServices } from 'services/AuthService';
-import { DetailTypesEditor, GuardrailRuleCard, GuardrailsHowItWorks, TopicsEditor } from './index';
+import { DetailTypesEditor, GuardrailRuleCard, GuardrailsHowItWorks, ReplyEditor, TopicsEditor } from './index';
 import type {
   GuardrailAction,
   GuardrailRule,
@@ -116,6 +116,15 @@ export const GuardrailsPanel = ({ initialRules, value, onChange, invalidTypes = 
         <DetailTypesEditor
           groups={rule.control.groups}
           onChange={(groups) => updateRule(rule.id, { control: { kind: 'detailTypes', groups } })}
+        />
+      );
+    }
+
+    if (rule.control.kind === 'reply') {
+      return (
+        <ReplyEditor
+          value={rule.control.setReply}
+          onChange={(setReply) => updateRule(rule.id, { control: { kind: 'reply', setReply } })}
         />
       );
     }

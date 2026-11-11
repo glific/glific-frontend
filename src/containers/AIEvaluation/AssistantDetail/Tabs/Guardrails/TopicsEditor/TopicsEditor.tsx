@@ -4,7 +4,6 @@ import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import LanguageIcon from '@mui/icons-material/Language';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
@@ -15,6 +14,7 @@ import type {
 } from 'containers/AIEvaluation/types/guardrailType';
 import { isTranslationKey, slugify } from 'containers/AIEvaluation/utils/guardrails/guardrails';
 import { GuardrailEditor } from '../GuardrailEditor/GuardrailEditor';
+import { SetReplyField } from '../SetReplyField/SetReplyField';
 import styles from './TopicsEditor.module.css';
 
 export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
@@ -147,24 +147,11 @@ export const TopicsEditor = ({ value, onChange }: TopicsEditorProps) => {
         </div>
       )}
 
-      <div className={styles.TopicsField}>
-        <div className={styles.TopicsLabel}>{t('Set reply — sent when this guardrail is flagged')}</div>
-        <Input
-          type="text"
-          textArea
-          rows={2}
-          placeholder={t('What should the assistant say when it blocks a message on this topic?')}
-          field={{ name: 'setReply', value: setReply, onBlur: () => {} }}
-          onChange={(text: string) => onChange({ ...value, setReply: text })}
-          inputProp={{ 'data-testid': 'setReplyInput' }}
-        />
-        <div className={styles.TopicsLanguageNote}>
-          <LanguageIcon className={styles.LanguageIcon} />
-          {t(
-            'Write this in any one language — AI automatically translates it to match the language the user wrote in (e.g. a Hindi message gets the reply in Hindi).'
-          )}
-        </div>
-      </div>
+      <SetReplyField
+        value={setReply}
+        onChange={(text) => onChange({ ...value, setReply: text })}
+        placeholder="What should the assistant say when it blocks a message on this topic?"
+      />
     </GuardrailEditor>
   );
 };
