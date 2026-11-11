@@ -2435,7 +2435,7 @@ describe('guardrails', () => {
 
     fireEvent.click(screen.getByTestId('saveVersionButton'));
     expect(notificationSpy).toHaveBeenCalledWith(
-      'These guardrails are on but not set up: Privacy Protection, Scope Control. Fix the ones marked in red in the Guardrails tab, or turn them off.',
+      'Privacy Protection, Scope Control are on but not set up. Fix the ones marked in red in the Guardrails tab, or turn them off.',
       'warning'
     );
     notificationSpy.mockRestore();

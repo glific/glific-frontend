@@ -8,7 +8,7 @@ import {
   piiDetailGroups,
   safeLink,
   sameGuardrails,
-  scopeFallbackMessage,
+  fallbackMessageFromConfig,
   topicsFromConfiguration,
   topicsToConfiguration,
 } from './guardrails';
@@ -85,11 +85,13 @@ describe('actionFromConfig', () => {
   });
 });
 
-describe('scopeFallbackMessage', () => {
+describe('fallbackMessageFromConfig', () => {
   test('is the default fallback message, or empty without one', () => {
-    expect(scopeFallbackMessage(TOPIC_RELEVANCE_LLM_CONFIG)).toBe('');
-    expect(scopeFallbackMessage({ properties: { fallback_message: { default: 'Sirf sehat.' } } })).toBe('Sirf sehat.');
-    expect(scopeFallbackMessage('not json')).toBe('');
+    expect(fallbackMessageFromConfig(TOPIC_RELEVANCE_LLM_CONFIG)).toBe('');
+    expect(fallbackMessageFromConfig({ properties: { fallback_message: { default: 'Sirf sehat.' } } })).toBe(
+      'Sirf sehat.'
+    );
+    expect(fallbackMessageFromConfig('not json')).toBe('');
   });
 });
 

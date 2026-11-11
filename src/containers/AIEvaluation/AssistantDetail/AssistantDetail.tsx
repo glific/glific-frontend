@@ -331,10 +331,12 @@ export const AssistantDetail = () => {
   const handleSaveVersion = async () => {
     if (unfinishedGuardrails.length > 0) {
       setGuardrailErrorsShown(true);
-      const titles = unfinishedGuardrails.map((type) => t(GUARDRAIL_SETUP_TITLE[type])).join(', ');
+      const names = unfinishedGuardrails.map((type) => t(GUARDRAIL_SETUP_TITLE[type])).join(', ');
       setNotification(
         unfinishedGuardrails.length > 1
-          ? `${t('These guardrails are on but not set up:')} ${titles}. ${t('Fix the ones marked in red in the Guardrails tab, or turn them off.')}`
+          ? t('{{names}} are on but not set up. Fix the ones marked in red in the Guardrails tab, or turn them off.', {
+              names,
+            })
           : t(GUARDRAIL_SETUP_HINT[unfinishedGuardrails[0]]),
         'warning'
       );

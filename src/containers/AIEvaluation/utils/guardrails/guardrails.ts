@@ -230,7 +230,7 @@ export const actionFromConfig = (config: unknown): GuardrailAction => {
   return typeof onFail === 'string' && BLOCKING_ON_FAIL.includes(onFail) ? 'block' : 'fix';
 };
 
-export const scopeFallbackMessage = (config: unknown) => {
+export const fallbackMessageFromConfig = (config: unknown) => {
   const fallback = propertyOf(readSchema(config), 'fallback_message')?.default;
   return typeof fallback === 'string' ? fallback : '';
 };
@@ -238,7 +238,7 @@ export const scopeFallbackMessage = (config: unknown) => {
 const controlFromConfig = (control: GuardrailControl, config: unknown): GuardrailControl => {
   if (control.kind === 'detailTypes') return { kind: 'detailTypes', groups: piiDetailGroups(config) };
   if (control.kind === 'topics' || control.kind === 'reply')
-    return { ...control, setReply: scopeFallbackMessage(config) };
+    return { ...control, setReply: fallbackMessageFromConfig(config) };
   return control;
 };
 
