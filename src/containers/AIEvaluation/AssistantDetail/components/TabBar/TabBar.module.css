@@ -45,6 +45,10 @@
   border-bottom-color: var(--app-color-brand-primary);
 }
 
+span.NewTag {
+  margin: 0;
+}
+
 .TabDirtyDot {
   width: var(--app-size-dot);
   height: var(--app-size-dot);
