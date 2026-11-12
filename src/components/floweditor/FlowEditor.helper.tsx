@@ -21,7 +21,14 @@ export const setConfig = (uuid: any, skipValidation: boolean, isReadOnly: boolea
     filters: ['whatsapp', 'classifier', 'start_session'],
     skipValidation: skipValidation,
 
-    excludeTypes: ['add_contact_urn', 'send_email', 'call_resthook', 'transfer_airtime', 'split_by_scheme'],
+    excludeTypes: [
+      'add_contact_urn',
+      'send_email',
+      'call_resthook',
+      'transfer_airtime',
+      'split_by_scheme',
+      'set_contact_field',
+    ],
 
     excludeOperators: [
       'has_text',
