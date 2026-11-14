@@ -24,6 +24,7 @@ import {
   UPLOADED_FILE,
   VERSIONS,
 } from './assistant-fixtures';
+import { GUARDRAIL_VALIDATORS, type GuardrailValidatorFixture } from './guardrail-fixtures';
 
 export type StubbedOperation =
   | 'AssistantModels'
@@ -39,7 +40,8 @@ export type StubbedOperation =
   | 'EvaluationScores'
   | 'ImproveEvaluationPrompt'
   | 'createEvaluation'
-  | 'SendAssistantMessage';
+  | 'SendAssistantMessage'
+  | 'guardrailValidators';
 
 export interface StubOptions {
   runs?: RunFixture[];
@@ -55,6 +57,8 @@ export interface StubOptions {
   versions?: VersionFixture[];
   vectorStore?: typeof KNOWLEDGE_BASE | null;
   uploadDelay?: number;
+  guardrailValidators?: GuardrailValidatorFixture[];
+  services?: Record<string, boolean>;
 }
 
 export const stubAssistantApi = (options: StubOptions = {}) => {
@@ -72,6 +76,7 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
     sets = GOLDEN_SETS,
     scoresDelay = 0,
     models = MODELS,
+    guardrailValidators = GUARDRAIL_VALIDATORS,
   } = options;
 
   // spent as it is used, so the operation answers normally from the second request on
@@ -289,6 +294,19 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
         });
         return;
 
+      case 'guardrailValidators':
+        req.reply({
+          body: {
+            data: {
+              guardrailValidators: {
+                __typename: 'GuardrailValidatorsResult',
+                validators: guardrailValidators,
+              },
+            },
+          },
+        });
+        return;
+
       default:
         req.continue();
     }
@@ -297,7 +315,7 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
 
 // opens the page without assuming it has an assistant, or versions, to show
 export const openAssistantPage = (options: StubOptions = {}) => {
-  loginWithServices(DEFAULT_SERVICES);
+  loginWithServices(options.services ?? DEFAULT_SERVICES);
   stubAssistantApi(options);
   cy.visit(DETAIL_PATH);
 };
