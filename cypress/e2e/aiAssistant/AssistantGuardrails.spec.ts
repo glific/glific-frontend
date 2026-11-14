@@ -8,7 +8,20 @@ import {
   POLITICS_TOPIC,
   SCOPE_CONTROL_REPLY,
 } from '../../utils/guardrail-fixtures';
-import { openAssistant, openTab, type StubOptions } from '../../utils/assistant-detail';
+import {
+  openAssistant,
+  openTab,
+  saveVersion,
+  type StubOptions,
+} from '../../utils/assistant-detail';
+import {
+  contentSafetyReplyInput,
+  guardrailRule,
+  guardrailToggle,
+  openContentSafetyReply,
+  setContentSafetyReply,
+  toggleGuardrail,
+} from '../../utils/guardrail-actions';
 
 const openGuardrails = (options: StubOptions = {}) => {
   openAssistant({ services: GUARDRAIL_SERVICES, ...options });
@@ -16,10 +29,11 @@ const openGuardrails = (options: StubOptions = {}) => {
   cy.get('[data-testid="guardrailStage-incoming"]', { timeout: 10000 }).should('be.visible');
 };
 
-const rule = (id: string) => cy.get(`[data-testid="guardrailRule-${id}"]`);
-const toggle = (id: string) =>
-  cy.get(`[data-testid="guardrailToggle-${id}"]`).click(BELOW_STICKY_HEADER);
-const saveVersion = () => cy.get('[data-testid="saveVersionButton"]').click(BELOW_STICKY_HEADER);
+const expectSaveBlocked = (warning: string, ...ruleIds: string[]) => {
+  saveVersion();
+  cy.contains(warning).should('be.visible');
+  ruleIds.forEach((id) => guardrailRule(id).should('have.attr', 'aria-invalid', 'true'));
+};
 
 // the guardrails travel to the server as JSON strings on the version that is saved
 const savedGuardrails = () =>
@@ -38,7 +52,7 @@ describe('the Guardrails tab for an organisation without guardrails', () => {
     openTab('guardrails');
 
     cy.get('[data-testid="guardrails"]').should('contain', 'Guardrails coming soon');
-    cy.get('[data-testid="guardrailRule-content-safety"]').should('not.exist');
+    guardrailRule('content-safety').should('not.exist');
   });
 });
 
@@ -51,12 +65,9 @@ describe('the Guardrails tab', () => {
     cy.get('[data-testid="guardrailStage-incoming"]')
       .should('contain', 'Guardrails on incoming messages')
       .within(() => {
-        cy.get('[data-testid="guardrailRule-privacy-protection"]').should(
-          'contain',
-          'Privacy Protection'
-        );
-        cy.get('[data-testid="guardrailRule-content-safety"]').should('contain', 'Content Safety');
-        cy.get('[data-testid="guardrailRule-scope-control"]').should('contain', 'Scope Control');
+        guardrailRule('privacy-protection').should('contain', 'Privacy Protection');
+        guardrailRule('content-safety').should('contain', 'Content Safety');
+        guardrailRule('scope-control').should('contain', 'Scope Control');
       });
 
     cy.get('[data-testid="guardrailStage-reply"]')
@@ -65,14 +76,14 @@ describe('the Guardrails tab', () => {
       .should('contain', 'Gender Neutrality');
 
     ['privacy-protection', 'content-safety', 'scope-control', 'gender-neutrality'].forEach((id) => {
-      cy.get(`[data-testid="guardrailToggle-${id}"]`).should('not.be.checked');
+      guardrailToggle(id).should('not.be.checked');
     });
     cy.get('[data-testid="tabDirtyDot-guardrails"]').should('not.exist');
   });
 
   it('says what each guardrail does when it is triggered', () => {
-    rule('content-safety').should('contain', 'Blocks — sends set reply');
-    rule('privacy-protection').should('contain', 'Fixes & passes on');
+    guardrailRule('content-safety').should('contain', 'Blocks — sends set reply');
+    guardrailRule('privacy-protection').should('contain', 'Fixes & passes on');
   });
 
   it('links each guardrail to its documentation', () => {
@@ -105,28 +116,25 @@ describe('the Guardrails tab', () => {
 describe('Content Safety', () => {
   beforeEach(() => {
     openGuardrails();
-    toggle('content-safety');
+    toggleGuardrail('content-safety');
   });
 
   it('asks for a reply once it is turned on, and marks the tab as edited', () => {
-    cy.get('[data-testid="guardrailToggle-content-safety"]').should('be.checked');
+    guardrailToggle('content-safety').should('be.checked');
     cy.get('[data-testid="tabDirtyDot-guardrails"]').should('be.visible');
     cy.get('[data-testid="editReplyToggle"]').should('contain', 'No reply set');
   });
 
   it('will not save with no reply set, and points at the guardrail to fix', () => {
-    saveVersion();
-
-    cy.contains(
-      'Content Safety is on, but no reply is set. Add the reply to send in the Guardrails tab, or turn Content Safety off.'
-    ).should('be.visible');
-    rule('content-safety').should('have.attr', 'aria-invalid', 'true');
+    expectSaveBlocked(
+      'Content Safety is on, but no reply is set. Add the reply to send in the Guardrails tab, or turn Content Safety off.',
+      'content-safety'
+    );
     cy.contains('Changes saved successfully').should('not.exist');
   });
 
   it('saves the set reply as the message to send instead of an abusive one', () => {
-    cy.get('[data-testid="editReplyToggle"]').click(BELOW_STICKY_HEADER);
-    rule('content-safety').find('[data-testid="setReplyInput"]').type(CONTENT_SAFETY_REPLY);
+    setContentSafetyReply(CONTENT_SAFETY_REPLY);
     cy.get('[data-testid="editReplyToggle"]').should('contain', 'Reply set');
 
     saveVersion();
@@ -138,14 +146,14 @@ describe('Content Safety', () => {
       expect(output).to.deep.equal([]);
     });
     cy.contains('Changes saved successfully').should('be.visible');
-    rule('content-safety').should('have.attr', 'aria-invalid', 'false');
+    guardrailRule('content-safety').should('have.attr', 'aria-invalid', 'false');
   });
 });
 
 describe('Scope Control', () => {
   beforeEach(() => {
     openGuardrails();
-    toggle('scope-control');
+    toggleGuardrail('scope-control');
     cy.get('[data-testid="editTopicsToggle"]').click(BELOW_STICKY_HEADER);
   });
 
@@ -174,19 +182,17 @@ describe('Scope Control', () => {
   });
 
   it('will not save with no topic to block', () => {
-    saveVersion();
-
-    cy.contains(
-      'Scope Control is on, but no topics are added. Add at least one topic to block in the Guardrails tab, or turn Scope Control off.'
-    ).should('be.visible');
-    rule('scope-control').should('have.attr', 'aria-invalid', 'true');
+    expectSaveBlocked(
+      'Scope Control is on, but no topics are added. Add at least one topic to block in the Guardrails tab, or turn Scope Control off.',
+      'scope-control'
+    );
   });
 
   it('saves the blocked topics, one per line, with the reply to send', () => {
     cy.get('[data-testid="suggestedTopic-suggest-politics-religion"]').click(BELOW_STICKY_HEADER);
     cy.get('[data-testid="newTopicInput"]').type('Vaccines');
     cy.get('[data-testid="addTopicButton"]').click(BELOW_STICKY_HEADER);
-    rule('scope-control').find('[data-testid="setReplyInput"]').type(SCOPE_CONTROL_REPLY);
+    guardrailRule('scope-control').find('[data-testid="setReplyInput"]').type(SCOPE_CONTROL_REPLY);
 
     saveVersion();
 
@@ -206,7 +212,7 @@ describe('Scope Control', () => {
 describe('Privacy Protection', () => {
   beforeEach(() => {
     openGuardrails();
-    toggle('privacy-protection');
+    toggleGuardrail('privacy-protection');
     cy.get('[data-testid="editDetailTypesToggle"]').click(BELOW_STICKY_HEADER);
   });
 
@@ -237,19 +243,17 @@ describe('Privacy Protection', () => {
     cy.get('[data-testid="editDetailTypesToggle"]').should('contain', '0 selected');
     cy.contains('Nothing in this group is checked.').should('be.visible');
 
-    saveVersion();
-
-    cy.contains(
-      'Privacy Protection is on, but no personal details are selected. Select at least one in the Guardrails tab, or turn Privacy Protection off.'
-    ).should('be.visible');
-    rule('privacy-protection').should('have.attr', 'aria-invalid', 'true');
+    expectSaveBlocked(
+      'Privacy Protection is on, but no personal details are selected. Select at least one in the Guardrails tab, or turn Privacy Protection off.',
+      'privacy-protection'
+    );
   });
 });
 
 describe('Gender Neutrality', () => {
   it('runs on the assistant’s replies once it is turned on', () => {
     openGuardrails();
-    toggle('gender-neutrality');
+    toggleGuardrail('gender-neutrality');
 
     saveVersion();
 
@@ -263,16 +267,14 @@ describe('Gender Neutrality', () => {
 describe('more than one guardrail left unfinished', () => {
   it('names them all in one warning', () => {
     openGuardrails();
-    toggle('content-safety');
-    toggle('scope-control');
+    toggleGuardrail('content-safety');
+    toggleGuardrail('scope-control');
 
-    saveVersion();
-
-    cy.contains(
-      'Content Safety, Scope Control are on but not set up. Fix the ones marked in red in the Guardrails tab, or turn them off.'
-    ).should('be.visible');
-    rule('content-safety').should('have.attr', 'aria-invalid', 'true');
-    rule('scope-control').should('have.attr', 'aria-invalid', 'true');
+    expectSaveBlocked(
+      'Content Safety, Scope Control are on but not set up. Fix the ones marked in red in the Guardrails tab, or turn them off.',
+      'content-safety',
+      'scope-control'
+    );
   });
 });
 
@@ -282,17 +284,14 @@ describe('a version saved with guardrails on', () => {
   });
 
   it('opens with the guardrails and settings that version was saved with', () => {
-    cy.get('[data-testid="guardrailToggle-content-safety"]').should('be.checked');
-    cy.get('[data-testid="guardrailToggle-scope-control"]').should('be.checked');
-    cy.get('[data-testid="guardrailToggle-gender-neutrality"]').should('be.checked');
-    cy.get('[data-testid="guardrailToggle-privacy-protection"]').should('not.be.checked');
+    guardrailToggle('content-safety').should('be.checked');
+    guardrailToggle('scope-control').should('be.checked');
+    guardrailToggle('gender-neutrality').should('be.checked');
+    guardrailToggle('privacy-protection').should('not.be.checked');
 
-    cy.get('[data-testid="editReplyToggle"]')
-      .should('contain', 'Reply set')
-      .click(BELOW_STICKY_HEADER);
-    rule('content-safety')
-      .find('[data-testid="setReplyInput"]')
-      .should('have.value', CONTENT_SAFETY_REPLY);
+    cy.get('[data-testid="editReplyToggle"]').should('contain', 'Reply set');
+    openContentSafetyReply();
+    contentSafetyReplyInput().should('have.value', CONTENT_SAFETY_REPLY);
 
     cy.get('[data-testid="editTopicsToggle"]')
       .should('contain', '1 added')
@@ -303,7 +302,7 @@ describe('a version saved with guardrails on', () => {
   });
 
   it('drops a guardrail that is turned off, and keeps the ones this tab does not show', () => {
-    toggle('content-safety');
+    toggleGuardrail('content-safety');
 
     saveVersion();
 
@@ -317,14 +316,14 @@ describe('a version saved with guardrails on', () => {
   });
 
   it('puts the saved guardrails back when the edit is discarded', () => {
-    toggle('content-safety');
+    toggleGuardrail('content-safety');
     cy.get('[data-testid="tabDirtyDot-guardrails"]').should('be.visible');
 
     cy.get('[data-testid="discardButton"]').click(BELOW_STICKY_HEADER);
     cy.get('[data-testid="dialogTitle"]').should('contain', 'Discard unsaved changes?');
     cy.get('[data-testid="ok-button"]').click();
 
-    cy.get('[data-testid="guardrailToggle-content-safety"]').should('be.checked');
+    guardrailToggle('content-safety').should('be.checked');
     cy.get('[data-testid="tabDirtyDot-guardrails"]').should('not.exist');
   });
 });
@@ -338,6 +337,6 @@ describe('when the guardrails cannot be loaded', () => {
       'contain',
       'Guardrails could not be loaded. Please try again.'
     );
-    cy.get('[data-testid="guardrailRule-content-safety"]').should('not.exist');
+    guardrailRule('content-safety').should('not.exist');
   });
 });

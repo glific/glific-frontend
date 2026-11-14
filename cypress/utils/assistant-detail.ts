@@ -320,10 +320,13 @@ export const openAssistantPage = (options: StubOptions = {}) => {
   cy.visit(DETAIL_PATH);
 };
 
+export const waitForAssistantPage = (timeout = 10000) =>
+  cy.get('[data-testid="assistantDetailContainer"]', { timeout }).should('be.visible');
+
 export const openAssistant = (options: StubOptions = {}) => {
   openAssistantPage(options);
 
-  cy.get('[data-testid="assistantDetailContainer"]', { timeout: 10000 }).should('be.visible');
+  waitForAssistantPage();
   cy.get('[data-testid="versionPill"]').should('contain', 'Version 2.0');
 };
 
@@ -336,6 +339,15 @@ export const selectVersion = (label: string) => {
   cy.get('[data-testid="versionPill"]').click(BELOW_STICKY_HEADER);
   cy.get(`[data-testid="versionOption-${label}"]`).click();
 };
+
+export const nameAssistant = (name: string) => {
+  cy.get('[data-testid="editNameButton"]').click(BELOW_STICKY_HEADER);
+  cy.get('[data-testid="nameInput"]').clear().type(name);
+  cy.get('[data-testid="saveNameButton"]').click();
+};
+
+export const saveVersion = () =>
+  cy.get('[data-testid="saveVersionButton"]').click(BELOW_STICKY_HEADER);
 
 export const editPrompt = (text: string) => {
   cy.get('[data-testid="promptInput"]').clear().type(text);

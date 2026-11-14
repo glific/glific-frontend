@@ -1,5 +1,20 @@
 import { BELOW_STICKY_HEADER, SEARCH_FIELD, loginWithServices } from '../../utils/assistant-flow';
-import { openTab, selectVersion } from '../../utils/assistant-detail';
+import {
+  editPrompt,
+  nameAssistant,
+  openTab,
+  saveVersion,
+  selectVersion,
+  waitForAssistantPage,
+} from '../../utils/assistant-detail';
+import {
+  contentSafetyReplyInput,
+  guardrailRule,
+  guardrailToggle,
+  openContentSafetyReply,
+  setContentSafetyReply,
+  toggleGuardrail,
+} from '../../utils/guardrail-actions';
 import { CONTENT_SAFETY_REPLY, GUARDRAIL_SERVICES } from '../../utils/guardrail-fixtures';
 
 const ASSISTANT_NAME = `E2E Assistant ${Date.now()}`;
@@ -18,15 +33,10 @@ let assistantPath = '';
 let firstVersion = '';
 let guardedVersion = '';
 
-const waitForPage = () =>
-  cy
-    .get('[data-testid="assistantDetailContainer"]', { timeout: PAGE_TIMEOUT })
-    .should('be.visible');
-
 const openSavedAssistant = (version?: string) => {
   loginWithServices(GUARDRAIL_SERVICES);
   cy.visit(assistantPath);
-  waitForPage();
+  waitForAssistantPage(PAGE_TIMEOUT);
   // the page opens on the live version; a saved draft has to be picked
   if (version && version !== firstVersion) selectVersion(version);
   if (version) cy.get('[data-testid="versionPill"]').should('contain', `Version ${version}`);
@@ -103,18 +113,16 @@ describe('an AI assistant, end to end against the real backend', () => {
   it('creates an assistant with a knowledge base file', () => {
     loginWithServices(GUARDRAIL_SERVICES);
     cy.visit('/assistants/add');
-    waitForPage();
+    waitForAssistantPage(PAGE_TIMEOUT);
 
-    cy.get('[data-testid="editNameButton"]').click(BELOW_STICKY_HEADER);
-    cy.get('[data-testid="nameInput"]').clear().type(ASSISTANT_NAME);
-    cy.get('[data-testid="saveNameButton"]').click();
-    cy.get('[data-testid="promptInput"]').clear().type(PROMPT);
+    nameAssistant(ASSISTANT_NAME);
+    editPrompt(PROMPT);
 
     openTab('knowledgeBase');
     cy.get('[data-testid="fileInput"]').selectFile('cypress/fixtures/sample.md', { force: true });
     cy.get('[data-testid="knowledgeBaseFile"]', { timeout: 30000 }).should('contain', 'sample.md');
 
-    cy.get('[data-testid="saveVersionButton"]').click(BELOW_STICKY_HEADER);
+    saveVersion();
 
     cy.location('pathname', { timeout: 60000 }).should('match', /^\/assistants\/\d+$/);
     cy.contains('Assistant created successfully').should('be.visible');
@@ -139,25 +147,17 @@ describe('an AI assistant, end to end against the real backend', () => {
     openSavedAssistant();
     openTab('guardrails');
 
-    cy.get('[data-testid="guardrailRule-content-safety"]', { timeout: PAGE_TIMEOUT }).should(
-      'contain',
-      'Content Safety'
-    );
-    cy.get('[data-testid="guardrailToggle-content-safety"]').should('not.be.checked');
+    guardrailRule('content-safety', { timeout: PAGE_TIMEOUT }).should('contain', 'Content Safety');
+    guardrailToggle('content-safety').should('not.be.checked');
   });
 
   it('saves Content Safety with a set reply as a new version', () => {
     openSavedAssistant();
     openTab('guardrails');
 
-    cy.get('[data-testid="guardrailToggle-content-safety"]', { timeout: PAGE_TIMEOUT }).click(
-      BELOW_STICKY_HEADER
-    );
-    cy.get('[data-testid="editReplyToggle"]').click(BELOW_STICKY_HEADER);
-    cy.get('[data-testid="guardrailRule-content-safety"]')
-      .find('[data-testid="setReplyInput"]')
-      .type(CONTENT_SAFETY_REPLY);
-    cy.get('[data-testid="saveVersionButton"]').click(BELOW_STICKY_HEADER);
+    toggleGuardrail('content-safety', { timeout: PAGE_TIMEOUT });
+    setContentSafetyReply(CONTENT_SAFETY_REPLY);
+    saveVersion();
 
     cy.contains('Changes saved successfully', { timeout: 30000 }).should('be.visible');
     // the page moves on to the version it just saved
@@ -175,15 +175,10 @@ describe('an AI assistant, end to end against the real backend', () => {
     waitUntilBuilt(guardedVersion);
     openTab('guardrails');
 
-    cy.get('[data-testid="guardrailToggle-content-safety"]', { timeout: PAGE_TIMEOUT }).should(
-      'be.checked'
-    );
-    cy.get('[data-testid="editReplyToggle"]')
-      .should('contain', 'Reply set')
-      .click(BELOW_STICKY_HEADER);
-    cy.get('[data-testid="guardrailRule-content-safety"]')
-      .find('[data-testid="setReplyInput"]')
-      .should('have.value', CONTENT_SAFETY_REPLY);
+    guardrailToggle('content-safety', { timeout: PAGE_TIMEOUT }).should('be.checked');
+    cy.get('[data-testid="editReplyToggle"]').should('contain', 'Reply set');
+    openContentSafetyReply();
+    contentSafetyReplyInput().should('have.value', CONTENT_SAFETY_REPLY);
   });
 
   it('answers an abusive message with the set reply, without asking the assistant', () => {
