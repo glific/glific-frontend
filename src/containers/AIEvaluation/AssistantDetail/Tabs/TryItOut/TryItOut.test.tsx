@@ -880,7 +880,6 @@ describe('guardrails on a reply', () => {
     expect(incoming).toHaveTextContent('call me kutta at 8979220110 from Ram village');
     const changed = within(incoming).getByTestId('guardrailTraceInput-changed');
     expect(changed).toHaveTextContent('call me [REDACTED_SLUR] at <phone_number> from <location>');
-    // the redacted message still went on to the assistant, which answered it
     expect(changed).toHaveTextContent('Assistant received');
     expect(incoming).toHaveTextContent('Privacy Protection');
     expect(incoming).toHaveTextContent('Content Safety');
