@@ -124,6 +124,13 @@ jobs:
           echo start mix setup
           ENABLE_DB_SSL=false KAAPI_API_KEY=${KAAPI_API_KEY} mix setup
 
+      # AssistantEndToEnd.spec.ts saves a Content Safety guardrail, and the backend only serves
+      # guardrails to organisations with the flag on. Set it before the server starts.
+      - name: Enable AI guardrails for the test organisation
+        run: |
+          cd project/glific
+          ENABLE_DB_SSL=false mix run -e 'FunWithFlags.enable(:is_ai_guardrail_enabled, for_actor: %{organization_id: 1}) |> IO.inspect(label: "is_ai_guardrail_enabled")'
+
       - name: Setup cypress
         run: cp cypress.config.ts.example cypress.config.ts
 
@@ -146,7 +153,7 @@ jobs:
       - name: Cypress run
         run: |
           yarn run cypress run \
-            --spec cypress/e2e/filesearch/Filesearch.spec.ts \
+            --spec cypress/e2e/aiAssistant/AssistantEndToEnd.spec.ts \
             --record \
             --key ${{ secrets.CYPRESS_DASHBOARD_KEY }}
 

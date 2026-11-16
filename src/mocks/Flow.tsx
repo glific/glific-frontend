@@ -313,7 +313,7 @@ export const filterFlowWithNameOrKeywordOrTagQuery = {
   },
 };
 
-const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false) => ({
+const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false, channel = 'WHATSAPP') => ({
   request: {
     query: GET_FLOW_DETAILS,
     variables: {
@@ -332,7 +332,7 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
           isActive,
           name: 'help workflow',
           keywords,
-          channel: 'WHATSAPP',
+          channel,
           isTemplate,
           skipValidation: true,
         },
@@ -343,6 +343,7 @@ const getFlowDetails = (isActive = true, keywords = ['help'], isTemplate = false
 
 export const getActiveFlow = getFlowDetails();
 export const getInactiveFlow = getFlowDetails(false);
+export const getActiveWebFlow = getFlowDetails(true, ['help'], false, 'WEB');
 export const getFlowWithoutKeyword = getFlowDetails(true, []);
 export const getTemplateFlow = getFlowDetails(true, [], true);
 export const getFlowWithManyKeywords = getFlowDetails(true, [

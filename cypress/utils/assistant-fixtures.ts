@@ -72,6 +72,8 @@ const version = (id: string, label: string, isLive: boolean, prompt: string) => 
   model: 'gpt-4.1',
   prompt,
   settings: { temperature: 1 },
+  inputGuardrails: null as string | null,
+  outputGuardrails: null as string | null,
   status: 'ready' as string,
   isLive,
   description: null,

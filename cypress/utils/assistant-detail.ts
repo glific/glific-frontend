@@ -24,6 +24,7 @@ import {
   UPLOADED_FILE,
   VERSIONS,
 } from './assistant-fixtures';
+import { GUARDRAIL_VALIDATORS, type GuardrailValidatorFixture } from './guardrail-fixtures';
 
 export type StubbedOperation =
   | 'AssistantModels'
@@ -39,7 +40,8 @@ export type StubbedOperation =
   | 'EvaluationScores'
   | 'ImproveEvaluationPrompt'
   | 'createEvaluation'
-  | 'SendAssistantMessage';
+  | 'SendAssistantMessage'
+  | 'guardrailValidators';
 
 export interface StubOptions {
   runs?: RunFixture[];
@@ -55,6 +57,8 @@ export interface StubOptions {
   versions?: VersionFixture[];
   vectorStore?: typeof KNOWLEDGE_BASE | null;
   uploadDelay?: number;
+  guardrailValidators?: GuardrailValidatorFixture[];
+  services?: Record<string, boolean>;
 }
 
 export const stubAssistantApi = (options: StubOptions = {}) => {
@@ -72,6 +76,7 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
     sets = GOLDEN_SETS,
     scoresDelay = 0,
     models = MODELS,
+    guardrailValidators = GUARDRAIL_VALIDATORS,
   } = options;
 
   // spent as it is used, so the operation answers normally from the second request on
@@ -289,6 +294,19 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
         });
         return;
 
+      case 'guardrailValidators':
+        req.reply({
+          body: {
+            data: {
+              guardrailValidators: {
+                __typename: 'GuardrailValidatorsResult',
+                validators: guardrailValidators,
+              },
+            },
+          },
+        });
+        return;
+
       default:
         req.continue();
     }
@@ -297,15 +315,18 @@ export const stubAssistantApi = (options: StubOptions = {}) => {
 
 // opens the page without assuming it has an assistant, or versions, to show
 export const openAssistantPage = (options: StubOptions = {}) => {
-  loginWithServices(DEFAULT_SERVICES);
+  loginWithServices(options.services ?? DEFAULT_SERVICES);
   stubAssistantApi(options);
   cy.visit(DETAIL_PATH);
 };
 
+export const waitForAssistantPage = (timeout = 10000) =>
+  cy.get('[data-testid="assistantDetailContainer"]', { timeout }).should('be.visible');
+
 export const openAssistant = (options: StubOptions = {}) => {
   openAssistantPage(options);
 
-  cy.get('[data-testid="assistantDetailContainer"]', { timeout: 10000 }).should('be.visible');
+  waitForAssistantPage();
   cy.get('[data-testid="versionPill"]').should('contain', 'Version 2.0');
 };
 
@@ -318,6 +339,15 @@ export const selectVersion = (label: string) => {
   cy.get('[data-testid="versionPill"]').click(BELOW_STICKY_HEADER);
   cy.get(`[data-testid="versionOption-${label}"]`).click();
 };
+
+export const nameAssistant = (name: string) => {
+  cy.get('[data-testid="editNameButton"]').click(BELOW_STICKY_HEADER);
+  cy.get('[data-testid="nameInput"]').clear().type(name);
+  cy.get('[data-testid="saveNameButton"]').click();
+};
+
+export const saveVersion = () =>
+  cy.get('[data-testid="saveVersionButton"]').click(BELOW_STICKY_HEADER);
 
 export const editPrompt = (text: string) => {
   cy.get('[data-testid="promptInput"]').clear().type(text);
