@@ -9,6 +9,7 @@ import {
   computeFieldNames,
   convertFlowJSONToFormBuilder,
   convertFormBuilderToFlowJSON,
+  hasFormErrors,
   validateFlowJson,
 } from 'containers/WhatsAppForms/Configure/FormBuilder/FormBuilder.utils';
 
@@ -1823,6 +1824,89 @@ describe('validateFlowJson — all phases', () => {
       "is missing 'type'"
     );
   });
+
+  // ── Footer placement: NavigationList screens and If branches ─────────────
+  const navigationList = {
+    type: 'NavigationList',
+    name: 'plans',
+    'list-items': [
+      {
+        id: 'basic',
+        'main-content': { title: 'Basic' },
+        'on-click-action': { name: 'navigate', next: { type: 'screen', name: 'screen_one' }, payload: {} },
+      },
+    ],
+  };
+
+  const navigationListScreen = (children: object[] = [navigationList]) => ({
+    id: 'plans_screen',
+    title: 'Plans',
+    layout: { type: 'SingleColumnLayout', children },
+  });
+
+  const messages = (json: object) => validateFlowJson(json).errors.map((e) => e.message);
+
+  test('a screen holding only a NavigationList needs no Footer', () => {
+    expect(messages(flow([navigationListScreen(), validScreen()]))).toEqual([]);
+  });
+
+  test('a NavigationList screen with a Footer is rejected', () => {
+    const screenWithFooter = navigationListScreen([
+      navigationList,
+      footer({ name: 'navigate', next: { type: 'screen', name: 'screen_one' }, payload: {} }),
+    ]);
+
+    expect(messages(flow([screenWithFooter, validScreen()]))).toEqual([
+      "Screen 'Plans': NavigationList cannot be combined with other components, including a Footer",
+    ]);
+  });
+
+  test('a NavigationList cannot be on the last screen', () => {
+    expect(messages(flow([navigationListScreen()]))).toEqual([
+      "Last screen 'Plans' cannot contain a NavigationList (it is the terminal screen)",
+    ]);
+  });
+
+  const ifWith = (thenChildren: object[], elseChildren?: object[]) => ({
+    type: 'If',
+    condition: '${form.opt_in}',
+    then: thenChildren,
+    ...(elseChildren ? { else: elseChildren } : {}),
+  });
+
+  const screenWithChildren = (children: object[]) =>
+    validScreen({ layout: { type: 'SingleColumnLayout', children: [formWith(children)] } });
+
+  const optIn = { type: 'OptIn', name: 'opt_in', label: 'Opt in' };
+  const completeFooter = (label?: string) => footer({ name: 'complete', payload: {} }, label);
+
+  test('a Footer inside both branches of an If counts as the screen Footer', () => {
+    const json = flow([screenWithChildren([optIn, ifWith([completeFooter('Yes')], [completeFooter('No')])])]);
+
+    expect(messages(json)).toEqual([]);
+  });
+
+  test('a Footer in only one If branch is rejected', () => {
+    const json = flow([screenWithChildren([optIn, ifWith([completeFooter()], [{ type: 'TextBody', text: 'No' }])])]);
+
+    expect(messages(json)).toEqual([
+      "Screen 'Screen 1': A Footer inside 'If' must appear exactly once in both 'then' and 'else'",
+    ]);
+  });
+
+  test('a Footer inside an If plus one outside it counts as two', () => {
+    const json = flow([
+      screenWithChildren([optIn, ifWith([completeFooter('Yes')], [completeFooter('No')]), completeFooter()]),
+    ]);
+
+    expect(messages(json)).toEqual(["Screen 'Screen 1': Must have exactly one Footer component, found 2"]);
+  });
+
+  test('the If branch Footers are validated like any Footer', () => {
+    const json = flow([screenWithChildren([optIn, ifWith([completeFooter('Yes')], [completeFooter('')])])]);
+
+    expect(messages(json)).toEqual(["Screen 'Screen 1': Footer label is required"]);
+  });
 });
 
 // ── Round-trip preservation tests ────────────────────────────────────────────
@@ -1882,6 +1966,67 @@ describe('round-trip preservation — unsupported components & extra attributes'
     const outputComponent = outputChildren.find((c: any) => c.type === 'EmbeddedLink');
 
     expect(outputComponent).toEqual(embeddedLink);
+  });
+
+  test('a Dropdown whose data-source is bound to screen data is preserved verbatim through round-trip', () => {
+    const boundDropdown = {
+      type: 'Dropdown',
+      name: 'state',
+      label: 'State',
+      required: false,
+      visible: '${data.states_visible}',
+      'data-source': '${data.states}',
+    };
+
+    const screens = convertFlowJSONToFormBuilder(makeFlowJSON([boundDropdown]));
+    const item = screens[0].content.find((c) => c.type === 'Unsupported');
+    expect(item!.name).toBe('Dropdown');
+    expect(item!.data.rawComponent).toEqual(boundDropdown);
+
+    const outputChildren = convertFormBuilderToFlowJSON(screens).screens[0].layout.children[0].children;
+    expect(outputChildren.find((c: any) => c.type === 'Dropdown')).toEqual(boundDropdown);
+  });
+
+  test('a TextBody whose text is an array of lines becomes one editable text item', () => {
+    const multiLineBody = { type: 'TextBody', markdown: true, text: ['**Bold** line', '- a list item'] };
+
+    const screens = convertFlowJSONToFormBuilder(makeFlowJSON([multiLineBody]));
+    expect(hasFormErrors(screens)).toBe(false);
+    const [item] = screens[0].content;
+    expect(item.type).toBe('Text');
+    expect(item.data.text).toBe('**Bold** line\n- a list item');
+
+    const outputChildren = convertFormBuilderToFlowJSON(screens).screens[0].layout.children[0].children;
+    expect(outputChildren.find((c: any) => c.type === 'TextBody')).toEqual({
+      type: 'TextBody',
+      markdown: true,
+      text: '**Bold** line\n- a list item',
+    });
+  });
+
+  test('a NavigationList screen gets no Footer when converted back to JSON', () => {
+    const navigationList = {
+      type: 'NavigationList',
+      name: 'plans',
+      'list-items': [
+        {
+          id: 'basic',
+          'main-content': { title: 'Basic' },
+          'on-click-action': { name: 'navigate', next: { type: 'screen', name: 'screen_one' }, payload: {} },
+        },
+      ],
+    };
+    const input = makeFlowJSON([]);
+    input.screens.unshift({
+      id: 'plans_screen',
+      title: 'Plans',
+      layout: { type: 'SingleColumnLayout', children: [navigationList] },
+    } as any);
+
+    const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
+
+    expect(output.screens[0].layout.children).toEqual([navigationList]);
+    expect(validateFlowJson(output).errors).toEqual([]);
   });
 
   test('unsupported component (PhotoPicker) is preserved verbatim through round-trip', () => {
@@ -2216,7 +2361,7 @@ describe('round-trip preservation — unsupported components & extra attributes'
       'list-items': [{ id: 'a', 'main-content': { title: 'Item A' } }],
     };
 
-    const flowJSON = makeFlowJSON([navigationList]);
+    const flowJSON = makeFlowJSON([navigationList, { type: 'TextBody', text: 'Pick one' }]);
     const screens = convertFlowJSONToFormBuilder(flowJSON);
 
     // No field name, so nothing lands in the footer payload

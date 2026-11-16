@@ -112,6 +112,7 @@
   color: #666;
   margin: 0;
   line-height: 1.5;
+  white-space: pre-line;
 }
 
 .TextBody {
@@ -119,6 +120,7 @@
   color: #333;
   margin: 0;
   line-height: 1.6;
+  white-space: pre-line;
 }
 
 .FormFooter {
