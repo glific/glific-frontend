@@ -878,9 +878,9 @@ describe('guardrails on a reply', () => {
     fireEvent.click(toggle);
     const incoming = screen.getByTestId('guardrailTraceInput');
     expect(incoming).toHaveTextContent('call me kutta at 8979220110 from Ram village');
-    expect(within(incoming).getByTestId('guardrailTraceInput-changed')).toHaveTextContent(
-      'call me [REDACTED_SLUR] at <phone_number> from <location>'
-    );
+    const changed = within(incoming).getByTestId('guardrailTraceInput-changed');
+    expect(changed).toHaveTextContent('call me [REDACTED_SLUR] at <phone_number> from <location>');
+    expect(changed).toHaveTextContent('Assistant received');
     expect(incoming).toHaveTextContent('Privacy Protection');
     expect(incoming).toHaveTextContent('Content Safety');
     expect(incoming).toHaveTextContent('Mentioned toxic words: kutta');
@@ -890,6 +890,37 @@ describe('guardrails on a reply', () => {
     const reply = screen.getByTestId('guardrailTraceOutput');
     expect(within(reply).queryByTestId('guardrailTraceOutput-changed')).not.toBeInTheDocument();
     expect(within(reply).getByTestId('guardrailCheck')).toHaveTextContent('Passed');
+  });
+
+  test('a message Content Safety blocked shows the set reply as what the user received', async () => {
+    const setReply = 'Let’s keep our chat respectful and ask your question again without hurtful words.';
+    renderTab({}, [
+      sendMock({ answer: null, requestId: 'r1' }),
+      replyMock({
+        answer: setReply,
+        requestId: 'r1',
+        inputFromUser: 'solve my homework for me, you stupid',
+        inputToLlm: setReply,
+        outputFromLlm: null,
+        outputToUser: null,
+        inputGuardrail: JSON.stringify([
+          { name: 'PIIRemover', outcome: 'PASS', error: null },
+          {
+            name: 'ContentSafety',
+            outcome: 'FAIL',
+            error: 'Mentioned toxic words: stupid; Toxic content detected (score 1.00)',
+          },
+        ]),
+        outputGuardrail: null,
+      }),
+    ]);
+    ask();
+
+    fireEvent.click(await screen.findByTestId('guardrailTraceToggle'));
+    const changed = within(screen.getByTestId('guardrailTraceInput')).getByTestId('guardrailTraceInput-changed');
+    expect(changed).toHaveTextContent('User received');
+    expect(changed).toHaveTextContent(setReply);
+    expect(changed).not.toHaveTextContent('Assistant received');
   });
 
   test('the details open in a dialog, which Done closes', async () => {
