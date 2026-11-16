@@ -123,6 +123,24 @@
   white-space: pre-line;
 }
 
+.EmbeddedLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1daa61;
+  line-height: 1.6;
+}
+
+.Placeholder {
+  font-size: 13px;
+  font-style: italic;
+  color: #888;
+  margin: 0;
+  padding: 12px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  text-align: center;
+}
+
 .FormFooter {
   padding: 12px 16px;
   background-color: #f8f8f8;

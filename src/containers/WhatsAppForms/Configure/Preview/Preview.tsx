@@ -156,6 +156,27 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     );
   };
 
+  const renderUnsupportedContent = (item: ContentItem) => {
+    const raw = item.data.rawComponent;
+
+    switch (raw?.type) {
+      case 'EmbeddedLink':
+        return (
+          <span data-testid="preview-embedded-link" className={styles.EmbeddedLink}>
+            {raw.text}
+          </span>
+        );
+      case 'RichText':
+        return (
+          <p data-testid="preview-rich-text-placeholder" className={styles.Placeholder}>
+            Rich text – shown in WhatsApp
+          </p>
+        );
+      default:
+        return null;
+    }
+  };
+
   const renderContent = (item: ContentItem) => {
     switch (item.type) {
       case 'Text':
@@ -166,6 +187,8 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
         return renderSelectionContent(item);
       case 'Media':
         return renderMediaContent(item);
+      case 'Unsupported':
+        return renderUnsupportedContent(item);
       default:
         return null;
     }
