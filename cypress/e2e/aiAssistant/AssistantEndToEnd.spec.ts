@@ -37,7 +37,6 @@ const openSavedAssistant = (version?: string) => {
   loginWithServices(GUARDRAIL_SERVICES);
   cy.visit(assistantPath);
   waitForAssistantPage(PAGE_TIMEOUT);
-  // the page opens on the live version; a saved draft has to be picked
   if (version && version !== firstVersion) selectVersion(version);
   if (version) cy.get('[data-testid="versionPill"]').should('contain', `Version ${version}`);
 };
