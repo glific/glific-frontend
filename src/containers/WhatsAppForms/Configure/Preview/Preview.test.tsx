@@ -31,6 +31,40 @@ describe('Preview — non-editable components', () => {
     expect(screen.getByTestId('preview-rich-text-placeholder')).toHaveTextContent('Rich text – shown in WhatsApp');
   });
 
+  test.each([
+    ['Single Choice', 'RadioButtonsGroup'],
+    ['Multiple Choice', 'CheckboxGroup'],
+  ])('greys out a disabled %s option', (name) => {
+    const screens: Screen[] = [
+      {
+        id: '1',
+        name: 'Preferences',
+        order: 0,
+        buttonLabel: 'Continue',
+        content: [
+          {
+            id: 'contact',
+            type: 'Selection',
+            name,
+            order: 0,
+            data: {
+              label: 'Preferred contact',
+              options: [
+                { id: 'whatsapp', value: 'WhatsApp' },
+                { id: 'call', value: 'Phone call', extraAttributes: { enabled: false } },
+              ],
+            },
+          },
+        ],
+      },
+    ];
+
+    render(<Preview screens={screens} currentScreenIndex={0} />);
+
+    expect(screen.getByText('Phone call').parentElement).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.getByText('WhatsApp').parentElement).toHaveAttribute('aria-disabled', 'false');
+  });
+
   test('keeps other non-editable components hidden', () => {
     render(<Preview screens={screenWith({ type: 'NavigationList', name: 'plans' })} currentScreenIndex={0} />);
 

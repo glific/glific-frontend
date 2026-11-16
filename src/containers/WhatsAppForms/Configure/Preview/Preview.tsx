@@ -1,7 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BackgroundPhoneImage from 'assets/images/phone.png';
-import { ContentItem, Screen } from '../FormBuilder/FormBuilder.types';
+import { ContentItem, ContentOption, Screen } from '../FormBuilder/FormBuilder.types';
 import styles from './Preview.module.css';
 
 interface PreviewProps {
@@ -73,6 +73,8 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     }
   };
 
+  const isDisabled = (option: ContentOption) => option.extraAttributes?.enabled === false;
+
   const renderSelectionContent = (item: ContentItem) => {
     const { name, data } = item;
     const label = data.label || 'Label';
@@ -89,7 +91,11 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
             </label>
             <div className={styles.OptionsList}>
               {options.map((option) => (
-                <div key={option.id} className={styles.RadioOption}>
+                <div
+                  key={option.id}
+                  className={`${styles.RadioOption} ${isDisabled(option) ? styles.DisabledOption : ''}`}
+                  aria-disabled={isDisabled(option)}
+                >
                   <div className={styles.RadioButton}></div>
                   <span className={styles.OptionText}>{option.value}</span>
                 </div>
@@ -106,7 +112,11 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
             </label>
             <div className={styles.OptionsList}>
               {options.map((option) => (
-                <div key={option.id} className={styles.CheckboxOption}>
+                <div
+                  key={option.id}
+                  className={`${styles.CheckboxOption} ${isDisabled(option) ? styles.DisabledOption : ''}`}
+                  aria-disabled={isDisabled(option)}
+                >
                   <div className={styles.Checkbox}></div>
                   <span className={styles.OptionText}>{option.value}</span>
                 </div>

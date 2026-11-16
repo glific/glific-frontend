@@ -358,6 +358,14 @@
   flex: 1;
 }
 
+.DisabledOption,
+.DisabledOption:hover {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+  border-color: #e0e0e0;
+}
+
 .DropdownField {
   display: flex;
   align-items: center;
