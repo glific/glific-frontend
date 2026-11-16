@@ -25,10 +25,35 @@ describe('Preview — non-editable components', () => {
     expect(screen.getByTestId('preview-embedded-link')).toHaveTextContent('Read the terms first');
   });
 
-  test('shows a placeholder for RichText', () => {
-    render(<Preview screens={screenWith({ type: 'RichText', text: ['# Terms'] })} currentScreenIndex={0} />);
+  test.each([
+    [{ type: 'RichText', text: ['# Terms'] }, 'Rich text – shown in WhatsApp'],
+    [{ type: 'CalendarPicker', name: 'appointment', label: 'Date' }, 'Calendar picker – shown in WhatsApp'],
+    [{ type: 'NavigationList', name: 'plans', 'list-items': [] }, 'Navigation list – shown in WhatsApp'],
+    [{ type: 'ImageCarousel', images: [] }, 'Image carousel – shown in WhatsApp'],
+    [{ type: 'PhotoPicker', name: 'photo', label: 'Photo' }, 'Photo upload – shown in WhatsApp'],
+    [{ type: 'DocumentPicker', name: 'docs', label: 'Docs' }, 'Document upload – shown in WhatsApp'],
+    [{ type: 'ChipsSelector', name: 'topics', label: 'Topics' }, 'Chips selector – shown in WhatsApp'],
+    [{ type: 'If', condition: '${form.x}', then: [] }, 'Conditional content – shown in WhatsApp'],
+    [{ type: 'Switch', value: '${data.plan}', cases: {} }, 'Conditional content – shown in WhatsApp'],
+    [
+      { type: 'Dropdown', name: 'state', label: 'State', 'data-source': '${data.states}' },
+      'Dropdown – shown in WhatsApp',
+    ],
+  ])('shows a placeholder for $type', (rawComponent, expected) => {
+    render(<Preview screens={screenWith(rawComponent)} currentScreenIndex={0} />);
 
-    expect(screen.getByTestId('preview-rich-text-placeholder')).toHaveTextContent('Rich text – shown in WhatsApp');
+    expect(screen.getByTestId('preview-placeholder')).toHaveTextContent(expected);
+  });
+
+  test('shows a start and an end placeholder for a range CalendarPicker', () => {
+    const rangePicker = { type: 'CalendarPicker', name: 'stay', mode: 'range', label: { 'start-date': 'In' } };
+    render(<Preview screens={screenWith(rangePicker)} currentScreenIndex={0} />);
+
+    const placeholders = screen.getAllByTestId('preview-placeholder');
+    expect(placeholders.map((p) => p.textContent)).toEqual([
+      'Calendar picker (start date) – shown in WhatsApp',
+      'Calendar picker (end date) – shown in WhatsApp',
+    ]);
   });
 
   test.each([
@@ -65,10 +90,9 @@ describe('Preview — non-editable components', () => {
     expect(screen.getByText('WhatsApp').parentElement).toHaveAttribute('aria-disabled', 'false');
   });
 
-  test('keeps other non-editable components hidden', () => {
-    render(<Preview screens={screenWith({ type: 'NavigationList', name: 'plans' })} currentScreenIndex={0} />);
+  test('names a component type it has no label for after its type', () => {
+    render(<Preview screens={screenWith({ type: 'FutureWidget' })} currentScreenIndex={0} />);
 
-    expect(screen.queryByTestId('preview-embedded-link')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('preview-rich-text-placeholder')).not.toBeInTheDocument();
+    expect(screen.getByTestId('preview-placeholder')).toHaveTextContent('FutureWidget – shown in WhatsApp');
   });
 });

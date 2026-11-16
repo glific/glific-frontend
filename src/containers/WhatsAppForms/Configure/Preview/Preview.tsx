@@ -4,6 +4,18 @@ import BackgroundPhoneImage from 'assets/images/phone.png';
 import { ContentItem, ContentOption, Screen } from '../FormBuilder/FormBuilder.types';
 import styles from './Preview.module.css';
 
+const PLACEHOLDER_NAMES: Record<string, string> = {
+  RichText: 'Rich text',
+  CalendarPicker: 'Calendar picker',
+  NavigationList: 'Navigation list',
+  ImageCarousel: 'Image carousel',
+  PhotoPicker: 'Photo upload',
+  DocumentPicker: 'Document upload',
+  ChipsSelector: 'Chips selector',
+  If: 'Conditional content',
+  Switch: 'Conditional content',
+};
+
 interface PreviewProps {
   screens?: Screen[];
   currentScreenIndex: number;
@@ -166,6 +178,12 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     );
   };
 
+  const renderPlaceholder = (name: string) => (
+    <p data-testid="preview-placeholder" className={styles.Placeholder}>
+      {name} – shown in WhatsApp
+    </p>
+  );
+
   const renderUnsupportedContent = (item: ContentItem) => {
     const raw = item.data.rawComponent;
 
@@ -176,14 +194,18 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
             {raw.text}
           </span>
         );
-      case 'RichText':
-        return (
-          <p data-testid="preview-rich-text-placeholder" className={styles.Placeholder}>
-            Rich text – shown in WhatsApp
-          </p>
-        );
+      case 'CalendarPicker':
+        if (raw.mode === 'range') {
+          return (
+            <div className={styles.PlaceholderGroup}>
+              {renderPlaceholder('Calendar picker (start date)')}
+              {renderPlaceholder('Calendar picker (end date)')}
+            </div>
+          );
+        }
+        return renderPlaceholder(PLACEHOLDER_NAMES[raw.type]);
       default:
-        return null;
+        return raw?.type ? renderPlaceholder(PLACEHOLDER_NAMES[raw.type] || raw.type) : null;
     }
   };
 
