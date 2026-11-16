@@ -23,6 +23,8 @@ const PROMPT =
 // a phrase the content safety model scores as toxic in English, so the reply comes back untranslated
 const ABUSIVE_MESSAGE = 'fuck you';
 const SET_REPLY_PHRASE = 'avoid using hurtful or abusive words';
+// a made-up number in the international format the privacy check recognises
+const PHONE_NUMBER = '+91 67567 34234';
 
 const PAGE_TIMEOUT = 20000;
 const BUILD_TIMEOUT_MS = 180000;
@@ -74,10 +76,29 @@ const waitUntilBuilt = (version: string, deadline = Date.now() + BUILD_TIMEOUT_M
   });
 };
 
-const sendInSandbox = (message: string) => {
+const replyTo = (message: string) => {
+  cy.get('body').then(($body) => {
+    if ($body.find('[data-testid="newChatButton"]').length > 0) {
+      cy.get('[data-testid="newChatButton"]').click(BELOW_STICKY_HEADER);
+    }
+  });
+  cy.get('[data-testid="sandboxEmpty"]').should('be.visible');
+
   cy.get('[data-testid="sandboxInput"]').type(message);
   cy.get('[data-testid="sendMessageButton"]').click();
-  cy.get('[data-testid="userMessage"]').last().should('contain', message);
+  cy.get('[data-testid="userMessage"]').should('contain', message);
+
+  return cy
+    .get('[data-testid="assistantMessage"]', { timeout: REPLY_TIMEOUT })
+    .should('have.length', 1);
+};
+
+const expectAnswer = () =>
+  cy.get('[data-testid="assistantMessage"]').find('[data-testid="markdownAnswer"]').should('exist');
+
+const openGuardrailTrace = () => {
+  cy.get('[data-testid="guardrailTraceToggle"]').click(BELOW_STICKY_HEADER);
+  return cy.get('[data-testid="guardrailTraceInput"]').should('be.visible');
 };
 
 const deleteThroughApi = (path: string) => {
@@ -123,12 +144,13 @@ describe('an AI assistant, end to end against the real backend', () => {
 
     saveVersion();
 
-    cy.location('pathname', { timeout: 60000 }).should('match', /^\/assistants\/\d+$/);
+    cy.location('pathname', { timeout: 60000 })
+      .should('match', /^\/assistants\/\d+$/)
+      .then((path) => {
+        assistantPath = path;
+      });
     cy.contains('Assistant created successfully').should('be.visible');
     cy.get('[data-testid="headerTitle"]').should('contain', ASSISTANT_NAME);
-    cy.location('pathname').then((path) => {
-      assistantPath = path;
-    });
     versionOnScreen().then((version) => {
       firstVersion = version;
     });
@@ -150,12 +172,13 @@ describe('an AI assistant, end to end against the real backend', () => {
     guardrailToggle('content-safety').should('not.be.checked');
   });
 
-  it('saves Content Safety with a set reply as a new version', () => {
+  it('saves Content Safety and Privacy Protection as a new version', () => {
     openSavedAssistant();
     openTab('guardrails');
 
     toggleGuardrail('content-safety', { timeout: PAGE_TIMEOUT });
     setContentSafetyReply(CONTENT_SAFETY_REPLY);
+    toggleGuardrail('privacy-protection');
     saveVersion();
 
     cy.contains('Changes saved successfully', { timeout: 30000 }).should('be.visible');
@@ -169,12 +192,13 @@ describe('an AI assistant, end to end against the real backend', () => {
     });
   });
 
-  it('keeps the set reply on the saved version', () => {
+  it('keeps both guardrails, and the set reply, on the saved version', () => {
     openSavedAssistant(guardedVersion);
     waitUntilBuilt(guardedVersion);
     openTab('guardrails');
 
     guardrailToggle('content-safety', { timeout: PAGE_TIMEOUT }).should('be.checked');
+    guardrailToggle('privacy-protection').should('be.checked');
     cy.get('[data-testid="editReplyToggle"]').should('contain', 'Reply set');
     openContentSafetyReply();
     contentSafetyReplyInput().should('have.value', CONTENT_SAFETY_REPLY);
@@ -184,25 +208,35 @@ describe('an AI assistant, end to end against the real backend', () => {
     openSavedAssistant(guardedVersion);
     openTab('tryItOut');
 
-    sendInSandbox(ABUSIVE_MESSAGE);
-
-    cy.get('[data-testid="assistantMessage"]', { timeout: REPLY_TIMEOUT }).should(
-      'contain',
-      SET_REPLY_PHRASE
-    );
+    replyTo(ABUSIVE_MESSAGE).should('contain', SET_REPLY_PHRASE);
+    expectAnswer();
   });
 
   it('lets an ordinary message through to the assistant', () => {
     openSavedAssistant(guardedVersion);
     openTab('tryItOut');
 
-    sendInSandbox('Hello, what can you help me with?');
+    replyTo('Hello, what can you help me with?').should('not.contain', SET_REPLY_PHRASE);
+    expectAnswer();
+    cy.get('[data-testid="guardrailTraceToggle"]').should('contain', 'All checks passed');
+  });
 
-    cy.get('[data-testid="assistantMessage"]', { timeout: REPLY_TIMEOUT })
-      .should('not.contain', 'Could not get a reply')
-      .and('not.contain', SET_REPLY_PHRASE)
-      .invoke('text')
-      .should('not.be.empty');
+  it('hides a phone number before the message reaches the assistant', () => {
+    openSavedAssistant(guardedVersion);
+    openTab('tryItOut');
+
+    replyTo(`My phone number is ${PHONE_NUMBER}, please call me.`);
+    expectAnswer();
+
+    openGuardrailTrace().within(() => {
+      cy.get('[data-testid="guardrailCheck"]')
+        .filter(':contains("Privacy Protection")')
+        .should('contain', 'Flagged');
+      cy.get('[data-testid="guardrailTraceInput-changed"]')
+        .should('contain', 'Assistant received')
+        .and('not.contain', PHONE_NUMBER);
+    });
+    cy.get('[data-testid="ok-button"]').click();
   });
 
   it('deletes the assistant from the list', () => {
