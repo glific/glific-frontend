@@ -7,6 +7,7 @@ import axios from 'axios';
 import { FlowEditor } from './FlowEditor';
 import {
   getActiveFlow,
+  getActiveWebFlow,
   getInactiveFlow,
   getFlowWithoutKeyword,
   getOrganizationServicesQuery,
@@ -421,6 +422,25 @@ test('should open the share responder dialog box', async () => {
   await waitFor(() => {
     expect(screen.getByTestId('dialogHeading')).toHaveTextContent('Share Responder Link');
   });
+});
+
+test('shares a web flow as a web chat link, not a WhatsApp one', async () => {
+  // The file stubs window.location without a host; the web chat address is derived from it.
+  (window.location as any).hostname = 'tides.glific.com';
+  render(wrapperFunction([...mocks, getActiveWebFlow]));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('moreButton')).toBeInTheDocument();
+  });
+
+  fireEvent.click(screen.getByTestId('moreButton'));
+  fireEvent.click(screen.getByText('Share Responder Link'));
+
+  await waitFor(() => {
+    expect(screen.getByTestId('flowLink')).toHaveTextContent('https://web.tides.glific.com/?start=help');
+  });
+  expect(screen.getByTestId('flowLink')).not.toHaveTextContent('wa.me');
+  expect(screen.getByTestId('webChatAddress')).toBeInTheDocument();
 });
 
 test('should show warning when no keywords are present and share responder link is clicked', async () => {
