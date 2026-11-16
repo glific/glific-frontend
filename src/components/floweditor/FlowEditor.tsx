@@ -244,6 +244,7 @@ export const FlowEditor = () => {
       modal = (
         <ShareResponderLink
           shareDialogKeywords={keywords.map((keyword: any, index: number) => ({ label: keyword, id: index }))}
+          channel={flowChannel}
           handleClose={() => setShareDialog(false)}
         />
       );
