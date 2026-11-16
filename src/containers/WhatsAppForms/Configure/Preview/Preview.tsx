@@ -205,7 +205,8 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
         }
         return renderPlaceholder(PLACEHOLDER_NAMES[raw.type]);
       default:
-        return raw?.type ? renderPlaceholder(PLACEHOLDER_NAMES[raw.type] || raw.type) : null;
+        if (!raw?.type) return null;
+        return renderPlaceholder(Object.hasOwn(PLACEHOLDER_NAMES, raw.type) ? PLACEHOLDER_NAMES[raw.type] : raw.type);
     }
   };
 

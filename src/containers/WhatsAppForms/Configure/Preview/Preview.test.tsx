@@ -95,4 +95,10 @@ describe('Preview — non-editable components', () => {
 
     expect(screen.getByTestId('preview-placeholder')).toHaveTextContent('FutureWidget – shown in WhatsApp');
   });
+
+  test('does not treat inherited object keys as known component types', () => {
+    render(<Preview screens={screenWith({ type: '__proto__' })} currentScreenIndex={0} />);
+
+    expect(screen.getByTestId('preview-placeholder')).toHaveTextContent('__proto__ – shown in WhatsApp');
+  });
 });

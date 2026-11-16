@@ -497,6 +497,15 @@ const generateScreenPayload = (
 };
 
 /** Converts a single form builder screen into a WhatsApp Flow JSON screen object with layout, components, and footer. */
+const isFooterComponent = (component: any) => component?.type === 'Footer';
+
+const branchChildren = (branch: any): any[] => (Array.isArray(branch) ? branch : []);
+
+const ifBranchChildren = (ifComponent: any) => [
+  ...branchChildren(ifComponent?.then),
+  ...branchChildren(ifComponent?.else),
+];
+
 export const convertScreenToFlowJSON = (
   screen: Screen,
   screenIndex: number,
@@ -534,8 +543,12 @@ export const convertScreenToFlowJSON = (
     screen.content.length > 0 &&
     screen.content.every((item) => item.type === 'Unsupported' && item.data.rawComponent?.type === 'NavigationList');
 
+  const hasIfBranchFooter = screen.content.some(
+    (item) => item.data.rawComponent?.type === 'If' && ifBranchChildren(item.data.rawComponent).some(isFooterComponent)
+  );
+
   const footer =
-    screen.buttonLabel && !isNavigationListScreen
+    screen.buttonLabel && !isNavigationListScreen && !hasIfBranchFooter
       ? {
           label: screen.buttonLabel,
           'on-click-action': isTerminal
@@ -932,17 +945,26 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     const allComponents = [...directLayoutComponents, ...formChildren];
 
     // Footer validation — Footer can be inside Form or directly in layout
-    const isFooter = (c: any) => c?.type === 'Footer';
-    const footers = allComponents.filter(isFooter);
-    const nonFooterComponents = allComponents.filter((c: any) => !isFooter(c));
+    const footers = allComponents.filter(isFooterComponent);
+    const nonFooterComponents = allComponents.filter((c: any) => !isFooterComponent(c));
+
+    const ifComponents = allComponents.filter((c: any) => c?.type === 'If');
+    ifComponents.forEach((ifComponent: any) => {
+      ['then', 'else'].forEach((branch) => {
+        if (branch in ifComponent && !Array.isArray(ifComponent[branch])) {
+          errors.push({
+            message: `Screen '${screenLabel}': 'If' ${branch} must be a list of components`,
+            path: `screens[${i}]`,
+          });
+        }
+      });
+    });
 
     // Meta allows the screen's single Footer inside a top-level If, provided both branches carry one.
-    const ifsWithFooter = allComponents.filter(
-      (c: any) => c.type === 'If' && [...(c.then || []), ...(c.else || [])].some(isFooter)
-    );
+    const ifsWithFooter = ifComponents.filter((c: any) => ifBranchChildren(c).some(isFooterComponent));
     ifsWithFooter.forEach((ifComponent: any) => {
-      const thenFooters = (ifComponent.then || []).filter(isFooter);
-      const elseFooters = (ifComponent.else || []).filter(isFooter);
+      const thenFooters = branchChildren(ifComponent.then).filter(isFooterComponent);
+      const elseFooters = branchChildren(ifComponent.else).filter(isFooterComponent);
       if (thenFooters.length !== 1 || elseFooters.length !== 1) {
         errors.push({
           message: `Screen '${screenLabel}': A Footer inside 'If' must appear exactly once in both 'then' and 'else'`,
@@ -950,15 +972,14 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
         });
       }
     });
-    const ifBranchFooters = ifsWithFooter.flatMap((c: any) => [...(c.then || []), ...(c.else || [])].filter(isFooter));
+    const ifBranchFooters = ifsWithFooter.flatMap((c: any) => ifBranchChildren(c).filter(isFooterComponent));
     const footerCount = footers.length + ifsWithFooter.length;
 
     // Each NavigationList item carries its own action, and Meta forbids any other component beside it.
-    const isNavigationListScreen =
-      nonFooterComponents.length > 0 && nonFooterComponents.every((c: any) => c.type === 'NavigationList');
+    const hasNavigationList = nonFooterComponents.some((c: any) => c.type === 'NavigationList');
 
-    if (isNavigationListScreen) {
-      if (footerCount > 0) {
+    if (hasNavigationList) {
+      if (footerCount > 0 || nonFooterComponents.some((c: any) => c.type !== 'NavigationList')) {
         errors.push({
           message: `Screen '${screenLabel}': NavigationList cannot be combined with other components, including a Footer`,
           path: `screens[${i}]`,

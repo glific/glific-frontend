@@ -1861,6 +1861,18 @@ describe('validateFlowJson — all phases', () => {
     ]);
   });
 
+  test('a NavigationList beside another component is rejected even with a Footer', () => {
+    const mixedScreen = navigationListScreen([
+      navigationList,
+      { type: 'TextBody', text: 'Pick one' },
+      footer({ name: 'navigate', next: { type: 'screen', name: 'screen_one' }, payload: {} }),
+    ]);
+
+    expect(messages(flow([mixedScreen, validScreen()]))).toEqual([
+      "Screen 'Plans': NavigationList cannot be combined with other components, including a Footer",
+    ]);
+  });
+
   test('a NavigationList cannot be on the last screen', () => {
     expect(messages(flow([navigationListScreen()]))).toEqual([
       "Last screen 'Plans' cannot contain a NavigationList (it is the terminal screen)",
@@ -1906,6 +1918,13 @@ describe('validateFlowJson — all phases', () => {
     const json = flow([screenWithChildren([optIn, ifWith([completeFooter('Yes')], [completeFooter('')])])]);
 
     expect(messages(json)).toEqual(["Screen 'Screen 1': Footer label is required"]);
+  });
+
+  test('an If branch that is not a list is reported instead of crashing', () => {
+    const malformedIf = { type: 'If', condition: '${form.opt_in}', then: {}, else: [{ type: 'TextBody', text: 'No' }] };
+    const json = flow([screenWithChildren([optIn, malformedIf, completeFooter()])]);
+
+    expect(messages(json)).toEqual(["Screen 'Screen 1': 'If' then must be a list of components"]);
   });
 });
 
@@ -2026,6 +2045,27 @@ describe('round-trip preservation — unsupported components & extra attributes'
     const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
 
     expect(output.screens[0].layout.children).toEqual([navigationList]);
+    expect(validateFlowJson(output).errors).toEqual([]);
+  });
+
+  test('a screen whose If carries the Footer in both branches gets no extra Footer', () => {
+    const conditionalFooter = {
+      type: 'If',
+      condition: '${form.opt_in}',
+      then: [{ type: 'Footer', label: 'Yes', 'on-click-action': { name: 'complete', payload: {} } }],
+      else: [{ type: 'Footer', label: 'No', 'on-click-action': { name: 'complete', payload: {} } }],
+    };
+    const input = makeFlowJSON([{ type: 'OptIn', name: 'opt_in', label: 'Opt in' }]);
+    input.screens[0].layout.children[0].children = [
+      ...input.screens[0].layout.children[0].children.slice(0, -1),
+      conditionalFooter,
+    ] as any;
+
+    const output = convertFormBuilderToFlowJSON(convertFlowJSONToFormBuilder(input));
+    const outputChildren = output.screens[0].layout.children[0].children;
+
+    expect(outputChildren.filter((c: any) => c.type === 'Footer')).toEqual([]);
+    expect(outputChildren.find((c: any) => c.type === 'If')).toEqual(conditionalFooter);
     expect(validateFlowJson(output).errors).toEqual([]);
   });
 
