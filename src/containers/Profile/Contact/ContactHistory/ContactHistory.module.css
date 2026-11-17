@@ -13,8 +13,12 @@
 }
 
 .LineItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--app-space-sm);
   font-size: 16px;
-  max-width: 320px;
+  max-width: 420px;
   font-weight: 400;
   color: #073f24;
 }

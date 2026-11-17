@@ -3,7 +3,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import { BrowserRouter as Router } from 'react-router';
 import { vi } from 'vitest';
 
-import { LOGGED_IN_USER_MOCK, multiple_profile_mock as MULTIPLE_PROFILE_MOCK } from 'mocks/Contact';
+import {
+  LOGGED_IN_USER_MOCK,
+  getContactSampleQuery,
+  multiple_profile_mock as MULTIPLE_PROFILE_MOCK,
+} from 'mocks/Contact';
 import { getUsersEmptyVars2, getUsersEmptyVars } from 'mocks/User';
 import { Profile } from './Profile';
 
@@ -139,4 +143,46 @@ it('should show only profile deletion warning pop up when deleting  profile', as
     fireEvent.click(deleteButton);
   }
   expect(screen.getByText("You won't be able to send messages to this profile.")).toBeInTheDocument();
+});
+
+describe('on the contact profile, with channels', () => {
+  const renderWithChannels = (channels: any[]) =>
+    render(
+      <MockedProvider mocks={[...mocks, getContactSampleQuery({ id: '14' })]} addTypename={false}>
+        <Router>
+          <Profile {...props} removePhoneField channels={channels} />
+        </Router>
+      </MockedProvider>
+    );
+
+  it('shows contact details with each channel, and a read-only WhatsApp card', async () => {
+    renderWithChannels([
+      { channel: 'WHATSAPP', lastMessageAt: '2026-09-25T09:36:00Z' },
+      { channel: 'WEB', lastMessageAt: null },
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('contactDetails')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('Shared across all channels.')).toBeInTheDocument();
+    expect(await screen.findAllByTestId('channelRow')).toHaveLength(2);
+    expect(screen.getByTestId('whatsAppStatus')).toHaveTextContent('Valid contact');
+    expect(screen.getByTestId('whatsAppProviderStatus')).toHaveTextContent(
+      'Can send template messages and speed sends'
+    );
+    // The WhatsApp state moved into its own card, so it is no longer a form field.
+    expect(screen.queryByText('Provider status', { selector: 'h5' })).not.toBeInTheDocument();
+  });
+
+  it('a web-only contact has no WhatsApp card', async () => {
+    renderWithChannels([{ channel: 'WEB', lastMessageAt: null }]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('contactDetails')).toBeInTheDocument();
+    });
+
+    expect(await screen.findAllByTestId('channelRow')).toHaveLength(1);
+    expect(screen.queryByTestId('whatsAppDetails')).not.toBeInTheDocument();
+  });
 });

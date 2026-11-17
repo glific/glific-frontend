@@ -127,6 +127,10 @@ export const GET_CONTACT_DETAILS = gql`
           channel
           identifier
         }
+        channels {
+          channel
+          lastMessageAt
+        }
         status
         lastMessageAt
         groups {
@@ -151,6 +155,7 @@ export const GET_CONTACT_HISTORY = gql`
   query ContactHistory($filter: ContactsHistoryFilter, $opts: Opts) {
     contactHistory(filter: $filter, opts: $opts) {
       id
+      channel
       eventDatetime
       eventLabel
       eventMeta

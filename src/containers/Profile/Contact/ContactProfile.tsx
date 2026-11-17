@@ -48,7 +48,7 @@ export const ContactProfile = () => {
 
   const { contact } = data;
   const contactData = contact.contact;
-  const { phone, maskedPhone, identities, groups, lastMessage, settings, activeProfile } = contactData;
+  const { phone, maskedPhone, identities, channels, groups, lastMessageAt, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
   const contactDisplayName = getDisplayName(contactData);
@@ -155,7 +155,12 @@ export const ContactProfile = () => {
   let profileBodyContent;
   if (showProfileSection === 'profile') {
     profileBodyContent = (
-      <Profile multiProfileAttributes={switchProfile} removePhoneField redirectionLink={`chat/${params.id}`} />
+      <Profile
+        multiProfileAttributes={switchProfile}
+        removePhoneField
+        redirectionLink={`chat/${params.id}`}
+        channels={channels ?? []}
+      />
     );
   } else if (showProfileSection === 'details') {
     profileBodyContent = (
@@ -167,7 +172,7 @@ export const ContactProfile = () => {
         fields={fields}
         settings={settings}
         collections={groups}
-        lastMessage={lastMessage}
+        lastMessage={lastMessageAt}
       />
     );
   } else if (showProfileSection === 'history') {

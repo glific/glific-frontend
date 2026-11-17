@@ -1,0 +1,26 @@
+.Cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-xl);
+  max-width: 920px;
+  padding: var(--app-space-xl);
+}
+
+.Card {
+  padding: var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-white);
+}
+
+.CardTitle {
+  font-size: var(--app-font-size-lg);
+  font-weight: 600;
+  color: var(--app-color-text-heading);
+}
+
+.CardSubtitle {
+  margin: var(--app-space-2xs) 0 0;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}

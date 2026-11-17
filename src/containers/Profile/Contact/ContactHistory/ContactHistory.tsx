@@ -1,4 +1,5 @@
-import { STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { MessageChannel, STANDARD_DATE_TIME_FORMAT } from 'common/constants';
+import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
 import setLogs from 'config/logs';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
@@ -50,7 +51,11 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     }
   };
 
-  const getEventLabel = (eventLabel: string, eventType: string, eventMeta: string) => {
+  // Flow entries and the web channel's own entries say which channel they happened on. A flow entry
+  // written before channels were recorded has none, which ChannelLabel reads as WhatsApp.
+  const showsChannel = (eventType: string) => eventType.startsWith('contact_flow_') || eventType.startsWith('web_');
+
+  const getEventLabel = (eventLabel: string, eventType: string, eventMeta: string, channel?: MessageChannel | null) => {
     let label;
     switch (eventType) {
       case 'contact_flow_started':
@@ -68,7 +73,10 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
 
     return (
       <div className={styles.DetailBlock} key={eventLabel}>
-        <div className={styles.LineItem}>{label}</div>
+        <div className={styles.LineItem}>
+          {label}
+          {showsChannel(eventType) && <ChannelLabel channel={channel} variant="chip" testId="historyChannel" />}
+        </div>
       </div>
     );
   };
@@ -89,8 +97,8 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     { label: t('Date and Time'), name: 'inserted_at', sort: true, order: 'desc' },
   ];
 
-  const getColumns = ({ eventLabel, eventType, insertedAt, eventMeta }: any) => ({
-    eventLabel: getEventLabel(eventLabel, eventType, eventMeta),
+  const getColumns = ({ eventLabel, eventType, insertedAt, eventMeta, channel }: any) => ({
+    eventLabel: getEventLabel(eventLabel, eventType, eventMeta, channel),
     insertedAt: getInsertedAt(insertedAt),
   });
 

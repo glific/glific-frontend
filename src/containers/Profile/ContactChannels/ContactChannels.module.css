@@ -1,0 +1,54 @@
+.Channels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+  margin-bottom: var(--app-space-lg);
+}
+
+.Title {
+  font-size: var(--app-font-size-md);
+  font-weight: 500;
+  color: var(--app-color-text-heading);
+}
+
+.Table {
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  overflow: hidden;
+}
+
+.Row {
+  display: grid;
+  grid-template-columns: minmax(120px, 30%) 1fr;
+  align-items: center;
+  gap: var(--app-space-lg);
+  padding: var(--app-space-lg);
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-primary);
+}
+
+.Row + .Row {
+  border-top: 1px solid var(--app-color-border-muted);
+}
+
+.Header {
+  padding-top: var(--app-space-sm);
+  padding-bottom: var(--app-space-sm);
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+  background-color: var(--app-color-surface-raised);
+}
+
+.Activity {
+  overflow-wrap: anywhere;
+}
+
+.Empty {
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.Note {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}

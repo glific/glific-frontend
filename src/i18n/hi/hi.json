@@ -1176,5 +1176,13 @@
   "What should the assistant say when it blocks an abusive message?": "अपमानजनक संदेश को रोकने पर असिस्टेंट को क्या कहना चाहिए?",
   "Reply set": "जवाब तय है",
   "No reply set": "कोई जवाब तय नहीं",
-  "Identities": "पहचान"
+  "Identities": "पहचान",
+  "Contact details": "संपर्क विवरण",
+  "Shared across all channels.": "सभी चैनलों पर साझा।",
+  "Channels": "चैनल",
+  "Last activity": "पिछली गतिविधि",
+  "No activity yet": "अभी तक कोई गतिविधि नहीं",
+  "inbound message": "आने वाला संदेश",
+  "Last activity is the contact's most recent inbound message on that channel.": "पिछली गतिविधि उस चैनल पर संपर्क का सबसे हाल का आने वाला संदेश है।",
+  "Read only. Updated by Meta based on the contact's actions on WhatsApp.": "केवल पढ़ने के लिए। WhatsApp पर संपर्क की गतिविधियों के आधार पर Meta द्वारा अपडेट किया जाता है।"
 }

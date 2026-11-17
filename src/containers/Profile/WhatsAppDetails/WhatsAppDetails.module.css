@@ -1,0 +1,42 @@
+.Card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-xl);
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-white);
+}
+
+.Subtitle {
+  margin: 0;
+  font-size: var(--app-font-size-sm);
+  color: var(--app-color-text-tertiary);
+}
+
+.Tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--app-space-sm);
+  margin-top: var(--app-space-sm);
+}
+
+.Tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-2xs);
+  padding: var(--app-space-lg);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-surface-raised);
+}
+
+.TileLabel {
+  font-size: var(--app-font-size-xs);
+  color: var(--app-color-text-tertiary);
+}
+
+.TileValue {
+  font-size: var(--app-font-size-md);
+  font-weight: 600;
+  color: var(--app-color-text-heading);
+}

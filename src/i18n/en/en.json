@@ -1325,5 +1325,13 @@
   "What should the assistant say when it blocks an abusive message?": "What should the assistant say when it blocks an abusive message?",
   "Reply set": "Reply set",
   "No reply set": "No reply set",
-  "Identities": "Identities"
+  "Identities": "Identities",
+  "Contact details": "Contact details",
+  "Shared across all channels.": "Shared across all channels.",
+  "Channels": "Channels",
+  "Last activity": "Last activity",
+  "No activity yet": "No activity yet",
+  "inbound message": "inbound message",
+  "Last activity is the contact's most recent inbound message on that channel.": "Last activity is the contact's most recent inbound message on that channel.",
+  "Read only. Updated by Meta based on the contact's actions on WhatsApp.": "Read only. Updated by Meta based on the contact's actions on WhatsApp."
 }
