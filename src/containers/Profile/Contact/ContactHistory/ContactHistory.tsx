@@ -1,5 +1,6 @@
 import { MessageChannel, STANDARD_DATE_TIME_FORMAT } from 'common/constants';
 import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
+import { getOrganizationServices } from 'services/AuthService';
 import setLogs from 'config/logs';
 import { List } from 'containers/List/List';
 import dayjs from 'dayjs';
@@ -53,7 +54,10 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
 
   // Flow entries and the web channel's own entries say which channel they happened on. A flow entry
   // written before channels were recorded has none, which ChannelLabel reads as WhatsApp.
-  const showsChannel = (eventType: string) => eventType.startsWith('contact_flow_') || eventType.startsWith('web_');
+  // Without the web channel every entry would read WhatsApp, which says nothing, so none is shown.
+  const webChannelEnabled = getOrganizationServices('webChannelEnabled');
+  const showsChannel = (eventType: string) =>
+    webChannelEnabled && (eventType.startsWith('contact_flow_') || eventType.startsWith('web_'));
 
   const getEventLabel = (eventLabel: string, eventType: string, eventMeta: string, channel?: MessageChannel | null) => {
     let label;

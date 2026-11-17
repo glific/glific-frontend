@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { getContactStatus, getDisplayName } from 'common/utils';
+import { MESSAGE_CHANNELS } from 'common/constants';
+import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
@@ -67,6 +69,12 @@ export const ContactProfile = () => {
   }
 
   const statusMessage = getContactStatus(contactData);
+
+  // Web activity is only shown to an organization that has the web channel switched on.
+  const webChannelEnabled = getOrganizationServices('webChannelEnabled');
+  const visibleChannels = (channels ?? []).filter(
+    ({ channel }: { channel: string }) => webChannelEnabled || channel !== MESSAGE_CHANNELS.web
+  );
 
   const switchProfile = {
     selectedProfileId,
@@ -159,7 +167,7 @@ export const ContactProfile = () => {
         multiProfileAttributes={switchProfile}
         removePhoneField
         redirectionLink={`chat/${params.id}`}
-        channels={channels ?? []}
+        channels={visibleChannels}
       />
     );
   } else if (showProfileSection === 'details') {

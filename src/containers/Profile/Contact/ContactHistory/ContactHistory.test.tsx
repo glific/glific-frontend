@@ -71,7 +71,30 @@ describe('channels on history entries (#5877)', () => {
     },
   ];
 
+  const setWebChannel = (enabled: boolean) =>
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: enabled }));
+
+  afterEach(() => localStorage.removeItem('organizationServices'));
+
+  const renderHistory = () =>
+    render(
+      <MemoryRouter>
+        <MockedProvider mocks={channelMocks} addTypename={false}>
+          <ContactHistory contactId="2" />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+  it('shows no channel when the organization does not use the web channel', async () => {
+    setWebChannel(false);
+    const { findByText, queryByTestId } = renderHistory();
+
+    expect(await findByText('Web login code verified')).toBeInTheDocument();
+    expect(queryByTestId('historyChannel')).not.toBeInTheDocument();
+  });
+
   it('shows the channel on flow and web entries, reading an older entry with none as WhatsApp', async () => {
+    setWebChannel(true);
     const { findByText, getAllByTestId } = render(
       <MemoryRouter>
         <MockedProvider mocks={channelMocks} addTypename={false}>
