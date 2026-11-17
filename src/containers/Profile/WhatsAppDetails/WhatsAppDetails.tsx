@@ -18,7 +18,7 @@ export const WhatsAppDetails = ({ status, bspStatus }: WhatsAppDetailsProps) => 
 
   return (
     <section className={styles.Card} data-testid="whatsAppDetails">
-      <ChannelLabel channel={MESSAGE_CHANNELS.whatsapp} variant="chip" />
+      <ChannelLabel channel={MESSAGE_CHANNELS.whatsapp} variant="chip" icon />
       <p className={styles.Subtitle}>{t("Read only. Updated by Meta based on the contact's actions on WhatsApp.")}</p>
 
       <div className={styles.Tiles}>

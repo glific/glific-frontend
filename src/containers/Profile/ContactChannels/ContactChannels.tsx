@@ -39,7 +39,7 @@ export const ContactChannels = ({ channels }: ContactChannelsProps) => {
           {channels.map(({ channel, lastMessageAt }) => (
             <div className={styles.Row} role="row" key={channel} data-testid="channelRow">
               <span role="cell">
-                <ChannelLabel channel={channel} variant="chip" />
+                <ChannelLabel channel={channel} variant="chip" icon />
               </span>
               <span role="cell" className={styles.Activity} data-testid="channelLastActivity">
                 {lastMessageAt

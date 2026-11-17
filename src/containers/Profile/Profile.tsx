@@ -241,6 +241,8 @@ export const Profile = ({
       restrictDelete={hideRemoveBtn}
       noHeading
       afterFields={showsChannels ? <ContactChannels channels={channels} /> : undefined}
+      customStyles={showsChannels ? styles.CardForm : null}
+      buttonState={showsChannels ? { text: '', status: false, styles: styles.CardButtons, show: true } : undefined}
     />
   );
 

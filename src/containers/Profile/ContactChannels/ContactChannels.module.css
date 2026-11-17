@@ -1,19 +1,20 @@
 .Channels {
   display: flex;
   flex-direction: column;
-  gap: var(--app-space-sm);
-  margin-bottom: var(--app-space-lg);
+  gap: 8px;
+  margin-top: 18px;
 }
 
 .Title {
-  font-size: var(--app-font-size-md);
+  font-size: var(--app-font-size-sm);
   font-weight: 500;
+  line-height: 18px;
   color: var(--app-color-text-heading);
 }
 
 .Table {
   border: 1px solid var(--app-color-border);
-  border-radius: var(--app-radius-lg);
+  border-radius: 10px;
   overflow: hidden;
 }
 
@@ -22,8 +23,8 @@
   grid-template-columns: minmax(120px, 30%) 1fr;
   align-items: center;
   gap: var(--app-space-lg);
-  padding: var(--app-space-lg);
-  font-size: var(--app-font-size-sm);
+  padding: 10px 14px;
+  font-size: 13px;
   color: var(--app-color-text-primary);
 }
 
@@ -32,11 +33,11 @@
 }
 
 .Header {
-  padding-top: var(--app-space-sm);
-  padding-bottom: var(--app-space-sm);
+  padding-top: 8px;
+  padding-bottom: 8px;
   font-size: var(--app-font-size-xs);
   color: var(--app-color-text-tertiary);
-  background-color: var(--app-color-surface-raised);
+  background-color: var(--app-color-gray-tertiary);
 }
 
 .Activity {

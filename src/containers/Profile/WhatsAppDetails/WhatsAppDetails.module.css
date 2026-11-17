@@ -1,8 +1,8 @@
 .Card {
   display: flex;
   flex-direction: column;
-  gap: var(--app-space-sm);
-  padding: var(--app-space-xl);
+  gap: 6px;
+  padding: 20px;
   border: 1px solid var(--app-color-border);
   border-radius: var(--app-radius-lg);
   background-color: var(--app-color-white);
@@ -10,24 +10,25 @@
 
 .Subtitle {
   margin: 0;
-  font-size: var(--app-font-size-sm);
+  font-size: 13px;
   color: var(--app-color-text-tertiary);
 }
 
 .Tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--app-space-sm);
-  margin-top: var(--app-space-sm);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
 }
 
 .Tile {
   display: flex;
   flex-direction: column;
   gap: var(--app-space-2xs);
-  padding: var(--app-space-lg);
-  border-radius: var(--app-radius-lg);
-  background-color: var(--app-color-surface-raised);
+  padding: 12px 14px;
+  border-radius: 10px;
+  background-color: var(--app-color-gray-tertiary);
+  border: 1px solid var(--app-color-gray-secondary);
 }
 
 .TileLabel {
@@ -36,7 +37,7 @@
 }
 
 .TileValue {
-  font-size: var(--app-font-size-md);
+  font-size: var(--app-font-size-sm);
   font-weight: 600;
   color: var(--app-color-text-heading);
 }
