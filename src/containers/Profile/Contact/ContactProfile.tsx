@@ -70,11 +70,11 @@ export const ContactProfile = () => {
 
   const statusMessage = getContactStatus(contactData);
 
-  // Web activity is only shown to an organization that has the web channel switched on.
+  // Web activity and web logins are only shown to an organization that has the web channel on.
   const webChannelEnabled = getOrganizationServices('webChannelEnabled');
-  const visibleChannels = (channels ?? []).filter(
-    ({ channel }: { channel: string }) => webChannelEnabled || channel !== MESSAGE_CHANNELS.web
-  );
+  const shownOnThisOrg = ({ channel }: { channel: string }) => webChannelEnabled || channel !== MESSAGE_CHANNELS.web;
+  const visibleChannels = (channels ?? []).filter(shownOnThisOrg);
+  const visibleIdentities = identities?.filter(shownOnThisOrg);
 
   const switchProfile = {
     selectedProfileId,
@@ -176,7 +176,7 @@ export const ContactProfile = () => {
         statusMessage={statusMessage}
         phone={phone}
         maskedPhone={maskedPhone}
-        identities={identities}
+        identities={visibleIdentities}
         fields={fields}
         settings={settings}
         collections={groups}

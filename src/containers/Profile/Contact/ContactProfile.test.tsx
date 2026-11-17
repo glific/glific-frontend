@@ -62,7 +62,10 @@ describe('contact profile details for a web-only contact', () => {
   });
   const mocks = [webOnlyDetails, webOnlyDetails, ...LOGGED_IN_USER_MOCK, ...historyMock];
 
+  afterEach(() => localStorage.removeItem('organizationServices'));
+
   test('shows the web identity and no phone value', async () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
     render(
       <MemoryRouter initialEntries={['/contact-profile/1']}>
         <MockedProvider mocks={mocks} addTypename={false}>
@@ -79,6 +82,27 @@ describe('contact profile details for a web-only contact', () => {
       expect(screen.getByTestId('identity')).toHaveTextContent('Webravi_web');
     });
     expect(screen.getByTestId('phone')).toHaveTextContent(/^-$/);
+  });
+
+  test('hides the web identity when the web channel is off', async () => {
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: false }));
+
+    render(
+      <MemoryRouter initialEntries={['/contact-profile/1']}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Routes>
+            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
+          </Routes>
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(await screen.findByText('Details'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('phone')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('identity')).not.toBeInTheDocument();
   });
 });
 
