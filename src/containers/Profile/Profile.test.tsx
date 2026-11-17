@@ -167,10 +167,8 @@ describe('on the contact profile, with channels', () => {
 
     expect(screen.getByText('Shared across all channels.')).toBeInTheDocument();
     expect(await screen.findAllByTestId('channelRow')).toHaveLength(2);
-    expect(screen.getByTestId('whatsAppStatus')).toHaveTextContent('Valid contact');
-    expect(screen.getByTestId('whatsAppProviderStatus')).toHaveTextContent(
-      'Can send template messages and speed sends'
-    );
+    expect(screen.getByTestId('whatsAppStatus')).toHaveTextContent(/^VALID$/);
+    expect(screen.getByTestId('whatsAppProviderStatus')).toHaveTextContent(/^SESSION_AND_HSM$/);
     // The WhatsApp state moved into its own card, so it is no longer a form field.
     expect(screen.queryByText('Provider status', { selector: 'h5' })).not.toBeInTheDocument();
   });
