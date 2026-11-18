@@ -497,6 +497,15 @@ const generateScreenPayload = (
 };
 
 /** Converts a single form builder screen into a WhatsApp Flow JSON screen object with layout, components, and footer. */
+const isFooterComponent = (component: any) => component?.type === 'Footer';
+
+const branchChildren = (branch: any): any[] => (Array.isArray(branch) ? branch : []);
+
+const ifBranchChildren = (ifComponent: any) => [
+  ...branchChildren(ifComponent?.then),
+  ...branchChildren(ifComponent?.else),
+];
+
 export const convertScreenToFlowJSON = (
   screen: Screen,
   screenIndex: number,
@@ -529,16 +538,26 @@ export const convertScreenToFlowJSON = (
 
   const payload = generateScreenPayload(screen.content, fieldNameMap, previousScreensPayloadData, isTerminal);
 
-  const footer = screen.buttonLabel
-    ? {
-        label: screen.buttonLabel,
-        'on-click-action': isTerminal
-          ? { name: 'complete', payload }
-          : { name: 'navigate', next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' }, payload },
-        type: 'Footer',
-        ...screen.footerAttributes,
-      }
-    : null;
+  // Meta forbids a Footer beside a NavigationList; its list items carry the navigation.
+  const isNavigationListScreen =
+    screen.content.length > 0 &&
+    screen.content.every((item) => item.type === 'Unsupported' && item.data.rawComponent?.type === 'NavigationList');
+
+  const hasIfBranchFooter = screen.content.some(
+    (item) => item.data.rawComponent?.type === 'If' && ifBranchChildren(item.data.rawComponent).some(isFooterComponent)
+  );
+
+  const footer =
+    screen.buttonLabel && !isNavigationListScreen && !hasIfBranchFooter
+      ? {
+          label: screen.buttonLabel,
+          'on-click-action': isTerminal
+            ? { name: 'complete', payload }
+            : { name: 'navigate', next: { name: nextScreenId || 'NEXT_SCREEN', type: 'screen' }, payload },
+          type: 'Footer',
+          ...screen.footerAttributes,
+        }
+      : null;
 
   const screenData = generateScreenData(previousScreensPayloadData);
 
@@ -665,7 +684,14 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
     return null;
   }
 
-  const internalType = getInternalComponentType(type);
+  // Meta also accepts a data-source bound to screen data ("${data.options}"); the builder cannot
+  // edit that, so such components are kept exactly as written. Text given as an array of lines is
+  // joined into one editable string instead.
+  const isLines = Array.isArray(component.text) && component.text.every((line: any) => typeof line === 'string');
+  const hasUneditableShape =
+    ('data-source' in component && !Array.isArray(component['data-source'])) ||
+    ('text' in component && typeof component.text !== 'string' && !isLines);
+  const internalType = hasUneditableShape ? { type: 'Unsupported', name: type } : getInternalComponentType(type);
   const contentItem: ContentItem = {
     id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
     type: internalType.type,
@@ -683,7 +709,7 @@ const convertWhatsAppComponentToContentItem = (component: any, order: number): C
   if (['TextHeading', 'TextSubheading', 'TextCaption', 'TextBody'].includes(type)) {
     const extraAttributes = extractExtraAttributes(component, type);
     contentItem.data = {
-      text: component.text || '',
+      text: Array.isArray(component.text) ? component.text.join('\n') : component.text || '',
       ...(extraAttributes && { extraAttributes }),
     };
     return contentItem;
@@ -919,96 +945,139 @@ export const validateFlowJson = (parsedJson: any): FlowJsonValidationResult => {
     const allComponents = [...directLayoutComponents, ...formChildren];
 
     // Footer validation — Footer can be inside Form or directly in layout
-    const footers = allComponents.filter((c: any) => c.type === 'Footer');
-    const nonFooterComponents = allComponents.filter((c: any) => c.type !== 'Footer');
+    const footers = allComponents.filter(isFooterComponent);
+    const nonFooterComponents = allComponents.filter((c: any) => !isFooterComponent(c));
 
-    if (footers.length === 0) {
+    const ifComponents = allComponents.filter((c: any) => c?.type === 'If');
+    ifComponents.forEach((ifComponent: any) => {
+      ['then', 'else'].forEach((branch) => {
+        if (branch in ifComponent && !Array.isArray(ifComponent[branch])) {
+          errors.push({
+            message: `Screen '${screenLabel}': 'If' ${branch} must be a list of components`,
+            path: `screens[${i}]`,
+          });
+        }
+      });
+    });
+
+    // Meta allows the screen's single Footer inside a top-level If, provided both branches carry one.
+    const ifsWithFooter = ifComponents.filter((c: any) => ifBranchChildren(c).some(isFooterComponent));
+    ifsWithFooter.forEach((ifComponent: any) => {
+      const thenFooters = branchChildren(ifComponent.then).filter(isFooterComponent);
+      const elseFooters = branchChildren(ifComponent.else).filter(isFooterComponent);
+      if (thenFooters.length !== 1 || elseFooters.length !== 1) {
+        errors.push({
+          message: `Screen '${screenLabel}': A Footer inside 'If' must appear exactly once in both 'then' and 'else'`,
+          path: `screens[${i}]`,
+        });
+      }
+    });
+    const ifBranchFooters = ifsWithFooter.flatMap((c: any) => ifBranchChildren(c).filter(isFooterComponent));
+    const footerCount = footers.length + ifsWithFooter.length;
+
+    // Each NavigationList item carries its own action, and Meta forbids any other component beside it.
+    const hasNavigationList = nonFooterComponents.some((c: any) => c.type === 'NavigationList');
+
+    if (hasNavigationList) {
+      if (footerCount > 0 || nonFooterComponents.some((c: any) => c.type !== 'NavigationList')) {
+        errors.push({
+          message: `Screen '${screenLabel}': NavigationList cannot be combined with other components, including a Footer`,
+          path: `screens[${i}]`,
+        });
+      }
+      if (isLast) {
+        errors.push({
+          message: `Last screen '${screenLabel}' cannot contain a NavigationList (it is the terminal screen)`,
+          path: `screens[${i}]`,
+        });
+      }
+    } else if (footerCount === 0) {
       errors.push({
         message: `Screen '${screenLabel}': Must have exactly one Footer component`,
         path: `screens[${i}]`,
       });
-    } else if (footers.length > 1) {
+    } else if (footerCount > 1) {
       errors.push({
-        message: `Screen '${screenLabel}': Must have exactly one Footer component, found ${footers.length}`,
+        message: `Screen '${screenLabel}': Must have exactly one Footer component, found ${footerCount}`,
         path: `screens[${i}]`,
       });
     } else {
-      const footer = footers[0];
-
-      if (!footer.label || typeof footer.label !== 'string' || footer.label.trim() === '') {
-        errors.push({
-          message: `Screen '${screenLabel}': Footer label is required`,
-          path: `screens[${i}].Footer.label`,
-        });
-      } else if (footer.label.length > 35) {
-        errors.push({
-          message: `Screen '${screenLabel}': Footer label must be 35 characters or fewer (currently ${footer.label.length})`,
-          path: `screens[${i}].Footer.label`,
-        });
-      }
-
-      // Phase 4: Action validation
-      const action = footer['on-click-action'];
-      if (!action) {
-        errors.push({
-          message: `Screen '${screenLabel}': Footer must have an 'on-click-action'`,
-          path: `screens[${i}].Footer.on-click-action`,
-        });
-      } else {
-        const actionName = action.name;
-
-        if (actionName !== 'navigate' && actionName !== 'complete') {
+      [...footers, ...ifBranchFooters].forEach((footer: any) => {
+        if (!footer.label || typeof footer.label !== 'string' || footer.label.trim() === '') {
           errors.push({
-            message: `Screen '${screenLabel}': Action must be 'navigate' or 'complete', found '${actionName}'`,
-            path: `screens[${i}].Footer.on-click-action.name`,
+            message: `Screen '${screenLabel}': Footer label is required`,
+            path: `screens[${i}].Footer.label`,
+          });
+        } else if (footer.label.length > 35) {
+          errors.push({
+            message: `Screen '${screenLabel}': Footer label must be 35 characters or fewer (currently ${footer.label.length})`,
+            path: `screens[${i}].Footer.label`,
           });
         }
 
-        if (isLast) {
-          if (actionName !== 'complete') {
-            errors.push({
-              message: `Last screen '${screenLabel}' must use 'complete' action (it is the terminal screen)`,
-              path: `screens[${i}].Footer.on-click-action.name`,
-            });
-          }
-          if (screen.terminal !== true) {
-            errors.push({
-              message: `Last screen '${screenLabel}' must have 'terminal: true'`,
-              path: `screens[${i}].terminal`,
-            });
-          }
+        // Phase 4: Action validation
+        const action = footer['on-click-action'];
+        if (!action) {
+          errors.push({
+            message: `Screen '${screenLabel}': Footer must have an 'on-click-action'`,
+            path: `screens[${i}].Footer.on-click-action`,
+          });
         } else {
-          if (actionName !== 'navigate') {
+          const actionName = action.name;
+
+          if (actionName !== 'navigate' && actionName !== 'complete') {
             errors.push({
-              message: `Screen '${screenLabel}': Non-terminal screens must use 'navigate' action`,
+              message: `Screen '${screenLabel}': Action must be 'navigate' or 'complete', found '${actionName}'`,
               path: `screens[${i}].Footer.on-click-action.name`,
             });
           }
 
-          if (actionName === 'navigate') {
-            const { next } = action;
-            if (!next || !next.name) {
+          if (isLast) {
+            if (actionName !== 'complete') {
               errors.push({
-                message: `Screen '${screenLabel}': Navigate action must specify a 'next' screen`,
-                path: `screens[${i}].Footer.on-click-action.next`,
+                message: `Last screen '${screenLabel}' must use 'complete' action (it is the terminal screen)`,
+                path: `screens[${i}].Footer.on-click-action.name`,
               });
-            } else {
-              if (next.type !== 'screen') {
+            }
+            if (screen.terminal !== true) {
+              errors.push({
+                message: `Last screen '${screenLabel}' must have 'terminal: true'`,
+                path: `screens[${i}].terminal`,
+              });
+            }
+          } else {
+            if (actionName !== 'navigate') {
+              errors.push({
+                message: `Screen '${screenLabel}': Non-terminal screens must use 'navigate' action`,
+                path: `screens[${i}].Footer.on-click-action.name`,
+              });
+            }
+
+            if (actionName === 'navigate') {
+              const { next } = action;
+              if (!next || !next.name) {
                 errors.push({
-                  message: `Screen '${screenLabel}': Navigate next.type must be 'screen'`,
-                  path: `screens[${i}].Footer.on-click-action.next.type`,
+                  message: `Screen '${screenLabel}': Navigate action must specify a 'next' screen`,
+                  path: `screens[${i}].Footer.on-click-action.next`,
                 });
-              }
-              if (!allScreenIds.has(next.name)) {
-                errors.push({
-                  message: `Screen '${screenLabel}': Navigate action references non-existent screen '${next.name}'`,
-                  path: `screens[${i}].Footer.on-click-action.next.name`,
-                });
+              } else {
+                if (next.type !== 'screen') {
+                  errors.push({
+                    message: `Screen '${screenLabel}': Navigate next.type must be 'screen'`,
+                    path: `screens[${i}].Footer.on-click-action.next.type`,
+                  });
+                }
+                if (!allScreenIds.has(next.name)) {
+                  errors.push({
+                    message: `Screen '${screenLabel}': Navigate action references non-existent screen '${next.name}'`,
+                    path: `screens[${i}].Footer.on-click-action.next.name`,
+                  });
+                }
               }
             }
           }
         }
-      }
+      });
     }
 
     // Component count limit
