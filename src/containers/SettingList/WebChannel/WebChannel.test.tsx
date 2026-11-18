@@ -454,23 +454,36 @@ describe('organisation details', () => {
     expect(screen.queryByText('Hours')).not.toBeInTheDocument();
   });
 
-  it('will not save without a picture, name, description and website', async () => {
+  it('will not save without a picture and a name', async () => {
     const notification = vi.spyOn(Notification, 'setNotification');
     render(wrapper(on));
 
     await waitFor(() => expect(screen.getByTestId('display_name')).toBeInTheDocument());
     fill('fileUrlInput', '');
     fill('display_name', '');
-    fill('about_description', '');
-    fill('about_website', '');
 
     await save();
 
     await waitFor(() => expect(screen.getByText('Display name is required.')).toBeInTheDocument());
     expect(screen.getByText('Add a display picture.')).toBeInTheDocument();
-    expect(screen.getByText('Description is required.')).toBeInTheDocument();
-    expect(screen.getByText('Website is required.')).toBeInTheDocument();
     expect(notification).not.toHaveBeenCalled();
+  });
+
+  it('saves without a description or a website', async () => {
+    const notification = vi.spyOn(Notification, 'setNotification');
+    render(
+      wrapper([
+        ...on,
+        updateWebChannelCredential({ ...SAVED, about_description: '', about_website: '' }, NO_JWT_SECRETS),
+      ])
+    );
+
+    await waitFor(() => expect(screen.getByTestId('about_description')).toBeInTheDocument());
+    fill('about_description', '');
+    fill('about_website', '');
+    await save();
+
+    await waitFor(() => expect(notification).toHaveBeenCalledWith('Settings edited successfully!'));
   });
 
   it('counts characters against the name and description limits', async () => {
