@@ -1183,5 +1183,6 @@
   "No activity yet": "अभी तक कोई गतिविधि नहीं",
   "inbound message": "आने वाला संदेश",
   "Last activity is the contact's most recent inbound message on that channel.": "पिछली गतिविधि उस चैनल पर संपर्क का सबसे हाल का आने वाला संदेश है।",
+  "Last activity is this profile's most recent inbound message on that channel.": "अंतिम गतिविधि उस चैनल पर इस प्रोफ़ाइल का सबसे हाल का इनबाउंड संदेश है।",
   "Read only. Updated by Meta based on the contact's actions on WhatsApp.": "केवल पढ़ने के लिए। WhatsApp पर संपर्क की गतिविधियों के आधार पर Meta द्वारा अपडेट किया जाता है।"
 }

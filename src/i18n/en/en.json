@@ -1332,5 +1332,6 @@
   "No activity yet": "No activity yet",
   "inbound message": "inbound message",
   "Last activity is the contact's most recent inbound message on that channel.": "Last activity is the contact's most recent inbound message on that channel.",
+  "Last activity is this profile's most recent inbound message on that channel.": "Last activity is this profile's most recent inbound message on that channel.",
   "Read only. Updated by Meta based on the contact's actions on WhatsApp.": "Read only. Updated by Meta based on the contact's actions on WhatsApp."
 }

@@ -184,6 +184,10 @@ export const GET_CONTACT_PROFILES = gql`
       language {
         id
       }
+      channels {
+        channel
+        lastMessageAt
+      }
     }
   }
 `;

@@ -73,7 +73,10 @@ export const ContactProfile = () => {
   // Web activity and web logins are only shown to an organization that has the web channel on.
   const webChannelEnabled = getOrganizationServices('webChannelEnabled');
   const shownOnThisOrg = ({ channel }: { channel: string }) => webChannelEnabled || channel !== MESSAGE_CHANNELS.web;
-  const visibleChannels = (channels ?? []).filter(shownOnThisOrg);
+  // With profiles, the times are the selected profile's own: its inbound messages while it was the
+  // active one. The channel list itself is the contact's, shared by every profile.
+  const profileChannels = selectedProfile?.channels;
+  const visibleChannels = (profileChannels ?? channels ?? []).filter(shownOnThisOrg);
   const visibleIdentities = identities?.filter(shownOnThisOrg);
 
   const switchProfile = {
@@ -168,6 +171,7 @@ export const ContactProfile = () => {
         removePhoneField
         redirectionLink={`chat/${params.id}`}
         channels={visibleChannels}
+        channelsPerProfile={!!profileChannels}
       />
     );
   } else if (showProfileSection === 'details') {

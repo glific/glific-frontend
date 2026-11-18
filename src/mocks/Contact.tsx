@@ -147,6 +147,7 @@ export const getMultipleProfiles = {
           fields: '{}',
           language: { id: '1' },
           type: 'Student',
+          channels: [{ channel: 'WHATSAPP', lastMessageAt: '2026-11-18T07:52:41Z' }],
         },
         {
           id: '3',
@@ -156,6 +157,7 @@ export const getMultipleProfiles = {
           fields: '{}',
           language: { id: '1' },
           type: 'Parent',
+          channels: [{ channel: 'WHATSAPP', lastMessageAt: null }],
         },
       ],
     },

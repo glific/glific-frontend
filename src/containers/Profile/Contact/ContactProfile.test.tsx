@@ -163,6 +163,26 @@ describe('contact profile with multiple profiles', () => {
     });
   });
 
+  test("shows each profile's own channel activity", async () => {
+    render(wrapper);
+
+    await waitFor(() => {
+      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 1');
+    });
+    expect(screen.getByTestId('channelLastActivity')).toHaveTextContent('inbound message');
+    expect(
+      screen.getByText("Last activity is this profile's most recent inbound message on that channel.")
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId('profileHeader')[1]);
+
+    // The second profile has never been the active one, so it has no activity of its own.
+    await waitFor(() => {
+      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 2');
+    });
+    expect(screen.getByTestId('channelLastActivity')).toHaveTextContent('No activity yet');
+  });
+
   test('should only show active profiles and shows correct status cues', async () => {
     render(wrapper);
 

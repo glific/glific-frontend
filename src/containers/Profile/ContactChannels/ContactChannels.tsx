@@ -12,13 +12,16 @@ export interface ContactChannel {
 
 export interface ContactChannelsProps {
   channels: ContactChannel[];
+  /** The times are one profile's: its inbound messages while it was the contact's active profile. */
+  perProfile?: boolean;
 }
 
 /**
- * The channels a contact uses, each with when the contact last messaged on it. One list for the
- * contact rather than per profile: every profile shares the contact's WhatsApp and Web activity.
+ * The channels a contact uses, each with when the contact last messaged on it. The channels are
+ * the contact's, shared by all its profiles; with `perProfile` the times are the selected
+ * profile's own, so a profile that has never been active reads "No activity yet".
  */
-export const ContactChannels = ({ channels }: ContactChannelsProps) => {
+export const ContactChannels = ({ channels, perProfile = false }: ContactChannelsProps) => {
   const { t } = useTranslation();
 
   return (
@@ -52,7 +55,9 @@ export const ContactChannels = ({ channels }: ContactChannelsProps) => {
       )}
 
       <div className={styles.Note}>
-        {t("Last activity is the contact's most recent inbound message on that channel.")}
+        {perProfile
+          ? t("Last activity is this profile's most recent inbound message on that channel.")
+          : t("Last activity is the contact's most recent inbound message on that channel.")}
       </div>
     </div>
   );

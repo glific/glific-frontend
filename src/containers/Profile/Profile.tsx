@@ -31,6 +31,8 @@ export interface ProfileProps {
    * contact details with the channels, and the WhatsApp state on its own, read only.
    */
   channels?: ContactChannel[];
+  /** The channel times are the selected profile's own rather than the whole contact's. */
+  channelsPerProfile?: boolean;
 }
 
 export const Profile = ({
@@ -39,6 +41,7 @@ export const Profile = ({
   removePhoneField = false,
   multiProfileAttributes,
   channels,
+  channelsPerProfile = false,
 }: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -240,7 +243,7 @@ export const Profile = ({
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
       noHeading
-      afterFields={showsChannels ? <ContactChannels channels={channels} /> : undefined}
+      afterFields={showsChannels ? <ContactChannels channels={channels} perProfile={channelsPerProfile} /> : undefined}
       customStyles={showsChannels ? styles.CardForm : null}
       buttonState={showsChannels ? { text: '', status: false, styles: styles.CardButtons, show: true } : undefined}
     />
