@@ -10,6 +10,8 @@ export interface ChannelLabelProps {
   testId?: string;
   /** The channel's logo in place of the coloured dot. */
   icon?: boolean;
+  /** Extra class for a screen that needs the label sized or placed differently. */
+  className?: string;
 }
 
 const CHANNEL_DETAILS: Record<
@@ -30,6 +32,7 @@ export const ChannelLabel = ({
   variant = 'inline',
   testId = 'channelLabel',
   icon = false,
+  className = '',
 }: ChannelLabelProps) => {
   const known = channel == null ? CHANNEL_DETAILS[MESSAGE_CHANNELS.whatsapp] : CHANNEL_DETAILS[channel];
   const { label, dotClass, chipClass, Icon } = known ?? {
@@ -42,7 +45,10 @@ export const ChannelLabel = ({
   const isChip = variant === 'chip';
 
   return (
-    <div className={`${styles.ChannelLabel} ${isChip ? `${styles.Chip} ${chipClass}` : ''}`} data-testid={testId}>
+    <div
+      className={`${styles.ChannelLabel} ${isChip ? `${styles.Chip} ${chipClass}` : ''} ${className}`}
+      data-testid={testId}
+    >
       {icon && Icon ? (
         <Icon className={styles.Icon} aria-hidden="true" data-testid="channelIcon" />
       ) : (

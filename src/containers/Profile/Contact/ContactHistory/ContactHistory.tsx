@@ -78,8 +78,10 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     return (
       <div className={styles.DetailBlock} key={eventLabel}>
         <div className={styles.LineItem}>
-          {label}
-          {showsChannel(eventType) && <ChannelLabel channel={channel} variant="chip" testId="historyChannel" />}
+          <div className={styles.LineText}>{label}</div>
+          {showsChannel(eventType) && (
+            <ChannelLabel channel={channel} variant="chip" testId="historyChannel" className={styles.HistoryChip} />
+          )}
         </div>
       </div>
     );
