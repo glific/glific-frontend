@@ -1,3 +1,5 @@
+import { SAMPLE_MEDIA } from '../utils/sample-media';
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -79,9 +81,7 @@ Cypress.Commands.add('sendImageAttachment', (type) => {
     'body > #menu-attachmentType > .MuiPaper-root > .MuiList-root > .MuiButtonBase-root:nth-child(1)'
   ).click();
   cy.get('[data-testid="outlinedInput"]').click();
-  cy.get('[data-testid="outlinedInput"]').type(
-    'https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg'
-  );
+  cy.get('[data-testid="outlinedInput"]').type(SAMPLE_MEDIA.image);
   cy.wait(2000);
   cy.addAttachmentCaption(captions, type);
 });
@@ -94,9 +94,7 @@ Cypress.Commands.add('sendVideoAttachment', (type) => {
     'body > #menu-attachmentType > .MuiPaper-root > .MuiList-root > .MuiButtonBase-root:nth-child(3)'
   ).click();
   cy.get('[data-testid="outlinedInput"]').click();
-  cy.get('[data-testid="outlinedInput"]').type(
-    'https://www.buildquickbots.com/whatsapp/media/sample/video/sample01.mp4'
-  );
+  cy.get('[data-testid="outlinedInput"]').type(SAMPLE_MEDIA.video);
   cy.wait(2000);
   cy.addAttachmentCaption(captions, type);
 });
@@ -108,9 +106,7 @@ Cypress.Commands.add('sendAudioAttachment', (type) => {
     'body > #menu-attachmentType > .MuiPaper-root > .MuiList-root > .MuiButtonBase-root:nth-child(2)'
   ).click();
   cy.get('[data-testid="outlinedInput"]').click();
-  cy.get('[data-testid="outlinedInput"]').type(
-    'https://www.buildquickbots.com/whatsapp/media/sample/audio/sample01.mp3'
-  );
+  cy.get('[data-testid="outlinedInput"]').type(SAMPLE_MEDIA.audio);
   cy.wait(2000);
   cy.addAttachmentCaption('', type);
 });
@@ -123,9 +119,7 @@ Cypress.Commands.add('sendDocumentAttachment', (type) => {
     'body > #menu-attachmentType > .MuiPaper-root > .MuiList-root > .MuiButtonBase-root:nth-child(4)'
   ).click();
   cy.get('[data-testid="outlinedInput"]').click();
-  cy.get('[data-testid="outlinedInput"]').type(
-    'https://www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf'
-  );
+  cy.get('[data-testid="outlinedInput"]').type(SAMPLE_MEDIA.document);
   cy.wait(2000);
   cy.addAttachmentCaption(captions, type);
 });
@@ -137,9 +131,7 @@ Cypress.Commands.add('sendStickerAttachment', (type) => {
     'body > #menu-attachmentType > .MuiPaper-root > .MuiList-root > .MuiButtonBase-root:nth-child(5)'
   ).click();
   cy.get('[data-testid="outlinedInput"]').click();
-  cy.get('[data-testid="outlinedInput"]').type(
-    'http://www.buildquickbots.com/whatsapp/stickers/SampleSticker01.webp'
-  );
+  cy.get('[data-testid="outlinedInput"]').type(SAMPLE_MEDIA.sticker);
   cy.wait(2000);
   cy.addAttachmentCaption('', type);
 });

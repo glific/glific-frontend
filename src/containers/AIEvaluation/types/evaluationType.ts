@@ -12,6 +12,11 @@ export interface EvaluationMetrics {
 
 export type ScoreBand = 'good' | 'okay' | 'bad';
 
+export interface EvaluationLatencyProps {
+  avgResponseMs: number | null;
+  variant: 'chip' | 'text';
+}
+
 export type EvaluationScoresFormat = 'row' | 'grouped';
 
 export interface EvaluationTraceScore {

@@ -12,7 +12,7 @@ import { Search } from 'containers/Search/Search';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import { getUserRolePermissions } from 'context/role';
 import { SEARCH_OFFSET } from 'graphql/queries/Search';
-import { MessageChannel } from 'common/constants';
+import { MESSAGE_CHANNELS, MessageChannel } from 'common/constants';
 import ConversationList from './ConversationList/ConversationList';
 import styles from './ChatConversations.module.css';
 import Track from 'services/TrackService';
@@ -49,6 +49,7 @@ export const ChatConversations = ({
   const location = useLocation();
 
   let groups: boolean = location.pathname.includes('group');
+  const isWeb = channel === MESSAGE_CHANNELS.web;
 
   // restore multi-search after conversation click
   useEffect(() => {
@@ -61,6 +62,15 @@ export const ChatConversations = ({
   useEffect(() => {
     setSelectedContactId(entityId?.toString());
   }, [entityId]);
+
+  // The saved-search filters are hidden on Web, so one picked on WhatsApp would otherwise keep
+  // filtering the list with nothing on screen to clear it.
+  useEffect(() => {
+    if (isWeb) {
+      setSavedSearchCriteria('');
+      setSavedSearchCriteriaId(null);
+    }
+  }, [isWeb]);
 
   useEffect(() => {
     if (setAppliedFilters) {
@@ -223,18 +233,22 @@ export const ChatConversations = ({
       </div>
     ) : null;
 
-  let filter: any = filterComponent || (
-    <SavedSearchToolbar
-      savedSearchCriteriaCallback={handlerSavedSearchCriteria}
-      refetchData={{ savedSearches }}
-      onSelect={() => {
-        // on select searches remove search value & disable search mode
-        setSearchVal(undefined);
-        if (enableSearchMode) setEnableSearchMode(false);
-      }}
-      searchMode={enableSearchMode}
-    />
-  );
+  let filter: any = filterComponent;
+
+  if (!filter && !isWeb) {
+    filter = (
+      <SavedSearchToolbar
+        savedSearchCriteriaCallback={handlerSavedSearchCriteria}
+        refetchData={{ savedSearches }}
+        onSelect={() => {
+          // on select searches remove search value & disable search mode
+          setSearchVal(undefined);
+          if (enableSearchMode) setEnableSearchMode(false);
+        }}
+        searchMode={enableSearchMode}
+      />
+    );
+  }
 
   return (
     <Container className={styles.ChatConversations} disableGutters>

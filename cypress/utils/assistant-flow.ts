@@ -1,4 +1,4 @@
-export const V2_SERVICES = { aiEvaluationsEnabled: true, aiEvaluationV2Enabled: true };
+export const DEFAULT_SERVICES: Record<string, boolean> = {};
 export const BELOW_STICKY_HEADER = { scrollBehavior: 'center' } as const;
 export const SEARCH_FIELD = '[data-testid="searchInput"] input';
 
@@ -16,7 +16,7 @@ export const loginWithServices = (services: Record<string, boolean>) => {
 };
 
 export const openAssistantList = () => {
-  loginWithServices(V2_SERVICES);
+  loginWithServices(DEFAULT_SERVICES);
 
   cy.intercept('POST', Cypress.expose('backendUrl'), (req) => {
     if (req.body?.operationName === 'Assistants') {

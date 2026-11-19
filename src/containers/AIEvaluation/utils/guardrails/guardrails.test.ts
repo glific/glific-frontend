@@ -2,11 +2,13 @@ import { PII_REMOVER_CONFIG, TOPIC_RELEVANCE_LLM_CONFIG } from 'mocks/Guardrails
 import type { GuardrailTopicSuggestion } from 'containers/AIEvaluation/types/guardrailType';
 import {
   actionFromConfig,
+  incompleteGuardrails,
   isTranslationKey,
   parseGuardrailSpecs,
   piiDetailGroups,
   safeLink,
-  scopeFallbackMessage,
+  sameGuardrails,
+  fallbackMessageFromConfig,
   topicsFromConfiguration,
   topicsToConfiguration,
 } from './guardrails';
@@ -83,11 +85,13 @@ describe('actionFromConfig', () => {
   });
 });
 
-describe('scopeFallbackMessage', () => {
+describe('fallbackMessageFromConfig', () => {
   test('is the default fallback message, or empty without one', () => {
-    expect(scopeFallbackMessage(TOPIC_RELEVANCE_LLM_CONFIG)).toBe('');
-    expect(scopeFallbackMessage({ properties: { fallback_message: { default: 'Sirf sehat.' } } })).toBe('Sirf sehat.');
-    expect(scopeFallbackMessage('not json')).toBe('');
+    expect(fallbackMessageFromConfig(TOPIC_RELEVANCE_LLM_CONFIG)).toBe('');
+    expect(fallbackMessageFromConfig({ properties: { fallback_message: { default: 'Sirf sehat.' } } })).toBe(
+      'Sirf sehat.'
+    );
+    expect(fallbackMessageFromConfig('not json')).toBe('');
   });
 });
 
@@ -151,5 +155,77 @@ describe('isTranslationKey', () => {
     expect(isTranslationKey('Aadhaar number')).toBe(true);
     expect(isTranslationKey('Crypto Wallet')).toBe(false);
     expect(isTranslationKey('toString')).toBe(false);
+  });
+});
+
+describe('incompleteGuardrails', () => {
+  test('no guardrails, or ones that are set up, are complete', () => {
+    expect(incompleteGuardrails({ input: [], output: [] })).toEqual([]);
+    expect(
+      incompleteGuardrails({
+        input: [
+          { type: 'pii_remover', entity_types: ['PHONE_NUMBER'] },
+          { type: 'topic_relevance_llm', configuration: 'Politics' },
+          { type: 'gender_assumption_bias' },
+        ],
+        output: [],
+      })
+    ).toEqual([]);
+  });
+
+  test('Privacy Protection with every detail cleared is incomplete; with no list it keeps the defaults', () => {
+    expect(incompleteGuardrails({ input: [{ type: 'pii_remover', entity_types: [] }], output: [] })).toEqual([
+      'pii_remover',
+    ]);
+    expect(incompleteGuardrails({ input: [{ type: 'pii_remover' }], output: [] })).toEqual([]);
+  });
+
+  test('Scope Control needs a topic; the set reply alone is not enough', () => {
+    expect(incompleteGuardrails({ input: [{ type: 'topic_relevance_llm' }], output: [] })).toEqual([
+      'topic_relevance_llm',
+    ]);
+    expect(
+      incompleteGuardrails({ input: [{ type: 'topic_relevance_llm', fallback_message: 'Only farming.' }], output: [] })
+    ).toEqual(['topic_relevance_llm']);
+  });
+
+  test('Content Safety needs a set reply', () => {
+    expect(incompleteGuardrails({ input: [{ type: 'content_safety', on_fail: 'rephrase' }], output: [] })).toEqual([
+      'content_safety',
+    ]);
+    expect(incompleteGuardrails({ input: [{ type: 'content_safety', fallback_message: '  ' }], output: [] })).toEqual([
+      'content_safety',
+    ]);
+    expect(
+      incompleteGuardrails({ input: [{ type: 'content_safety', fallback_message: 'Be kind.' }], output: [] })
+    ).toEqual([]);
+  });
+});
+
+describe('sameGuardrails', () => {
+  test('ignores the order of keys, details, topics and specs', () => {
+    const saved = {
+      input: [
+        { entity_types: ['IN_AADHAAR', 'PHONE_NUMBER'], type: 'pii_remover', on_fail: 'fix' },
+        { type: 'topic_relevance_llm', configuration: 'Politics\nCricket' },
+      ],
+      output: [],
+    };
+    const rebuilt = {
+      input: [
+        { type: 'topic_relevance_llm', configuration: 'Cricket\nPolitics' },
+        { on_fail: 'fix', type: 'pii_remover', entity_types: ['PHONE_NUMBER', 'IN_AADHAAR'] },
+      ],
+      output: [],
+    };
+    expect(sameGuardrails(saved, rebuilt)).toBe(true);
+  });
+
+  test('sees a real change', () => {
+    const saved = { input: [{ type: 'pii_remover', entity_types: ['PHONE_NUMBER'] }], output: [] };
+    expect(sameGuardrails(saved, { input: [{ type: 'pii_remover', entity_types: ['IN_AADHAAR'] }], output: [] })).toBe(
+      false
+    );
+    expect(sameGuardrails(saved, { input: [], output: saved.input })).toBe(false);
   });
 });

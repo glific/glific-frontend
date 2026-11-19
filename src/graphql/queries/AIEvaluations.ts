@@ -1,11 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const COUNT_AI_EVALUATIONS = gql`
-  query countAiEvaluations($filter: AiEvaluationFilter) {
-    countAiEvaluations(filter: $filter)
-  }
-`;
-
 export const LIST_AI_EVALUATIONS = gql`
   query AiEvaluations($filter: AiEvaluationFilter, $opts: Opts) {
     aiEvaluations(filter: $filter, opts: $opts) {
@@ -35,12 +29,6 @@ export const LIST_AI_EVALUATIONS = gql`
   }
 `;
 
-export const COUNT_GOLDEN_QA = gql`
-  query countGoldenQas($filter: GoldenQaFilter) {
-    countGoldenQas(filter: $filter)
-  }
-`;
-
 export const GOLDEN_QA_LIST_VARIABLES = {
   filter: {},
   opts: { order: 'DESC', orderWith: 'inserted_at' },
@@ -64,14 +52,6 @@ export const GET_EVALUATION_SCORES = gql`
       errors {
         message
       }
-    }
-  }
-`;
-
-export const GET_ORG_EVAL_ACCESS_REQUEST = gql`
-  query getOrgEvalAccessRequest {
-    orgEvalAccessRequest {
-      status
     }
   }
 `;

@@ -119,57 +119,18 @@ describe('HSM Templates menu routing', () => {
   });
 });
 
-describe('AI Evals sibling menu selection', () => {
-  // the menu must be rendered but unselected — a plain "not found" check would pass vacuously
-  // when the title string drifts out of sync with menu.ts
-  const expectMenuNotSelected = (title: string) => {
-    const items = screen.getAllByTestId('list-item').filter((el) => el.textContent === title);
-    expect(items).not.toHaveLength(0);
-    items.forEach((el) => expect(el.className).not.toMatch(/SelectedText/));
-  };
-
-  test('selects only AI Assistant on /assistants', async () => {
-    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
+describe('AI toolkit menu', () => {
+  test('is a single tab that links to /assistants', async () => {
     renderSideMenus('/assistants');
 
-    await expectMenuSelected('AI Assistant');
-    expectMenuNotSelected('AI Evals');
+    await expectMenuSelected('AI toolkit');
+    expect(getMenuItem('AI toolkit')!.closest('a')).toHaveAttribute('href', '/assistants');
+    expect(getMenuItem('AI Assistant')).toBeUndefined();
   });
 
-  test('selects only AI Evals on /ai-evaluations/create', async () => {
-    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
-    renderSideMenus('/ai-evaluations/create');
+  test('stays selected inside an assistant', async () => {
+    renderSideMenus('/assistants/1');
 
-    await expectMenuSelected('AI Evals');
-    expectMenuNotSelected('AI Assistant');
-  });
-});
-
-describe('the AI Evals notice', () => {
-  test('the menu item carries an alert sign', async () => {
-    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
-    renderSideMenus('/chat');
-
-    await waitFor(() => {
-      expect(getMenuItem('AI Evals')).toBeInTheDocument();
-    });
-
-    // the sign sits on the AI Evals row, not on its siblings
-    const alerts = screen.getAllByTestId('menuAlert');
-    expect(alerts).toHaveLength(1);
-    expect(alerts[0].closest('a')).toHaveAttribute('href', '/ai-evaluations');
-  });
-
-  test('hovering the sign says what has to be done, and by when', async () => {
-    setOrganizationServices(JSON.stringify({ aiEvaluationsEnabled: true }));
-    renderSideMenus('/chat');
-
-    const alert = await screen.findByTestId('menuAlert');
-    // the tooltip hangs off the wrapper the shared component adds
-    fireEvent.mouseOver(alert.parentElement as HTMLElement);
-
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(
-      'Download your evaluation results before 18 September 2026'
-    );
+    await expectMenuSelected('AI toolkit');
   });
 });

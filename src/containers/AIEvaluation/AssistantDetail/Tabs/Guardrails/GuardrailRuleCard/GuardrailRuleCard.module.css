@@ -4,6 +4,10 @@
   border-radius: var(--app-radius-lg);
 }
 
+.Invalid {
+  border-color: var(--app-color-error);
+}
+
 .RuleHeader {
   display: flex;
   align-items: flex-start;

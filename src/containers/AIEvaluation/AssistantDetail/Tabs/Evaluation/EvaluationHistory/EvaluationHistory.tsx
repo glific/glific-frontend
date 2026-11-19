@@ -5,10 +5,12 @@ import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType
 import {
   METRIC_HINT,
   configVersionLabel,
+  formatLatency,
   formatScore,
   isRunFailed,
   isRunInProgress,
   overallScore,
+  parseAvgResponseTime,
   parseEvaluationResults,
   scoreBand,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
@@ -21,6 +23,7 @@ import { downloadCsv, toCsv } from 'containers/AIEvaluation/utils/csv/csv';
 import { Dropdown } from 'components/UI/Form/Dropdown/Dropdown';
 import type { GoldenQaSet } from 'containers/AIEvaluation/types/goldenQaType';
 import { LivePill } from '../../../components';
+import { EvaluationLatency } from '../EvaluationLatency/EvaluationLatency';
 import styles from './EvaluationHistory.module.css';
 
 dayjs.extend(relativeTime);
@@ -84,6 +87,7 @@ export const EvaluationHistory = ({
         score(metrics.groundTruth),
         score(metrics.knowledgeBase),
         score(metrics.prompt),
+        <EvaluationLatency avgResponseMs={parseAvgResponseTime(run.results)} variant="text" />,
         <span className={styles.When}>{dayjs(run.insertedAt).fromNow()}</span>,
       ],
     };
@@ -100,10 +104,12 @@ export const EvaluationHistory = ({
         t('Ground truth'),
         t('Knowledge base'),
         t('Prompt'),
+        t('Avg response time'),
         t('When'),
       ],
       ...runs.map((run) => {
         const metrics = parseEvaluationResults(run.results);
+        const avgResponseMs = parseAvgResponseTime(run.results);
         const cell = (value: number | null) => (value == null ? '' : formatScore(value));
         let status = t('Completed');
         if (isRunInProgress(run)) status = t('Running');
@@ -118,6 +124,7 @@ export const EvaluationHistory = ({
           cell(metrics.groundTruth),
           cell(metrics.knowledgeBase),
           cell(metrics.prompt),
+          avgResponseMs == null ? '' : formatLatency(avgResponseMs),
           dayjs(run.insertedAt).format('YYYY-MM-DD HH:mm'),
         ];
       }),
@@ -192,6 +199,10 @@ export const EvaluationHistory = ({
             { label: metricHeader(t('Ground truth'), 'groundTruth'), className: styles.MetricColumn },
             { label: metricHeader(t('Knowledge base'), 'knowledgeBase'), className: styles.MetricColumn },
             { label: metricHeader(t('Prompt'), 'prompt'), className: styles.MetricColumn },
+            {
+              label: <span className={styles.LatencyHeader}>{t('Avg response time').replace(' ', '\u00a0')}</span>,
+              className: styles.LatencyColumn,
+            },
             { label: t('When') },
           ]}
           rows={rows}

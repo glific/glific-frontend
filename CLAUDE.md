@@ -43,8 +43,9 @@ Every PR must pass these (see `.github/workflows/`). The `make-branch-ready-for-
 |-------|----------|------|
 | Unit tests + coverage | `unit-testing.yml` → Codecov | project **≥ 81.5%** (0.5% threshold); **patch: every changed line must be covered** |
 | Formatting | `prettier-check.yml` | `prettier --check` must be clean (`yarn format` to fix) |
+| Typecheck | `typecheck.yml` | `tsc --noEmit` over `src/` must be clean (`yarn typecheck`); `vite build` doesn't type-check, so this is what catches a `t()` key missing from `en.json` |
 | PR title | `pr-title-check.yml` | Conventional-commit format (e.g. `fix:`, `feat:`, `chore:`) |
-| E2E | `e2e-tests.yml` | Cypress against a live backend, sharded; `e2e-tests-slow.yml` runs the filesearch suite only on PRs labeled `e2e-slow` |
+| E2E | `e2e-tests.yml` | Cypress against a live backend, sharded; `e2e-tests-slow.yml` runs the unstubbed AI assistant suite (`aiAssistant/AssistantEndToEnd.spec.ts`) only on PRs labeled `e2e-slow` |
 | Cypress lint | `cypress-lint.yml` | `tsc`, ESLint, and Prettier scoped to `cypress/` (`yarn cy:typecheck` / `cy:lint` / `cy:format:check`) |
 
 ## Architecture Overview
@@ -233,8 +234,8 @@ E2E is **Cypress**, and the specs live in this repo under `cypress/`. Running th
 Prefer the **`e2e-test-engineer`** agent (`.claude/agents/`) over doing this by hand — it does the
 preflight/bring-up, runs the narrowest relevant spec, and returns a compact pass/fail verdict
 instead of flooding the session with server and runner logs. CI mirrors this in
-`.github/workflows/e2e-tests.yml` (sharded via `cypress-split`); the slow `filesearch` suite is
-excluded by default and only runs on PRs labeled `e2e-slow`. `cypress-lint.yml` runs `tsc`/ESLint/Prettier
+`.github/workflows/e2e-tests.yml` (sharded via `cypress-split`); the unstubbed AI assistant suite
+(`aiAssistant/AssistantEndToEnd.spec.ts`, real backend + Kaapi) is excluded by default and only runs on PRs labeled `e2e-slow`. `cypress-lint.yml` runs `tsc`/ESLint/Prettier
 scoped to `cypress/` on every push and PR. `cypress-smoke.yml` is a cron (every 27 min) that runs
 `cypress/e2e/smoke.spec.ts` against production and reports pass/fail to Instatus — it needs
 `CYPRESS_SMOKE_TEST_*`, `CYPRESS_DASHBOARD_KEY`, and `INSTATUS_*` repo secrets configured.

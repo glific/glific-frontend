@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 
 import { MESSAGE_CHANNELS } from 'common/constants';
 import { ChannelSelector } from './ChannelSelector';
+import styles from './ChannelSelector.module.css';
 
 const renderSelector = (props: Partial<Parameters<typeof ChannelSelector>[0]> = {}) => {
   const onChange = vi.fn();
@@ -24,21 +25,20 @@ test('reports the channel that was picked', () => {
   expect(onChange).toHaveBeenCalledWith(MESSAGE_CHANNELS.web);
 });
 
-// The selected channel is a filled pill in that channel's own colour, matching the tabs below it.
 // Asserting on the class is the only observable signal in jsdom, but it is the thing that carries
-// the colour — dropping it would silently return both options to the default white pill.
-test('fills the selected option with its own channel colour', () => {
+// the Glific green fill — dropping it would silently return the selection to the default white pill.
+test('fills the selected option with Glific green', () => {
   renderSelector();
 
-  expect(screen.getByTestId('channelSelector-WHATSAPP').className).toMatch(/WhatsAppActive/);
-  expect(screen.getByTestId('channelSelector-WEB').className).not.toMatch(/WebActive/);
+  expect(screen.getByTestId('channelSelector-WHATSAPP')).toHaveClass(styles.Active);
+  expect(screen.getByTestId('channelSelector-WEB')).not.toHaveClass(styles.Active);
 });
 
 test('moves the fill to the other channel when it is selected', () => {
   renderSelector({ value: MESSAGE_CHANNELS.web });
 
-  expect(screen.getByTestId('channelSelector-WEB').className).toMatch(/WebActive/);
-  expect(screen.getByTestId('channelSelector-WHATSAPP').className).not.toMatch(/WhatsAppActive/);
+  expect(screen.getByTestId('channelSelector-WEB')).toHaveClass(styles.Active);
+  expect(screen.getByTestId('channelSelector-WHATSAPP')).not.toHaveClass(styles.Active);
 });
 
 // "WhatsApp" is more than twice as long as "Web", so without equal widths the two options would

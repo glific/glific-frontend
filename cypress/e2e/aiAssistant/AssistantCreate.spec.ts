@@ -1,17 +1,15 @@
-import { BELOW_STICKY_HEADER, V2_SERVICES, loginWithServices } from '../../utils/assistant-flow';
+import {
+  BELOW_STICKY_HEADER,
+  DEFAULT_SERVICES,
+  loginWithServices,
+} from '../../utils/assistant-flow';
 import {
   CREATE_PATH,
   NEW_ASSISTANT_ID,
   openCreatePage,
   stubCreateAssistantApi,
 } from '../../utils/assistant-create';
-import { openTab } from '../../utils/assistant-detail';
-
-const nameIt = (name: string) => {
-  cy.get('[data-testid="editNameButton"]').click(BELOW_STICKY_HEADER);
-  cy.get('[data-testid="nameInput"]').clear().type(name);
-  cy.get('[data-testid="saveNameButton"]').click();
-};
+import { nameAssistant, openTab } from '../../utils/assistant-detail';
 
 const writePrompt = (prompt: string) => {
   cy.get('[data-testid="promptInput"]').clear().type(prompt);
@@ -19,7 +17,7 @@ const writePrompt = (prompt: string) => {
 
 describe('starting a new assistant', () => {
   it('the create button on the list opens a blank assistant', () => {
-    loginWithServices(V2_SERVICES);
+    loginWithServices(DEFAULT_SERVICES);
     stubCreateAssistantApi();
 
     cy.visit('/assistants');
@@ -46,7 +44,7 @@ describe('starting a new assistant', () => {
 
   it('takes a name before anything is saved', () => {
     openCreatePage();
-    nameIt('Maternal Health Bot');
+    nameAssistant('Maternal Health Bot');
 
     cy.get('[data-testid="headerTitle"]').should('contain', 'Maternal Health Bot');
     // the name alone is not a change to save — that comes with the first version
@@ -184,7 +182,7 @@ describe('the Try It Out tab', () => {
 describe('saving the first version', () => {
   beforeEach(() => {
     openCreatePage();
-    nameIt('ANC Companion');
+    nameAssistant('ANC Companion');
     writePrompt('You answer questions about antenatal care.');
   });
 

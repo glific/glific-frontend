@@ -1475,7 +1475,7 @@ export const getWebChannelProvider = {
   },
 };
 
-export const getWebChannelCredential = (keys: any = null, secrets: any = {}) => ({
+export const getWebChannelCredential = (keys: any = null, secrets: any = {}, isActive: boolean = true) => ({
   request: {
     query: GET_CREDENTIAL,
     variables: { shortcode: 'web_channel' },
@@ -1487,7 +1487,7 @@ export const getWebChannelCredential = (keys: any = null, secrets: any = {}) => 
         credential: keys
           ? {
               id: '9',
-              isActive: true,
+              isActive,
               keys: JSON.stringify(keys),
               secrets: JSON.stringify(secrets),
               provider: { shortcode: 'web_channel' },

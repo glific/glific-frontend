@@ -1,3 +1,5 @@
+import { SAMPLE_MEDIA } from '../../utils/sample-media';
+
 describe('Flow', () => {
   const flowName = 'test flow' + +new Date();
 
@@ -42,9 +44,7 @@ describe('Flow', () => {
     cy.contains('Ok').click();
     // check URL validation
     cy.get('.ReactModalPortal').contains('This media URL is invalid').click();
-    cy.enterInput()
-      .clear()
-      .type('https://www.buildquickbots.com/whatsapp/media/sample/jpg/sample01.jpg');
+    cy.enterInput().clear().type(SAMPLE_MEDIA.image);
     cy.contains('Checking URL validity', { timeout: 10000 }).should('not.exist');
 
     cy.contains('Ok').click().wait(2000);

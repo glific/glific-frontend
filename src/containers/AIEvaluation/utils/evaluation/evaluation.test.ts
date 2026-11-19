@@ -16,6 +16,8 @@ import {
   scoreBand,
   shortMetricName,
   traceMetricNames,
+  formatLatency,
+  parseAvgResponseTime,
 } from './evaluation';
 import { guardrailTraces } from 'mocks/AIEvaluations';
 import type { EvaluationRun } from 'containers/AIEvaluation/types/evaluationType';
@@ -530,5 +532,45 @@ describe('markdownBoldToWhatsApp', () => {
 
   test('text with nothing to collapse is left alone', () => {
     expect(markdownBoldToWhatsApp('*already whatsapp* and 2 * 3 maths')).toBe('*already whatsapp* and 2 * 3 maths');
+  });
+});
+
+describe('parseAvgResponseTime', () => {
+  const latency = {
+    avg_latency_ms: 1250.5,
+    call_count: 50,
+    response: { avg_latency_ms: 1800.0, call_count: 25 },
+    judge: { avg_latency_ms: 701.0, call_count: 25 },
+  };
+
+  test('reads the average time the assistant took to reply, from an object or a JSON string', () => {
+    expect(parseAvgResponseTime({ summary_scores: [], latency })).toBe(1800);
+    expect(parseAvgResponseTime(JSON.stringify({ latency }))).toBe(1800);
+  });
+
+  test('a run without it, or with one it cannot read, has none', () => {
+    expect(parseAvgResponseTime({ summary_scores: [] })).toBeNull();
+    expect(parseAvgResponseTime({ latency: null })).toBeNull();
+    // the overall and judge times are the evaluation’s own work, not how fast the assistant answered
+    expect(parseAvgResponseTime({ latency: { ...latency, response: null } })).toBeNull();
+    expect(parseAvgResponseTime(null)).toBeNull();
+    expect(parseAvgResponseTime('not json')).toBeNull();
+    expect(parseAvgResponseTime({ latency: { response: { avg_latency_ms: 'fast' } } })).toBeNull();
+    expect(parseAvgResponseTime({ latency: { response: { avg_latency_ms: -5 } } })).toBeNull();
+  });
+});
+
+describe('formatLatency', () => {
+  test('shows milliseconds under a second, seconds under a minute, and minutes above', () => {
+    expect(formatLatency(701)).toBe('701 ms');
+    expect(formatLatency(999.6)).toBe('1.0 s');
+    expect(formatLatency(1800)).toBe('1.8 s');
+    expect(formatLatency(12345)).toBe('12.3 s');
+    expect(formatLatency(59900)).toBe('59.9 s');
+    // 59.96 s would read "60.0 s", so it is already a minute
+    expect(formatLatency(59960)).toBe('1 min');
+    expect(formatLatency(60000)).toBe('1 min');
+    expect(formatLatency(65000)).toBe('1 min 5 s');
+    expect(formatLatency(150400)).toBe('2 min 30 s');
   });
 });

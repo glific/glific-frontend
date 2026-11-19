@@ -148,6 +148,30 @@ describe('a rolled-out org', () => {
       expect(screen.queryByTestId('editDetailTypesToggle')).not.toBeInTheDocument();
     });
 
+    test('turned back on with nothing picked, Privacy Protection starts from the defaults again', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+      screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('0 selected');
+
+      turnOn('privacy-protection');
+      turnOn('privacy-protection');
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('12 selected');
+    });
+
+    test('turned back on, Privacy Protection keeps what the user picked', async () => {
+      await renderPanel();
+      turnOn('privacy-protection');
+      fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+      fireEvent.click(screen.getByTestId('detailOption-PHONE_NUMBER'));
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('11 selected');
+
+      turnOn('privacy-protection');
+      turnOn('privacy-protection');
+      expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('11 selected');
+    });
+
     test('each group has its own Clear and Select all', async () => {
       await renderPanel();
       turnOn('privacy-protection');
@@ -179,16 +203,13 @@ describe('a rolled-out org', () => {
       expect(screen.getByTestId('editTopicsToggle')).toHaveTextContent('Configure');
     });
 
-    test('Content Safety and Gender Neutrality have nothing to configure', async () => {
+    test('Gender Neutrality has nothing to configure', async () => {
       await renderPanel();
-      turnOn('content-safety');
       turnOn('gender-neutrality');
 
-      for (const ruleId of ['content-safety', 'gender-neutrality']) {
-        expect(
-          within(screen.getByTestId(`guardrailRule-${ruleId}`)).queryByRole('button', { name: /Configure/ })
-        ).toBeNull();
-      }
+      expect(
+        within(screen.getByTestId('guardrailRule-gender-neutrality')).queryByRole('button', { name: /Configure/ })
+      ).toBeNull();
     });
   });
 
@@ -196,9 +217,15 @@ describe('a rolled-out org', () => {
     test('every check the backend sends today defaults to "fix", so each says it fixes', async () => {
       await renderPanel();
 
-      for (const ruleId of ['privacy-protection', 'content-safety', 'scope-control', 'gender-neutrality']) {
+      for (const ruleId of ['privacy-protection', 'scope-control', 'gender-neutrality']) {
         expect(screen.getByTestId(`guardrailRule-${ruleId}`)).toHaveTextContent('Fixes & passes on');
       }
+    });
+
+    test('Content Safety always blocks and sends the set reply, whatever its on_fail default', async () => {
+      await renderPanel();
+
+      expect(screen.getByTestId('guardrailRule-content-safety')).toHaveTextContent('Blocks — sends set reply');
     });
 
     test('an "exception" default makes it block', async () => {
@@ -229,6 +256,32 @@ describe('a rolled-out org', () => {
     fireEvent.click(screen.getByTestId('editTopicsToggle'));
 
     expect(screen.getByTestId('setReplyInput')).toHaveValue('Main sirf sehat ke sawalon mein madad karti hoon.');
+  });
+
+  describe('the set reply of a Content Safety check', () => {
+    test('starts with no reply, and shows once one is written', async () => {
+      await renderPanel();
+      turnOn('content-safety');
+
+      expect(screen.getByTestId('editReplyToggle')).toHaveTextContent('No reply set');
+      fireEvent.click(screen.getByTestId('editReplyToggle'));
+      fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: 'Please rephrase politely.' } });
+
+      expect(screen.getByTestId('editReplyToggle')).toHaveTextContent('Reply set');
+    });
+
+    test('starts from the fallback message in its config', async () => {
+      renderGuardrails([
+        getGuardrailValidatorsMock([
+          { type: 'content_safety', link: null, config: { properties: { fallback_message: { default: 'Be kind.' } } } },
+        ]),
+      ]);
+      await screen.findByTestId('guardrailRule-content-safety');
+      turnOn('content-safety');
+      fireEvent.click(screen.getByTestId('editReplyToggle'));
+
+      expect(screen.getByTestId('setReplyInput')).toHaveValue('Be kind.');
+    });
   });
 
   describe('the topics a Scope Control check blocks', () => {
@@ -434,7 +487,7 @@ describe('a rolled-out org', () => {
     });
 
     test('a validator without a link shows no Info, since it would lead nowhere', async () => {
-      renderGuardrails([getGuardrailValidatorsMock([{ type: 'uli_slur_match', link: null }])]);
+      renderGuardrails([getGuardrailValidatorsMock([{ type: 'content_safety', link: null }])]);
       await screen.findByTestId('guardrailRule-content-safety');
 
       expect(screen.queryByTestId('guardrailInfo-content-safety')).not.toBeInTheDocument();
@@ -450,12 +503,13 @@ describe('a rolled-out org', () => {
   describe('a stage or tier with nothing in it', () => {
     const onlyIncomingRule: GuardrailRule = {
       id: 'solo-rule',
-      type: 'uli_slur_match',
+      type: 'content_safety',
       link: null,
       stage: 'incoming',
       tier: 'additional',
       title: 'Content Safety',
-      description: 'Removes abusive or hurtful words from messages.',
+      description:
+        'Catches abusive or hurtful messages in English, Hindi and Hinglish, and sends your set reply instead.',
       action: 'fix',
       enabled: true,
       control: { kind: 'none' },
@@ -503,6 +557,50 @@ describe('saving and loading', () => {
     const latest = onChange.mock.calls.at(-1)?.[0] as GuardrailSpecs;
     expect(latest.input).toEqual([{ type: 'pii_remover', entity_types: expect.arrayContaining(['PHONE_NUMBER']) }]);
     expect(latest.output).toEqual([{ type: 'gender_assumption_bias' }]);
+  });
+
+  test('cleared and turned back on, Privacy Protection starts from what was saved', async () => {
+    await renderPanel({ value: saved });
+    fireEvent.click(screen.getByTestId('editDetailTypesToggle'));
+    screen.getAllByText('Clear', { selector: 'button' }).forEach((button) => fireEvent.click(button));
+
+    turnOn('privacy-protection');
+    turnOn('privacy-protection');
+    expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('2 selected');
+  });
+
+  test('Content Safety is saved to block with rephrase, sending the set reply once one is written', async () => {
+    const onChange = vi.fn();
+    await renderPanel({ onChange });
+    turnOn('content-safety');
+
+    expect(onChange.mock.calls.at(-1)?.[0].input).toEqual([{ type: 'content_safety', on_fail: 'rephrase' }]);
+
+    fireEvent.click(screen.getByTestId('editReplyToggle'));
+    fireEvent.change(screen.getByTestId('setReplyInput'), { target: { value: 'Please be respectful.' } });
+    expect(onChange.mock.calls.at(-1)?.[0].input).toEqual([
+      { type: 'content_safety', on_fail: 'rephrase', fallback_message: 'Please be respectful.' },
+    ]);
+  });
+
+  test('a saved Content Safety check comes back with its reply', async () => {
+    await renderPanel({
+      value: {
+        input: [{ type: 'content_safety', on_fail: 'rephrase', fallback_message: 'Please be respectful.' }],
+        output: [],
+      },
+    });
+
+    expect(screen.getByTestId('guardrailToggle-content-safety')).toBeChecked();
+    fireEvent.click(screen.getByTestId('editReplyToggle'));
+    expect(screen.getByTestId('setReplyInput')).toHaveValue('Please be respectful.');
+  });
+
+  test('a Content Safety check saved without a reply loads with an empty reply', async () => {
+    await renderPanel({ value: { input: [{ type: 'content_safety', on_fail: 'rephrase' }], output: [] } });
+
+    fireEvent.click(screen.getByTestId('editReplyToggle'));
+    expect(screen.getByTestId('setReplyInput')).toHaveValue('');
   });
 
   test('saved specs switch their rules on and fill in what was picked', async () => {

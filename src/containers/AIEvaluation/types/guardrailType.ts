@@ -5,7 +5,7 @@ export type TranslationKey = keyof (typeof resources)['en']['translation'];
 
 export type GuardrailValidatorType =
   | 'pii_remover'
-  | 'uli_slur_match'
+  | 'content_safety'
   | 'topic_relevance_llm'
   | 'gender_assumption_bias';
 
@@ -53,7 +53,8 @@ export type GuardrailControl =
       disallowedTopics: GuardrailTopic[];
       suggestedTopics: GuardrailTopicSuggestion[];
       setReply: string;
-    };
+    }
+  | { kind: 'reply'; setReply: string };
 
 export interface GuardrailRule {
   id: string;
@@ -91,9 +92,12 @@ export interface GuardrailSpecs {
   output: GuardrailSpec[];
 }
 
+export type ConfigurableGuardrailType = 'pii_remover' | 'topic_relevance_llm' | 'content_safety';
+
 export interface GuardrailsProps {
   value: GuardrailSpecs;
   onChange: (value: GuardrailSpecs) => void;
+  invalidTypes?: string[];
 }
 
 export interface GuardrailsPanelProps extends GuardrailsProps {
@@ -108,6 +112,7 @@ export interface GuardrailRuleCardProps {
   link: string | null;
   action: GuardrailAction;
   enabled: boolean;
+  invalid?: boolean;
   onToggle: (enabled: boolean) => void;
   children?: ReactNode;
 }
@@ -133,4 +138,15 @@ export interface TopicsEditorValue {
 export interface TopicsEditorProps {
   value: TopicsEditorValue;
   onChange: (value: TopicsEditorValue) => void;
+}
+
+export interface SetReplyFieldProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: TranslationKey;
+}
+
+export interface ReplyEditorProps {
+  value: string;
+  onChange: (value: string) => void;
 }

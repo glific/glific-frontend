@@ -4,6 +4,9 @@ import '@testing-library/jest-dom/vitest';
 
 import { cleanup, configure } from '@testing-library/react';
 
+// A developer's local web chat address in .env must not leak into tests, which expect the derived one.
+vi.stubEnv('VITE_WEB_CHANNEL_URL', '');
+
 configure({ asyncUtilTimeout: 2000 });
 
 // runs a cleanup after each test case (e.g. clearing jsdom)

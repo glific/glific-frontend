@@ -29,7 +29,7 @@ describe('<WalletBalance />', () => {
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');
       expect(walletBalance).toBeInTheDocument();
-      expect(walletBalance).toHaveTextContent('Message balance');
+      expect(walletBalance).toHaveTextContent('WhatsApp balance');
     });
   });
 });
@@ -168,7 +168,7 @@ describe('<WalletBalance /> - Trial Organization', () => {
     await waitFor(() => {
       const walletBalance = screen.getByTestId('WalletBalance');
       expect(walletBalance).toBeInTheDocument();
-      expect(walletBalance).toHaveTextContent('Message balance');
+      expect(walletBalance).toHaveTextContent('WhatsApp balance');
     });
   });
 });

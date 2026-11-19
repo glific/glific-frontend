@@ -25,6 +25,10 @@ if (BACKEND_URL) {
   SOCKET_URL = `${SOCKET_PROTOCOL}://${HOSTNAME}/socket`;
 }
 
+// Where the web chat widget runs. Derived from the console's host when unset; set it where the two
+// don't share that shape, as in local development (e.g. https://glific.test:5173).
+export const WEB_CHANNEL_URL: string | undefined = envVariables.VITE_WEB_CHANNEL_URL || undefined;
+
 export const SOCKET = SOCKET_URL;
 export const FLOW_EDITOR_API = `${GLIFIC_BACKEND_URL}/flow-editor/`;
 export const GLIFIC_API_URL = `${GLIFIC_BACKEND_URL}/api`;
@@ -73,8 +77,6 @@ export const CERTIFICATES_PERMISSIONS_LINK =
   'https://glific.github.io/docs/docs/Product%20Features/Custom%20Certificates/#4-error-2-permission-issues';
 export const GOLDEN_QA_TEMPLATE_LINK =
   'https://docs.google.com/spreadsheets/d/198UpOMeU53s9O-fwbIl0DIJLuD3l24jgkq74CoDfSQM/copy';
-export const AI_EVALS_INTRO_VIDEO_URL =
-  envVariables.VITE_AI_EVALS_INTRO_VIDEO_URL || 'https://www.youtube.com/embed/pl8pUTkAgwc';
 export const TRIAL_CREATE_USER_API = `${GLIFIC_API_URL}/v1/trial/create-trial-user`;
 export const TRIAL_ALLOCATE_ACCOUNT_API = `${GLIFIC_API_URL}/v1/trial/allocate-account`;
 export const ANALYTICS_ENDPOINT = `${GLIFIC_API_URL}/v1/get-embed-token`;

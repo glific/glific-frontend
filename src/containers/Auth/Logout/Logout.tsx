@@ -8,7 +8,6 @@ import { useParams } from 'react-router';
 import { usePostHog } from '@posthog/react';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { USER_SESSION } from 'config';
-import { clearOrgEvalAccessCache } from 'containers/AIEvals/orgEvalAccessCache';
 import { clearAllSandboxChats } from 'containers/AIEvaluation/services/sandboxChatCache';
 import { resetRolePermissions } from 'context/role';
 import { clearAuthSession, clearUserSession, getAuthSession } from 'services/AuthService';
@@ -42,7 +41,6 @@ export const Logout = () => {
     clearUserSession();
     resetRolePermissions();
     clearListSession();
-    clearOrgEvalAccessCache();
     clearAllSandboxChats();
   };
 

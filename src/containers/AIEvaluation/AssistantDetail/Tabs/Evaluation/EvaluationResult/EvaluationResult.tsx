@@ -19,9 +19,11 @@ import {
   isRunFailed,
   isRunInProgress,
   overallScore,
+  parseAvgResponseTime,
   parseEvaluationResults,
   scoreBand,
 } from 'containers/AIEvaluation/utils/evaluation/evaluation';
+import { EvaluationLatency } from '../EvaluationLatency/EvaluationLatency';
 import styles from './EvaluationResult.module.css';
 
 dayjs.extend(relativeTime);
@@ -60,6 +62,7 @@ export const EvaluationResult = ({
 
   const metrics = parseEvaluationResults(run.results);
   const overall = reported ?? overallScore(metrics);
+  const avgResponseMs = parseAvgResponseTime(run.results);
 
   const meta: ReactNode[] = [
     run.assistantConfigVersion ? `${t('Version')} ${configVersionLabel(run.assistantConfigVersion)}` : null,
@@ -147,10 +150,13 @@ export const EvaluationResult = ({
             </div>
 
             <div className={styles.BannerText}>
-              <span className={`${styles.BandPill} ${styles[`${band}Pill`]}`} data-testid="scoreBand">
-                <BandIcon className={styles.BandIcon} />
-                {t(BAND_LABEL[band])}
-              </span>
+              <div className={styles.BannerPills}>
+                <span className={`${styles.BandPill} ${styles[`${band}Pill`]}`} data-testid="scoreBand">
+                  <BandIcon className={styles.BandIcon} />
+                  {t(BAND_LABEL[band])}
+                </span>
+                <EvaluationLatency avgResponseMs={avgResponseMs} variant="chip" />
+              </div>
               {summary && (
                 <div className={styles.BannerSummary} data-testid="evaluationSummary">
                   <MarkdownAnswer text={markdownBoldToWhatsApp(summary)} />

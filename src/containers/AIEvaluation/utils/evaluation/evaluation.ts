@@ -123,6 +123,21 @@ export const scoreBand = (score: number): ScoreBand => {
   return 'bad';
 };
 
+export const parseAvgResponseTime = (results: unknown): number | null => {
+  const avgMs = field(asJson(results), 'latency', 'response', 'avg_latency_ms');
+  return typeof avgMs === 'number' && Number.isFinite(avgMs) && avgMs >= 0 ? avgMs : null;
+};
+
+export const formatLatency = (ms: number) => {
+  if (Math.round(ms) < 1000) return `${Math.round(ms)} ms`;
+  if (ms < 59_950) return `${(ms / 1000).toFixed(1)} s`;
+
+  const seconds = Math.round(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return rest ? `${minutes} min ${rest} s` : `${minutes} min`;
+};
+
 export const formatScore = (score: number | null) => {
   if (score == null) return '—';
 

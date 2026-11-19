@@ -1,7 +1,7 @@
 import {
   BELOW_STICKY_HEADER,
   SEARCH_FIELD,
-  V2_SERVICES,
+  DEFAULT_SERVICES,
   loginWithServices,
   openAssistantList,
 } from '../../utils/assistant-flow';
@@ -64,7 +64,7 @@ const stubAssistants = (available = ASSISTANTS) => {
 };
 
 const openStubbedList = (available = ASSISTANTS) => {
-  loginWithServices(V2_SERVICES);
+  loginWithServices(DEFAULT_SERVICES);
   stubAssistants(available);
   cy.visit('/assistants');
 };

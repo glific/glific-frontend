@@ -14,7 +14,7 @@ import styles from './GuardrailTrace.module.css';
 
 const CHECK_TITLE: Record<string, TranslationKey> = {
   PIIRemover: 'Privacy Protection',
-  LexicalSlur: 'Content Safety',
+  ContentSafety: 'Content Safety',
   TopicRelevanceLLM: 'Scope Control',
   GenderAssumptionBias: 'Gender Neutrality',
 };
@@ -61,6 +61,9 @@ export const GuardrailTrace = ({ trace }: GuardrailTraceProps) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const flagged = [...trace.inputChecks, ...trace.outputChecks].filter(isFlagged).length;
+  const blockedBeforeAssistant =
+    trace.outputFromLlm === null &&
+    trace.inputChecks.some((check) => check.name === 'ContentSafety' && isFlagged(check));
 
   return (
     <div className={styles.Trace} data-testid="guardrailTrace">
@@ -97,7 +100,10 @@ export const GuardrailTrace = ({ trace }: GuardrailTraceProps) => {
             <Stage
               title={t('Incoming message')}
               before={{ label: t('User sent'), text: trace.inputFromUser }}
-              after={{ label: t('Assistant received'), text: trace.inputToLlm }}
+              after={{
+                label: blockedBeforeAssistant ? t('User received') : t('Assistant received'),
+                text: trace.inputToLlm,
+              }}
               checks={trace.inputChecks}
               testId="guardrailTraceInput"
             />

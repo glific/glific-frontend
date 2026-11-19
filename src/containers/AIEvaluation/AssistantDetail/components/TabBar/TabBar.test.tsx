@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { TabBar } from './TabBar';
 
 const renderBar = (props: Partial<Parameters<typeof TabBar>[0]> = {}) => {
@@ -33,4 +33,11 @@ test('unsaved work and a running evaluation are each flagged on their own tab', 
   // the flags stay on their own tab rather than lighting up the bar
   expect(screen.queryByTestId('tabRunningDot-persona')).not.toBeInTheDocument();
   expect(screen.queryByTestId('tabDirtyDot-evaluation')).not.toBeInTheDocument();
+});
+
+test('a tab marked new carries a New badge, and only that tab', () => {
+  renderBar({ newTabs: { guardrails: true } });
+
+  expect(within(screen.getByTestId('tab-guardrails')).getByTestId('beta-tag')).toHaveTextContent('New');
+  expect(screen.getAllByTestId('beta-tag')).toHaveLength(1);
 });

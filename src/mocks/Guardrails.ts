@@ -59,16 +59,24 @@ export const PII_REMOVER_CONFIG = {
   type: 'object',
 };
 
-export const ULI_SLUR_MATCH_CONFIG = {
+export const CONTENT_SAFETY_CONFIG = {
   additionalProperties: false,
-  $defs: { Stage: { title: 'Stage', enum: ['input', 'output'], type: 'string' } },
+  $defs: {
+    GuardrailOnFail: { title: 'GuardrailOnFail', enum: ['exception', 'fix', 'rephrase'], type: 'string' },
+  },
   properties: {
-    languages: { items: { type: 'string' }, title: 'Languages', type: 'array', default: ['en', 'hi'] },
-    severity: { title: 'Severity', enum: ['low', 'medium', 'high', 'all'], type: 'string', default: 'all' },
-    type: { title: 'Type', type: 'string', const: 'uli_slur_match' },
+    on_fail: { $ref: '#/$defs/GuardrailOnFail', default: 'fix' },
+    slur_severity: { title: 'Slur Severity', enum: ['low', 'medium', 'high', 'all'], type: 'string', default: 'all' },
+    threshold: { title: 'Threshold', type: 'number', minimum: 0, maximum: 1, default: 0.5 },
+    fallback_message: {
+      anyOf: [{ minLength: 1, type: 'string' }, { type: 'null' }],
+      title: 'Fallback Message',
+      default: null,
+    },
+    type: { title: 'Type', type: 'string', const: 'content_safety' },
   },
   required: ['type'],
-  title: 'LexicalSlurSafetyValidatorConfig',
+  title: 'ContentSafetySafetyValidatorConfig',
   type: 'object',
 };
 
@@ -124,7 +132,7 @@ export const ALL_GUARDRAIL_VALIDATORS: ValidatorMock[] = [
     config: GENDER_ASSUMPTION_BIAS_CONFIG,
   },
   { type: 'pii_remover', link: guardrailDocsLink('privacy-protection'), config: PII_REMOVER_CONFIG },
-  { type: 'uli_slur_match', link: guardrailDocsLink('content-safety'), config: ULI_SLUR_MATCH_CONFIG },
+  { type: 'content_safety', link: guardrailDocsLink('content-safety'), config: CONTENT_SAFETY_CONFIG },
   { type: 'topic_relevance_llm', link: guardrailDocsLink('scope-control'), config: TOPIC_RELEVANCE_LLM_CONFIG },
 ];
 
