@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router';
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router';
 import * as Notification from 'common/notification';
 import * as Utils from 'common/utils';
 import {
@@ -1151,6 +1151,34 @@ describe('create mode', () => {
     expect(screen.getByTestId('liveNote')).toHaveTextContent('Nothing published yet');
     expect(screen.queryByTestId('versionPill')).not.toBeInTheDocument();
     expect(screen.queryByTestId('publishButton')).not.toBeInTheDocument();
+  });
+
+  test('going back to the create page starts a fresh editor', async () => {
+    const GoToCreate = () => {
+      const navigate = useNavigate();
+      return <button data-testid="goToCreate" onClick={() => navigate('/assistants/add')} />;
+    };
+    render(
+      <MockedProvider mocks={[...defaultMocks(), assistantModelsMock]}>
+        <MemoryRouter initialEntries={['/assistants/1']}>
+          <GoToCreate />
+          <Routes>
+            <Route path="/assistants/:assistantId" element={<AssistantDetail />} />
+          </Routes>
+        </MemoryRouter>
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('promptInput')).toHaveValue('You are a helpful assistant.');
+    });
+    fireEvent.click(screen.getByTestId('goToCreate'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('newAssistantPill')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('promptInput')).toHaveValue('');
+    expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
   });
 });
 

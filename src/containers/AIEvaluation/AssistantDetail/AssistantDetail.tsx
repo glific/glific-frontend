@@ -652,4 +652,9 @@ export const AssistantDetail = () => {
   );
 };
 
-export default AssistantDetail;
+const AssistantDetailPage = () => {
+  const { assistantId } = useParams<{ assistantId: string }>();
+  return <AssistantDetail key={assistantId} />;
+};
+
+export default AssistantDetailPage;
