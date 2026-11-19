@@ -26,6 +26,7 @@ import {
   GUARDRAIL_SETUP_TITLE,
   incompleteGuardrails,
   EMPTY_GUARDRAIL_SPECS,
+  NEW_ASSISTANT_GUARDRAIL_SPECS,
   parseGuardrailSpecs,
   sameGuardrails,
 } from 'containers/AIEvaluation/utils/guardrails/guardrails';
@@ -108,6 +109,8 @@ const editorStateFromAssistant = (assistant: any): EditorState => ({
 
 export const AssistantDetail = () => {
   const { assistantId } = useParams<{ assistantId: string }>();
+  const isCreateMode = !assistantId || assistantId === 'add';
+  const initialGuardrails = isCreateMode ? NEW_ASSISTANT_GUARDRAIL_SPECS : EMPTY_GUARDRAIL_SPECS;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>('persona');
@@ -117,13 +120,13 @@ export const AssistantDetail = () => {
   const [prompt, setPrompt] = useState('');
   const [modelConfig, setModelConfig] = useState<ModelConfig>(DEFAULT_MODEL_CONFIG);
   const [knowledgeBaseFiles, setKnowledgeBaseFiles] = useState<KnowledgeBaseFile[]>([]);
-  const [guardrails, setGuardrails] = useState<GuardrailSpecs>(EMPTY_GUARDRAIL_SPECS);
+  const [guardrails, setGuardrails] = useState<GuardrailSpecs>(initialGuardrails);
   const [guardrailErrorsShown, setGuardrailErrorsShown] = useState(false);
   const [baseline, setBaseline] = useState<EditorState>({
     prompt: '',
     config: DEFAULT_MODEL_CONFIG,
     files: [],
-    guardrails: EMPTY_GUARDRAIL_SPECS,
+    guardrails: initialGuardrails,
   });
   const [uploadingFiles, setUploadingFiles] = useState<string[]>([]);
   const [draftName, setDraftName] = useState('');
@@ -138,7 +141,6 @@ export const AssistantDetail = () => {
   const [awaitingVersionAbove, setAwaitingVersionAbove] = useState<AssistantVersion | null | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const loadedKey = useRef<string | null>(null);
-  const isCreateMode = !assistantId || assistantId === 'add';
   const defaultAssistantName = t('Untitled assistant');
 
   const { loading, data, error } = useQuery(GET_ASSISTANT, {

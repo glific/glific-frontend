@@ -105,6 +105,7 @@ const confirmPublish = async () => {
 };
 
 const NO_GUARDRAILS = { inputGuardrails: '[]', outputGuardrails: '[]' };
+const NEW_ASSISTANT_GUARDRAILS = { inputGuardrails: JSON.stringify([{ type: 'pii_remover' }]), outputGuardrails: '[]' };
 
 const versionsMock = (assistantVersions = [version(1, true), version(2, false)]) => ({
   request: { query: GET_ASSISTANT_VERSIONS, variables: { assistantId: '1' } },
@@ -856,7 +857,7 @@ describe('Unsaved changes', () => {
             model: 'gpt-5.6-luna',
             effort: 'medium',
             name: 'Untitled assistant',
-            ...NO_GUARDRAILS,
+            ...NEW_ASSISTANT_GUARDRAILS,
           },
         },
       },
@@ -884,7 +885,7 @@ describe('Unsaved changes', () => {
             model: 'gpt-5.6-luna',
             effort: 'medium',
             name: 'Untitled assistant',
-            ...NO_GUARDRAILS,
+            ...NEW_ASSISTANT_GUARDRAILS,
           },
         },
       },
@@ -2535,6 +2536,75 @@ describe('guardrails', () => {
     expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('1 selected');
     // loading what was saved is not an edit
     expect(screen.queryByTestId('unsavedChanges')).not.toBeInTheDocument();
+  });
+
+  test('a new assistant starts with Privacy Protection on, with its recommended details', async () => {
+    renderDetail('/assistants/add', [getGuardrailValidatorsMock()]);
+    await openGuardrails();
+
+    expect(screen.getByTestId('guardrailToggle-privacy-protection')).toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-content-safety')).not.toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-scope-control')).not.toBeChecked();
+    expect(screen.getByTestId('guardrailToggle-gender-neutrality')).not.toBeChecked();
+    expect(screen.getByTestId('editDetailTypesToggle')).toHaveTextContent('12 selected');
+    expect(screen.queryByTestId('tabDirtyDot-guardrails')).not.toBeInTheDocument();
+  });
+
+  test('a new assistant is created with Privacy Protection unless it is changed', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const create = {
+      request: {
+        query: CREATE_ASSISTANT,
+        variables: {
+          input: {
+            instructions: 'Hello',
+            model: 'gpt-5.6-luna',
+            effort: 'medium',
+            name: 'Untitled assistant',
+            ...NEW_ASSISTANT_GUARDRAILS,
+          },
+        },
+      },
+      result: { data: { createAssistant: { assistant: { id: '7', name: 'Untitled assistant' }, errors: null } } },
+    };
+    renderDetail('/assistants/add', [create]);
+
+    fireEvent.change(await screen.findByTestId('promptInput'), { target: { value: 'Hello' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully'));
+    notificationSpy.mockRestore();
+  });
+
+  test('a new assistant can still be created with Privacy Protection turned off', async () => {
+    const notificationSpy = vi.spyOn(Notification, 'setNotification').mockImplementation(() => {});
+    const create = {
+      request: {
+        query: CREATE_ASSISTANT,
+        variables: {
+          input: {
+            instructions: 'Hello',
+            model: 'gpt-5.6-luna',
+            effort: 'medium',
+            name: 'Untitled assistant',
+            ...NO_GUARDRAILS,
+          },
+        },
+      },
+      result: { data: { createAssistant: { assistant: { id: '7', name: 'Untitled assistant' }, errors: null } } },
+    };
+    renderDetail('/assistants/add', [getGuardrailValidatorsMock(), create]);
+    await openGuardrails();
+
+    fireEvent.click(screen.getByTestId('guardrailToggle-privacy-protection'));
+    expect(screen.getByTestId('tabDirtyDot-guardrails')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('tab-persona'));
+    fireEvent.change(await screen.findByTestId('promptInput'), { target: { value: 'Hello' } });
+    fireEvent.click(screen.getByTestId('saveVersionButton'));
+
+    await waitFor(() => expect(notificationSpy).toHaveBeenCalledWith('Assistant created successfully'));
+    notificationSpy.mockRestore();
   });
 
   test('discard puts the guardrails back the way they were loaded', async () => {

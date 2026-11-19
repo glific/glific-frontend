@@ -1,5 +1,6 @@
 import { BELOW_STICKY_HEADER } from '../../utils/assistant-flow';
 import { ASSISTANT_ID } from '../../utils/assistant-fixtures';
+import { openCreatePage } from '../../utils/assistant-create';
 import {
   CONTENT_SAFETY_REPLY,
   GUARDED_VERSIONS,
@@ -9,6 +10,7 @@ import {
   SCOPE_CONTROL_REPLY,
 } from '../../utils/guardrail-fixtures';
 import {
+  editPrompt,
   openAssistant,
   openTab,
   saveVersion,
@@ -275,6 +277,41 @@ describe('more than one guardrail left unfinished', () => {
       'content-safety',
       'scope-control'
     );
+  });
+});
+
+describe('a new assistant', () => {
+  beforeEach(() => {
+    openCreatePage(GUARDRAIL_SERVICES);
+    openTab('guardrails');
+    cy.get('[data-testid="guardrailStage-incoming"]', { timeout: 10000 }).should('be.visible');
+  });
+
+  it('starts with Privacy Protection on, with its recommended details', () => {
+    guardrailToggle('privacy-protection').should('be.checked');
+    ['content-safety', 'scope-control', 'gender-neutrality'].forEach((id) => {
+      guardrailToggle(id).should('not.be.checked');
+    });
+    cy.get('[data-testid="editDetailTypesToggle"]').should(
+      'contain',
+      `${PII_DEFAULT_ENTITY_TYPES.length} selected`
+    );
+    // the default is where a new assistant starts, not an edit
+    cy.get('[data-testid="tabDirtyDot-guardrails"]').should('not.exist');
+  });
+
+  it('is created without Privacy Protection when it is turned off', () => {
+    toggleGuardrail('privacy-protection');
+    cy.get('[data-testid="tabDirtyDot-guardrails"]').should('be.visible');
+
+    openTab('persona');
+    editPrompt('You answer questions about antenatal care.');
+    saveVersion();
+
+    cy.wait('@CreateAssistant').then((interception) => {
+      const input = interception.request.body.variables?.input;
+      expect(JSON.parse(input.inputGuardrails)).to.deep.equal([]);
+    });
   });
 });
 

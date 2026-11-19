@@ -195,6 +195,9 @@ describe('saving the first version', () => {
       expect(input.name).to.eq('ANC Companion');
       expect(input.instructions).to.eq('You answer questions about antenatal care.');
       expect(input.model).to.eq('gpt-4.1');
+      // a new assistant protects personal details unless that is turned off, even with guardrails hidden
+      expect(JSON.parse(input.inputGuardrails)).to.deep.equal([{ type: 'pii_remover' }]);
+      expect(JSON.parse(input.outputGuardrails)).to.deep.equal([]);
     });
   });
 
