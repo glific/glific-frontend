@@ -198,14 +198,8 @@ export const ChatInterface = ({ savedSearches, collectionType }: ChatInterfacePr
             </div>
           )}
 
-          {/* Under the full-width channel switch, the tabs stretch to the same width so the two line up. */}
-          <div className={`${styles.TabContainer} ${isWebChannelEnabled ? styles.TabContainerFullWidth : ''}`}>
-            <Tabs
-              value={value}
-              onChange={handleTabChange}
-              aria-label="chat tabs"
-              variant={isWebChannelEnabled ? 'fullWidth' : 'standard'}
-            >
+          <div className={styles.TabContainer}>
+            <Tabs value={value} onChange={handleTabChange} aria-label="chat tabs">
               {visibleTabs.map((tab) => (
                 <Tab
                   key={tab.label}

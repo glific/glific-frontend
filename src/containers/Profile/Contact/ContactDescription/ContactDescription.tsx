@@ -4,24 +4,15 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useTranslation } from 'react-i18next';
 
-import { MessageChannel } from 'common/constants';
-import { ChannelLabel } from 'components/UI/ChannelLabel/ChannelLabel';
 import { Timer } from 'components/UI/Timer/Timer';
 import { Tooltip } from 'components/UI/Tooltip/Tooltip';
 import styles from './ContactDescription.module.css';
-
-export interface ContactIdentity {
-  id: string;
-  channel: MessageChannel;
-  identifier: string;
-}
 
 export interface ContactDescriptionProps {
   fields: any;
   settings?: any;
   phone?: string;
   maskedPhone?: string;
-  identities?: ContactIdentity[] | null;
   collections: any;
   lastMessage?: string;
   statusMessage?: string;
@@ -32,7 +23,6 @@ export interface ContactDescriptionProps {
 export const ContactDescription = ({
   phone,
   maskedPhone,
-  identities,
   collections,
   lastMessage,
   statusMessage,
@@ -87,7 +77,7 @@ export const ContactDescription = ({
 
   let phoneDisplay = (
     <div data-testid="phone" className={styles.PhoneField}>
-      {maskedPhone ? `+${maskedPhone}` : '-'}
+      +{maskedPhone}
     </div>
   );
 
@@ -143,21 +133,6 @@ export const ContactDescription = ({
           <div className={styles.Divider} />
         </>
       )}
-    </>
-  );
-
-  const identitiesBlock = !groups && !!identities?.length && (
-    <>
-      <div className={styles.DetailBlock} data-testid="identities">
-        <div className={styles.FieldLabel}>{t('Identities')}</div>
-        {identities.map(({ id, channel, identifier }) => (
-          <div key={id} className={styles.IdentityRow} data-testid="identity">
-            <ChannelLabel channel={channel} testId="identityChannel" />
-            <span className={styles.DescriptionItemValue}>{identifier}</span>
-          </div>
-        ))}
-      </div>
-      <div className={styles.Divider} />
     </>
   );
 
@@ -230,7 +205,6 @@ export const ContactDescription = ({
   return (
     <div className={`${styles.DescriptionContainer} ${customStyles}`} data-testid="contactDescription">
       {numberBlock}
-      {identitiesBlock}
       {collectionBlock}
       {settingsBlock}
       {statusBlock}

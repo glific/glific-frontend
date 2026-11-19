@@ -74,12 +74,6 @@
   margin: 0;
 }
 
-.IdentityRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 .PhoneField {
   width: fit-content;
 }

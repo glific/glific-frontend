@@ -7,8 +7,6 @@ import { useTranslation } from 'react-i18next';
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { getContactStatus, getDisplayName } from 'common/utils';
-import { MESSAGE_CHANNELS } from 'common/constants';
-import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
@@ -50,7 +48,7 @@ export const ContactProfile = () => {
 
   const { contact } = data;
   const contactData = contact.contact;
-  const { phone, maskedPhone, identities, channels, groups, lastMessageAt, settings, activeProfile } = contactData;
+  const { phone, maskedPhone, groups, lastMessage, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
   const contactDisplayName = getDisplayName(contactData);
@@ -69,15 +67,6 @@ export const ContactProfile = () => {
   }
 
   const statusMessage = getContactStatus(contactData);
-
-  // Web activity and web logins are only shown to an organization that has the web channel on.
-  const webChannelEnabled = getOrganizationServices('webChannelEnabled');
-  const shownOnThisOrg = ({ channel }: { channel: string }) => webChannelEnabled || channel !== MESSAGE_CHANNELS.web;
-  // With profiles, the times are the selected profile's own: its inbound messages while it was the
-  // active one. The channel list itself is the contact's, shared by every profile.
-  const profileChannels = selectedProfile?.channels;
-  const visibleChannels = (profileChannels ?? channels ?? []).filter(shownOnThisOrg);
-  const visibleIdentities = identities?.filter(shownOnThisOrg);
 
   const switchProfile = {
     selectedProfileId,
@@ -166,13 +155,7 @@ export const ContactProfile = () => {
   let profileBodyContent;
   if (showProfileSection === 'profile') {
     profileBodyContent = (
-      <Profile
-        multiProfileAttributes={switchProfile}
-        removePhoneField
-        redirectionLink={`chat/${params.id}`}
-        channels={visibleChannels}
-        channelsPerProfile={!!profileChannels}
-      />
+      <Profile multiProfileAttributes={switchProfile} removePhoneField redirectionLink={`chat/${params.id}`} />
     );
   } else if (showProfileSection === 'details') {
     profileBodyContent = (
@@ -180,11 +163,10 @@ export const ContactProfile = () => {
         statusMessage={statusMessage}
         phone={phone}
         maskedPhone={maskedPhone}
-        identities={visibleIdentities}
         fields={fields}
         settings={settings}
         collections={groups}
-        lastMessage={lastMessageAt}
+        lastMessage={lastMessage}
       />
     );
   } else if (showProfileSection === 'history') {

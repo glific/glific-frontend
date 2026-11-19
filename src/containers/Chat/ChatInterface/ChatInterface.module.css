@@ -75,16 +75,6 @@
   width: fit-content;
 }
 
-.TabContainerFullWidth {
-  display: block;
-  width: auto;
-}
-
-.TabContainerFullWidth .Tab {
-  width: auto;
-  max-width: none;
-}
-
 .Title a {
   text-decoration: none;
   color: inherit;

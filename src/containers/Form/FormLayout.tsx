@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect, ReactNode } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { Field, useFormik, FormikProvider } from 'formik';
 // eslint-disable-next-line no-unused-vars
@@ -45,8 +45,6 @@ export interface FormLayoutProps {
   linkParameter?: any;
   cancelLink?: string | null;
   languageSupport?: boolean;
-  /** Rendered inside the form after the last field and before the buttons, e.g. read-only context. */
-  afterFields?: ReactNode;
   setPayload?: Function;
   advanceSearch?: any;
   additionalState?: any;
@@ -132,7 +130,6 @@ export const FormLayout = ({
   linkParameter = null,
   cancelLink = null,
   languageSupport = true,
-  afterFields,
   roleAccessSupport = false,
   setPayload,
   // Todo: lets move advanced search out of here as this is not generic
@@ -589,7 +586,6 @@ export const FormLayout = ({
               </Fragment>
             );
           })}
-          {afterFields}
           <div className={buttonState.styles ? buttonState.styles : styles.Buttons}>
             {buttonState.show && (
               <Button

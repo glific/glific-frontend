@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { LOGGED_IN_USER_MOCK, getContactDetailsQuery, getContactQuery, multiple_profile_mock } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 import { MemoryRouter, Route, Routes } from 'react-router';
@@ -47,86 +47,6 @@ describe('contact profile with single profile', () => {
       expect(screen.getByText('Status')).toBeInTheDocument();
       expect(screen.getByText('Collections')).toBeInTheDocument();
     });
-
-    expect(screen.getByText('Identities')).toBeInTheDocument();
-    expect(screen.getByTestId('identity')).toHaveTextContent('WhatsApp919820198765');
-  });
-});
-
-describe('contact profile details for a web-only contact', () => {
-  const webOnlyDetails = getContactDetailsQuery('1', {
-    activeProfile: null,
-    phone: null,
-    maskedPhone: null,
-    identities: [{ id: '2', channel: 'WEB', identifier: 'ravi_web' }],
-  });
-  const mocks = [webOnlyDetails, webOnlyDetails, ...LOGGED_IN_USER_MOCK, ...historyMock];
-
-  afterEach(() => localStorage.removeItem('organizationServices'));
-
-  test('shows the web identity and no phone value', async () => {
-    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: true }));
-    render(
-      <MemoryRouter initialEntries={['/contact-profile/1']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <Routes>
-            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
-          </Routes>
-        </MockedProvider>
-      </MemoryRouter>
-    );
-
-    fireEvent.click(await screen.findByText('Details'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('identity')).toHaveTextContent('Webravi_web');
-    });
-    expect(screen.getByTestId('phone')).toHaveTextContent(/^-$/);
-  });
-
-  test('hides the web identity when the web channel is off', async () => {
-    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: false }));
-
-    render(
-      <MemoryRouter initialEntries={['/contact-profile/1']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <Routes>
-            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
-          </Routes>
-        </MockedProvider>
-      </MemoryRouter>
-    );
-
-    fireEvent.click(await screen.findByText('Details'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('phone')).toBeInTheDocument();
-    });
-    expect(screen.queryByTestId('identity')).not.toBeInTheDocument();
-  });
-});
-
-describe('contact profile details for a staff user', () => {
-  const staffDetails = getContactDetailsQuery('1', { activeProfile: null, identities: [] });
-  const mocks = [staffDetails, staffDetails, ...LOGGED_IN_USER_MOCK, ...historyMock];
-
-  test('hides the identities block when the list is empty', async () => {
-    render(
-      <MemoryRouter initialEntries={['/contact-profile/1']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <Routes>
-            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
-          </Routes>
-        </MockedProvider>
-      </MemoryRouter>
-    );
-
-    fireEvent.click(await screen.findByText('Details'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Collections')).toBeInTheDocument();
-    });
-    expect(screen.queryByText('Identities')).not.toBeInTheDocument();
   });
 });
 
@@ -163,26 +83,6 @@ describe('contact profile with multiple profiles', () => {
     });
   });
 
-  test("shows each profile's own channel activity", async () => {
-    render(wrapper);
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 1');
-    });
-    expect(screen.getByTestId('channelLastActivity')).toHaveTextContent('inbound message');
-    expect(
-      screen.getByText("Last activity is this profile's most recent inbound message on that channel.")
-    ).toBeInTheDocument();
-
-    fireEvent.click(screen.getAllByTestId('profileHeader')[1]);
-
-    // The second profile has never been the active one, so it has no activity of its own.
-    await waitFor(() => {
-      expect(screen.getAllByRole('textbox')[0]).toHaveValue('profile name 2');
-    });
-    expect(screen.getByTestId('channelLastActivity')).toHaveTextContent('No activity yet');
-  });
-
   test('should only show active profiles and shows correct status cues', async () => {
     render(wrapper);
 
@@ -196,52 +96,5 @@ describe('contact profile with multiple profiles', () => {
 
     expect(profileHeaders[0]).toHaveTextContent('profile name 1DEFAULTCURRENT');
     expect(profileHeaders[1]).toHaveTextContent('profile name 2');
-  });
-});
-
-describe('channels on the Profile tab', () => {
-  const bothChannels = getContactDetailsQuery('1', {
-    activeProfile: null,
-    channels: [
-      { channel: 'WHATSAPP', lastMessageAt: '2026-09-25T09:36:00Z' },
-      { channel: 'WEB', lastMessageAt: '2026-10-07T12:55:00Z' },
-    ],
-  });
-  const mocks = [bothChannels, bothChannels, getContactQuery, ...LOGGED_IN_USER_MOCK, ...historyMock];
-
-  const renderProfile = () =>
-    render(
-      <MemoryRouter initialEntries={['/contact-profile/1']}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <Routes>
-            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
-          </Routes>
-        </MockedProvider>
-      </MemoryRouter>
-    );
-
-  const setWebChannel = (enabled: boolean) =>
-    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: enabled }));
-
-  afterEach(() => localStorage.removeItem('organizationServices'));
-
-  test('shows both channels when the organization uses the web channel', async () => {
-    setWebChannel(true);
-    renderProfile();
-
-    const rows = await screen.findAllByTestId('channelRow');
-    expect(rows.map((row) => row.textContent)).toEqual([
-      expect.stringContaining('WhatsApp'),
-      expect.stringContaining('Web'),
-    ]);
-  });
-
-  test('shows WhatsApp only when the web channel is off', async () => {
-    setWebChannel(false);
-    renderProfile();
-
-    const rows = await screen.findAllByTestId('channelRow');
-    expect(rows).toHaveLength(1);
-    expect(rows[0]).toHaveTextContent('WhatsApp');
   });
 });

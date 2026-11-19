@@ -147,7 +147,6 @@ export const getMultipleProfiles = {
           fields: '{}',
           language: { id: '1' },
           type: 'Student',
-          channels: [{ channel: 'WHATSAPP', lastMessageAt: '2026-11-18T07:52:41Z' }],
         },
         {
           id: '3',
@@ -157,7 +156,6 @@ export const getMultipleProfiles = {
           fields: '{}',
           language: { id: '1' },
           type: 'Parent',
-          channels: [{ channel: 'WHATSAPP', lastMessageAt: null }],
         },
       ],
     },
@@ -192,11 +190,10 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
     data: {
       contact: {
         contact: {
+          ...attributes,
           name: 'Default User',
           phone: '+919820198765',
           maskedPhone: '+919820198765',
-          identities: [{ id: '1', channel: 'WHATSAPP', identifier: '919820198765' }],
-          channels: [{ channel: 'WHATSAPP', lastMessageAt: date.toISOString() }],
           lastMessageAt: date.toISOString(),
           groups: [
             {
@@ -212,7 +209,6 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
           optinMethod: 'BSP',
           optoutMethod: null,
           settings: {},
-          ...attributes,
         },
       },
     },

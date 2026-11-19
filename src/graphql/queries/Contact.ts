@@ -122,15 +122,6 @@ export const GET_CONTACT_DETAILS = gql`
         }
         phone
         maskedPhone
-        identities {
-          id
-          channel
-          identifier
-        }
-        channels {
-          channel
-          lastMessageAt
-        }
         status
         lastMessageAt
         groups {
@@ -183,10 +174,6 @@ export const GET_CONTACT_PROFILES = gql`
       is_default
       language {
         id
-      }
-      channels {
-        channel
-        lastMessageAt
       }
     }
   }

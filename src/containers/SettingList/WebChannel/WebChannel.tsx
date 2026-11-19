@@ -299,11 +299,14 @@ export const WebChannel = () => {
           (value) => !isHexColour(normalizeHex(value ?? '')) || !isNearWhite(normalizeHex(value ?? ''))
         )
     ),
-    // Optional: the chat's profile leaves out whatever is empty.
     about_description: whenActive((active) =>
-      active.max(MAX_DESCRIPTION, t('Use at most {{max}} characters.', { max: MAX_DESCRIPTION }))
+      active
+        .required(t('Description is required.'))
+        .max(MAX_DESCRIPTION, t('Use at most {{max}} characters.', { max: MAX_DESCRIPTION }))
     ),
-    about_website: whenActive((active) => active.test('website', t('Enter a link like www.example.org.'), isWebsite)),
+    about_website: whenActive((active) =>
+      active.required(t('Website is required.')).test('website', t('Enter a link like www.example.org.'), isWebsite)
+    ),
     about_email: Yup.string()
       .nullable()
       .when('isActive', { is: true, then: (active) => active.email(t('Enter a valid email address.')) }),
@@ -402,7 +405,7 @@ export const WebChannel = () => {
       ...textField(
         'about_description',
         t('Description'),
-        t('Optional. One or two lines on what your organisation does and who it helps.'),
+        t('One or two lines on what your organisation does and who it helps.'),
         t('e.g. We help young people find their first job through free skills courses.')
       ),
       component: CountedInput,
@@ -413,7 +416,7 @@ export const WebChannel = () => {
     textField(
       'about_website',
       t('Website'),
-      t('Optional. Contacts can open it from your profile in the chat.'),
+      t('Contacts can open it from your profile in the chat.'),
       t('e.g. www.example.org')
     ),
     textField(
