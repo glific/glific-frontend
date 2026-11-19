@@ -59,7 +59,7 @@ describe('channels on history entries (#5877)', () => {
           contactHistory: [
             entry('1', 'contact_flow_started', 'Flow Started', 'WEB', flowMeta),
             entry('2', 'contact_flow_ended_all', 'Last Active flow is terminated', null),
-            entry('3', 'web_login_code_verified', 'Web login code verified', 'WEB'),
+            entry('3', 'web_login_code_verified', 'Logged into web', 'WEB'),
             entry('4', 'contact_groups_updated', 'Added to collection', 'WHATSAPP'),
           ],
         },
@@ -89,7 +89,7 @@ describe('channels on history entries (#5877)', () => {
     setWebChannel(false);
     const { findByText, queryByTestId } = renderHistory();
 
-    expect(await findByText('Web login code verified')).toBeInTheDocument();
+    expect(await findByText('Logged into web')).toBeInTheDocument();
     expect(queryByTestId('historyChannel')).not.toBeInTheDocument();
   });
 
@@ -104,7 +104,7 @@ describe('channels on history entries (#5877)', () => {
     );
 
     expect(await findByText('Registration')).toBeInTheDocument();
-    expect(await findByText('Web login code verified')).toBeInTheDocument();
+    expect(await findByText('Logged into web')).toBeInTheDocument();
 
     // A chip each for the flow start, the older flow stop and the web login; none for the collection.
     const chips = getAllByTestId('historyChannel').map((chip) => chip.textContent);
