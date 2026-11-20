@@ -5,6 +5,8 @@ export interface ChannelLabelProps {
   channel?: MessageChannel | null;
   variant?: 'inline' | 'chip';
   testId?: string;
+  /** Extra class for a screen that needs the label sized or placed differently. */
+  className?: string;
 }
 
 const CHANNEL_DETAILS: Record<MessageChannel, { label: string; dotClass: string; chipClass: string }> = {
@@ -12,14 +14,22 @@ const CHANNEL_DETAILS: Record<MessageChannel, { label: string; dotClass: string;
   [MESSAGE_CHANNELS.web]: { label: 'Web', dotClass: styles.Web, chipClass: styles.WebChip },
 };
 
-export const ChannelLabel = ({ channel, variant = 'inline', testId = 'channelLabel' }: ChannelLabelProps) => {
+export const ChannelLabel = ({
+  channel,
+  variant = 'inline',
+  testId = 'channelLabel',
+  className = '',
+}: ChannelLabelProps) => {
   const known = channel == null ? CHANNEL_DETAILS[MESSAGE_CHANNELS.whatsapp] : CHANNEL_DETAILS[channel];
   const { label, dotClass, chipClass } = known ?? { label: channel as string, dotClass: '', chipClass: '' };
 
   const isChip = variant === 'chip';
 
   return (
-    <div className={`${styles.ChannelLabel} ${isChip ? `${styles.Chip} ${chipClass}` : ''}`} data-testid={testId}>
+    <div
+      className={`${styles.ChannelLabel} ${isChip ? `${styles.Chip} ${chipClass}` : ''} ${className}`}
+      data-testid={testId}
+    >
       <span className={`${styles.Dot} ${dotClass}`} aria-hidden="true" />
       {label}
     </div>

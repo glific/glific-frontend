@@ -13,10 +13,24 @@
 }
 
 .LineItem {
+  display: flex;
+  align-items: center;
+  gap: var(--app-space-sm);
   font-size: 16px;
-  max-width: 320px;
   font-weight: 400;
   color: #073f24;
+}
+
+.LineText {
+  min-width: 0;
+}
+
+/* Smaller than the default chip so it sits beside the entry's text rather than competing with it. */
+.LineItem .HistoryChip {
+  flex-shrink: 0;
+  font-size: 10px;
+  line-height: 14px;
+  padding: 1px var(--app-space-sm);
 }
 
 .Link {
