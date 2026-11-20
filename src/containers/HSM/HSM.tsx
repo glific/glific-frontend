@@ -214,7 +214,7 @@ export const HSM = () => {
   };
 
   const getLanguageId = (value: any) => {
-    if (!value.label) {
+    if (!value || !value.label) {
       return;
     }
 
