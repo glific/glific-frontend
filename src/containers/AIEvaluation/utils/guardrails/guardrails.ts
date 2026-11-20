@@ -269,6 +269,8 @@ export const buildGuardrailRules = (validators: GuardrailValidator[]): Guardrail
 
 export const EMPTY_GUARDRAIL_SPECS: GuardrailSpecs = { input: [], output: [] };
 
+export const NEW_ASSISTANT_GUARDRAIL_SPECS: GuardrailSpecs = { input: [{ type: 'pii_remover' }], output: [] };
+
 export const parseGuardrailSpecs = (value: unknown): GuardrailSpec[] => {
   const list = parseJson(value);
   if (!Array.isArray(list)) return [];
