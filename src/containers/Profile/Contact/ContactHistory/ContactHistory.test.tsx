@@ -60,14 +60,15 @@ describe('channels on history entries (#5877)', () => {
             entry('1', 'contact_flow_started', 'Flow Started', 'WEB', flowMeta),
             entry('2', 'contact_flow_ended_all', 'Last Active flow is terminated', null),
             entry('3', 'web_login_code_verified', 'Logged into web', 'WEB'),
-            entry('4', 'contact_groups_updated', 'Added to collection', 'WHATSAPP'),
+            entry('4', 'contact_groups_updated', 'Added to collection', null),
+            entry('5', 'contact_opted_in', 'Opted in on WhatsApp', 'WHATSAPP'),
           ],
         },
       },
     },
     {
       request: { query: COUNT_CONTACT_HISTORY, variables: { filter: { contactId: '2' } } },
-      result: { data: { countContactHistory: 4 } },
+      result: { data: { countContactHistory: 5 } },
     },
   ];
 
@@ -93,7 +94,7 @@ describe('channels on history entries (#5877)', () => {
     expect(queryByTestId('historyChannel')).not.toBeInTheDocument();
   });
 
-  it('shows the channel on flow and web entries, reading an older entry with none as WhatsApp', async () => {
+  it('shows the channel on every entry that has one', async () => {
     setWebChannel(true);
     const { findByText, getAllByTestId } = render(
       <MemoryRouter>
@@ -106,8 +107,7 @@ describe('channels on history entries (#5877)', () => {
     expect(await findByText('Registration')).toBeInTheDocument();
     expect(await findByText('Logged into web')).toBeInTheDocument();
 
-    // A chip each for the flow start, the older flow stop and the web login; none for the collection.
     const chips = getAllByTestId('historyChannel').map((chip) => chip.textContent);
-    expect(chips).toEqual(['Web', 'WhatsApp', 'Web']);
+    expect(chips).toEqual(['Web', 'Web', 'WhatsApp']);
   });
 });

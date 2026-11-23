@@ -52,12 +52,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
     }
   };
 
-  // Flow entries and the web channel's own entries say which channel they happened on. A flow entry
-  // written before channels were recorded has none, which ChannelLabel reads as WhatsApp.
-  // Without the web channel every entry would read WhatsApp, which says nothing, so none is shown.
   const webChannelEnabled = getOrganizationServices('webChannelEnabled');
-  const showsChannel = (eventType: string) =>
-    webChannelEnabled && (eventType.startsWith('contact_flow_') || eventType.startsWith('web_'));
 
   const getEventLabel = (eventLabel: string, eventType: string, eventMeta: string, channel?: MessageChannel | null) => {
     let label;
@@ -79,7 +74,7 @@ export const ContactHistory = ({ contactId, profileId }: ContactHistoryProps) =>
       <div className={styles.DetailBlock} key={eventLabel}>
         <div className={styles.LineItem}>
           <div className={styles.LineText}>{label}</div>
-          {showsChannel(eventType) && (
+          {webChannelEnabled && channel && (
             <ChannelLabel channel={channel} variant="chip" testId="historyChannel" className={styles.HistoryChip} />
           )}
         </div>
