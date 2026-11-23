@@ -614,8 +614,7 @@ describe('Whatsapp group collections', () => {
 });
 
 describe('organization with the web channel', () => {
-  const webFlowsReason =
-    'Web flows are not listed: a trigger cannot start them, as web contacts are only reachable while their chat is open.';
+  const webFlowsReason = 'Only WhatsApp flows can be triggered.';
 
   const whatsappFlowsMock = {
     request: {

@@ -1325,5 +1325,5 @@
   "What should the assistant say when it blocks an abusive message?": "What should the assistant say when it blocks an abusive message?",
   "Reply set": "Reply set",
   "No reply set": "No reply set",
-  "Web flows are not listed: a trigger cannot start them, as web contacts are only reachable while their chat is open.": "Web flows are not listed: a trigger cannot start them, as web contacts are only reachable while their chat is open."
+  "Only WhatsApp flows can be triggered.": "Only WhatsApp flows can be triggered."
 }

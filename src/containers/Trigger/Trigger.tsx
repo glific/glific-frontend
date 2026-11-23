@@ -317,9 +317,7 @@ export const Trigger = () => {
       ) : triggerFlowWarning ? (
         <span className={styles.Warning}>{`Warning: ${triggerFlowWarning}`} </span>
       ) : listsOnlyWhatsAppFlows ? (
-        t(
-          'Web flows are not listed: a trigger cannot start them, as web contacts are only reachable while their chat is open.'
-        )
+        t('Only WhatsApp flows can be triggered.')
       ) : (
         ''
       ),
