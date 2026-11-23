@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
-import { LOGGED_IN_USER_MOCK, multiple_profile_mock } from 'mocks/Contact';
+import { LOGGED_IN_USER_MOCK, getContactDetailsQuery, getContactQuery, multiple_profile_mock } from 'mocks/Contact';
 import { ContactProfile } from './ContactProfile';
 import { mocks as historyMock } from './ContactHistory/ContactHistory.test';
 import { MemoryRouter, Route, Routes } from 'react-router';
@@ -96,5 +96,57 @@ describe('contact profile with multiple profiles', () => {
 
     expect(profileHeaders[0]).toHaveTextContent('profile name 1DEFAULTCURRENT');
     expect(profileHeaders[1]).toHaveTextContent('profile name 2');
+  });
+});
+
+describe('channels on the Profile tab', () => {
+  const renderProfile = (identities: any[]) => {
+    const details = getContactDetailsQuery('1', { activeProfile: null, identities });
+    const mocks = [details, details, getContactQuery, ...LOGGED_IN_USER_MOCK, ...historyMock];
+
+    return render(
+      <MemoryRouter initialEntries={['/contact-profile/1']}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Routes>
+            <Route path="contact-profile/:id/*" element={<ContactProfile />} />
+          </Routes>
+        </MockedProvider>
+      </MemoryRouter>
+    );
+  };
+
+  const setWebChannel = (enabled: boolean) =>
+    localStorage.setItem('organizationServices', JSON.stringify({ webChannelEnabled: enabled }));
+
+  afterEach(() => localStorage.removeItem('organizationServices'));
+
+  test('marks a channel active when the contact has an identity on it', async () => {
+    setWebChannel(true);
+    renderProfile([{ id: '1', channel: 'WHATSAPP' }]);
+
+    const rows = await screen.findAllByTestId('channelRow');
+    expect(rows[0]).toHaveTextContent('WhatsAppActive');
+    expect(rows[1]).toHaveTextContent('WebNot active');
+  });
+
+  test('shows the web row when the contact only has a web identity', async () => {
+    setWebChannel(true);
+    renderProfile([{ id: '2', channel: 'WEB' }]);
+
+    const rows = await screen.findAllByTestId('channelRow');
+    expect(rows[0]).toHaveTextContent('WhatsAppNot active');
+    expect(rows[1]).toHaveTextContent('WebActive');
+  });
+
+  test('shows WhatsApp only when the web channel is off', async () => {
+    setWebChannel(false);
+    renderProfile([
+      { id: '1', channel: 'WHATSAPP' },
+      { id: '2', channel: 'WEB' },
+    ]);
+
+    const rows = await screen.findAllByTestId('channelRow');
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toHaveTextContent('WhatsAppActive');
   });
 });

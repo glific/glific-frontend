@@ -14,6 +14,10 @@ import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE 
 import { GET_CURRENT_USER, GET_USER_CONTACT_IDS } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
+import { MESSAGE_CHANNELS } from 'common/constants';
+import { ContactChannel, ContactChannels } from './ContactChannels/ContactChannels';
+import { WhatsAppDetails } from './WhatsAppDetails/WhatsAppDetails';
+import styles from './Profile.module.css';
 
 const profileIcon = <ProfileIcon />;
 
@@ -22,6 +26,11 @@ export interface ProfileProps {
   afterDelete?: any;
   removePhoneField?: boolean;
   multiProfileAttributes?: any;
+  /**
+   * The contact's channels, from the contact profile page. When given, the page is two cards:
+   * contact details with the channels, and the WhatsApp state on its own, read only.
+   */
+  channels?: ContactChannel[];
 }
 
 export const Profile = ({
@@ -29,6 +38,7 @@ export const Profile = ({
   afterDelete,
   removePhoneField = false,
   multiProfileAttributes,
+  channels,
 }: ProfileProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -38,6 +48,8 @@ export const Profile = ({
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
   const hasMultipleProfiles = multiProfileAttributes?.selectedProfile;
+  const showsChannels = channels !== undefined;
+  const onWhatsApp = channels?.some(({ channel, active }) => active && channel === MESSAGE_CHANNELS.whatsapp);
 
   const queries = {
     getItemQuery: hasMultipleProfiles ? GET_PROFILE : GET_CONTACT,
@@ -167,12 +179,14 @@ export const Profile = ({
       optionLabel: 'label',
       disabled: true,
       skipPayload: true,
+      skip: showsChannels,
       handleCreateItem: () => {},
       multiple: false,
     },
     {
       component: AutoComplete,
       name: 'bspStatus',
+      skip: showsChannels,
       placeholder: t('Provider status'),
       label: t('Provider status'),
       options: PROVIDER_STATUS,
@@ -205,7 +219,7 @@ export const Profile = ({
     dialogMessage += ` ${t('Staff account linked to this contact will also get deleted.')}`;
   }
 
-  return (
+  const form = (
     <FormLayout
       {...queries}
       partialPage
@@ -225,6 +239,23 @@ export const Profile = ({
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
       noHeading
+      afterFields={showsChannels ? <ContactChannels channels={channels} /> : undefined}
+      customStyles={showsChannels ? styles.CardForm : null}
+      buttonState={showsChannels ? { text: '', status: false, styles: styles.CardButtons, show: true } : undefined}
     />
+  );
+
+  if (!showsChannels) return form;
+
+  return (
+    <div className={styles.Cards}>
+      <section className={styles.Card} data-testid="contactDetails">
+        <div className={styles.CardTitle}>{t('Contact details')}</div>
+        <p className={styles.CardSubtitle}>{t('Shared across all channels.')}</p>
+        {form}
+      </section>
+
+      {onWhatsApp && <WhatsAppDetails status={status} bspStatus={bspStatus} />}
+    </div>
   );
 };
