@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import CollapseIcon from '../../../assets/images/icons/Collapse.svg?react';
 import ExpandIcon from '../../../assets/images/icons/Expand.svg?react';
 import { getContactStatus, getDisplayName } from 'common/utils';
+import { MESSAGE_CHANNELS } from 'common/constants';
+import { getOrganizationServices } from 'services/AuthService';
 import { GET_CONTACT_DETAILS, GET_CONTACT_PROFILES } from 'graphql/queries/Contact';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
 import { AvatarDisplay } from 'components/UI/AvatarDisplay/AvatarDisplay';
@@ -48,7 +50,7 @@ export const ContactProfile = () => {
 
   const { contact } = data;
   const contactData = contact.contact;
-  const { phone, maskedPhone, groups, lastMessage, settings, activeProfile } = contactData;
+  const { phone, maskedPhone, identities, groups, lastMessage, settings, activeProfile } = contactData;
   let { fields } = contactData;
 
   const contactDisplayName = getDisplayName(contactData);
@@ -67,6 +69,14 @@ export const ContactProfile = () => {
   }
 
   const statusMessage = getContactStatus(contactData);
+
+  const shownChannels = getOrganizationServices('webChannelEnabled')
+    ? [MESSAGE_CHANNELS.whatsapp, MESSAGE_CHANNELS.web]
+    : [MESSAGE_CHANNELS.whatsapp];
+  const channels = shownChannels.map((channel) => ({
+    channel,
+    active: (identities ?? []).some((identity: { channel: string }) => identity.channel === channel),
+  }));
 
   const switchProfile = {
     selectedProfileId,
@@ -155,7 +165,12 @@ export const ContactProfile = () => {
   let profileBodyContent;
   if (showProfileSection === 'profile') {
     profileBodyContent = (
-      <Profile multiProfileAttributes={switchProfile} removePhoneField redirectionLink={`chat/${params.id}`} />
+      <Profile
+        multiProfileAttributes={switchProfile}
+        removePhoneField
+        redirectionLink={`chat/${params.id}`}
+        channels={channels}
+      />
     );
   } else if (showProfileSection === 'details') {
     profileBodyContent = (

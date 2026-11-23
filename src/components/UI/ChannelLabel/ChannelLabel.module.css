@@ -41,3 +41,9 @@
   color: var(--app-color-channel-web);
   background-color: rgb(var(--app-color-channel-web-rgb) / 10%);
 }
+
+.Icon {
+  width: 14px !important;
+  height: 14px !important;
+  flex-shrink: 0;
+}

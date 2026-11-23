@@ -1324,5 +1324,12 @@
   "Catches abusive or hurtful messages in English, Hindi and Hinglish, and sends your set reply instead.": "Catches abusive or hurtful messages in English, Hindi and Hinglish, and sends your set reply instead.",
   "What should the assistant say when it blocks an abusive message?": "What should the assistant say when it blocks an abusive message?",
   "Reply set": "Reply set",
-  "No reply set": "No reply set"
+  "No reply set": "No reply set",
+  "Contact details": "Contact details",
+  "Shared across all channels.": "Shared across all channels.",
+  "Channels": "Channels",
+  "Active": "Active",
+  "Not active": "Not active",
+  "Active means the contact has an identity on that channel.": "Active means the contact has an identity on that channel.",
+  "Read only. Updated by Meta based on the contact's actions on WhatsApp.": "Read only. Updated by Meta based on the contact's actions on WhatsApp."
 }
