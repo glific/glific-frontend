@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ELIXIR_VERSION: "1.18.3-otp-27"
-      OTP_VERSION: "27.3.3"
+      ELIXIR_VERSION: '1.18.3-otp-27'
+      OTP_VERSION: '27.3.3'
 
     services:
       postgres:
@@ -66,8 +66,6 @@ jobs:
           # vite-plugin-mkcert otherwise looks up mkcert through the GitHub API on every
           # dev-server start; when that call is rate-limited the server never comes up.
           # Put the official binary where the plugin looks first, so it skips the API call.
-          # (Ubuntu's apt mkcert doesn't get its CA trusted by the backend, which breaks
-          # media validation of the sample files served from glific.test:3000.)
           mkdir -p ~/.vite-plugin-mkcert
           wget -q -O ~/.vite-plugin-mkcert/mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64
           chmod +x ~/.vite-plugin-mkcert/mkcert
