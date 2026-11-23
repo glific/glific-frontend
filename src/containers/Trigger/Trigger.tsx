@@ -17,6 +17,7 @@ import {
   setVariables,
   EXTENDED_TIME_FORMAT,
   CONTACTS_COLLECTION,
+  MESSAGE_CHANNELS,
 } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
@@ -149,6 +150,7 @@ export const Trigger = () => {
   const [frequencyOptions, setFrequencyOptions] = useState(dayList);
   const [groupType, setGroupType] = useState(CONTACTS_COLLECTION);
   const isWhatsAppGroupEnabled = getOrganizationServices('whatsappGroupEnabled');
+  const isWebChannelEnabled = getOrganizationServices('webChannelEnabled');
 
   const params = useParams();
   const location = useLocation();
@@ -234,10 +236,14 @@ export const Trigger = () => {
 
   const FormSchema = Yup.object().shape(schemaShape);
 
+  // Viewing an existing trigger still lists every flow, so one saved on a web flow shows its flow.
+  const listsOnlyWhatsAppFlows = isWebChannelEnabled && !isEditing;
+
   const { data: flow, loading: flowsLoading } = useQuery(GET_FLOWS, {
     variables: setVariables({
       status: FLOW_STATUS_PUBLISHED,
       isTemplate: false,
+      ...(listsOnlyWhatsAppFlows && { channel: MESSAGE_CHANNELS.whatsapp }),
     }),
     fetchPolicy: 'network-only', // set for now, need to check cache issue
   });
@@ -310,6 +316,10 @@ export const Trigger = () => {
         </>
       ) : triggerFlowWarning ? (
         <span className={styles.Warning}>{`Warning: ${triggerFlowWarning}`} </span>
+      ) : listsOnlyWhatsAppFlows ? (
+        t(
+          'Web flows are not listed: a trigger cannot start them, as web contacts are only reachable while their chat is open.'
+        )
       ) : (
         ''
       ),
