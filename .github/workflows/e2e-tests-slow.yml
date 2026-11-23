@@ -63,9 +63,15 @@ jobs:
           sudo sysctl -p
           cat /proc/sys/fs/inotify/max_user_watches
           yarn setup
-          # vite-plugin-mkcert otherwise downloads mkcert from the GitHub API on every
+          # vite-plugin-mkcert otherwise looks up mkcert through the GitHub API on every
           # dev-server start; when that call is rate-limited the server never comes up.
-          sudo apt-get install -y mkcert
+          # Put the official binary where the plugin looks first, so it skips the API call.
+          # (Ubuntu's apt mkcert doesn't get its CA trusted by the backend, which breaks
+          # media validation of the sample files served from glific.test:3000.)
+          mkdir -p ~/.vite-plugin-mkcert
+          wget -q -O ~/.vite-plugin-mkcert/mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64
+          chmod +x ~/.vite-plugin-mkcert/mkcert
+          ~/.vite-plugin-mkcert/mkcert -version
 
       - name: Install cloudflared
         run: |
