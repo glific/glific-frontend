@@ -1175,5 +1175,6 @@
   "Catches abusive or hurtful messages in English, Hindi and Hinglish, and sends your set reply instead.": "अंग्रेज़ी, हिंदी और हिंग्लिश में अपमानजनक या चोट पहुँचाने वाले संदेश पकड़ता है, और उनकी जगह आपका तय जवाब भेजता है।",
   "What should the assistant say when it blocks an abusive message?": "अपमानजनक संदेश को रोकने पर असिस्टेंट को क्या कहना चाहिए?",
   "Reply set": "जवाब तय है",
-  "No reply set": "कोई जवाब तय नहीं"
+  "No reply set": "कोई जवाब तय नहीं",
+  "Only WhatsApp flows can be triggered.": "केवल WhatsApp फ्लो ही ट्रिगर किए जा सकते हैं।"
 }
