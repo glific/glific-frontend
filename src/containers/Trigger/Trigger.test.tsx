@@ -9,7 +9,14 @@ import { Trigger } from './Trigger';
 import dayjs from 'dayjs';
 import utc from 'dayjs';
 import TriggerList from './TriggerList/TriggerList';
-import { EXTENDED_TIME_FORMAT, ISO_DATE_FORMAT } from 'common/constants';
+import {
+  EXTENDED_TIME_FORMAT,
+  FLOW_STATUS_PUBLISHED,
+  ISO_DATE_FORMAT,
+  MESSAGE_CHANNELS,
+  setVariables,
+} from 'common/constants';
+import { GET_FLOWS } from 'graphql/queries/Flow';
 import { setOrganizationServices } from 'services/AuthService';
 dayjs.extend(utc);
 
@@ -603,6 +610,53 @@ describe('Whatsapp group collections', () => {
     await waitFor(() => {
       expect(radioButton).toBeChecked();
     });
+  });
+});
+
+describe('organization with the web channel', () => {
+  const webFlowsReason = 'Only WhatsApp flows can be triggered.';
+
+  const whatsappFlowsMock = {
+    request: {
+      query: GET_FLOWS,
+      variables: setVariables({
+        status: FLOW_STATUS_PUBLISHED,
+        isTemplate: false,
+        channel: MESSAGE_CHANNELS.whatsapp,
+      }),
+    },
+    result: {
+      data: {
+        flows: [{ id: '2', name: 'SoL Feedback', uuid: '6c21af89-d7de-49ac-9848-c9febbf737a5' }],
+      },
+    },
+  };
+
+  beforeEach(() => {
+    setOrganizationServices(
+      '{"__typename":"OrganizationServicesResult","whatsappGroupEnabled":true,"webChannelEnabled":true}'
+    );
+  });
+
+  afterEach(() => {
+    setOrganizationServices('{"__typename":"OrganizationServicesResult","whatsappGroupEnabled":true}');
+  });
+
+  test('lists only WhatsApp flows and says why web flows are missing', async () => {
+    render(wrapper(whatsappFlowsMock));
+
+    await waitFor(() => {
+      expect(screen.getByText(webFlowsReason)).toBeInTheDocument();
+    });
+
+    const autoCompletes = screen.getAllByRole('combobox');
+    autoCompletes[0].focus();
+    fireEvent.keyDown(autoCompletes[0], { key: 'ArrowDown' });
+
+    await waitFor(() => {
+      expect(screen.getByText('SoL Feedback')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Help Workflow')).not.toBeInTheDocument();
   });
 });
 
