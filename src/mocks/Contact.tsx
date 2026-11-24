@@ -778,11 +778,17 @@ export const importContactsNetworkError = {
   variableMatcher: (variables: any) => true,
 };
 
-export const terminateFlowQuery = (error: boolean = false) => ({
+export const clearChannelMessagesQuery = (channel: string) => ({
+  ...clearMessagesQuery,
+  request: { ...clearMessagesQuery.request, variables: { contactId: '2', channel } },
+});
+
+export const terminateFlowQuery = (error: boolean = false, channel?: string) => ({
   request: {
     query: TERMINATE_FLOW,
     variables: {
       contactId: '2',
+      ...(channel && { channel }),
     },
   },
   result: {

@@ -778,7 +778,10 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters, 
 
   const handleChatClearedAction = () => {
     const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
-    conversationInfoCopy.messages = [];
+    // The thread holds both channels' messages; a channel's clear leaves the other's in place.
+    conversationInfoCopy.messages = channel
+      ? conversationInfoCopy.messages.filter((message: any) => messageChannel(message) !== channel)
+      : [];
     let allConversationsCopy: any = [];
     allConversationsCopy = JSON.parse(JSON.stringify(allConversations));
     const index = conversationIndex === -1 ? 0 : conversationIndex;

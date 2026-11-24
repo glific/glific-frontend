@@ -175,8 +175,8 @@ export const IMPORT_FLOW_LOCALIZATIONS = gql`
 `;
 
 export const TERMINATE_FLOW = gql`
-  mutation TerminateContactFlows($contactId: ID!) {
-    terminateContactFlows(contactId: $contactId) {
+  mutation TerminateContactFlows($contactId: ID!, $channel: MessageChannelEnum) {
+    terminateContactFlows(contactId: $contactId, channel: $channel) {
       success
       errors {
         message

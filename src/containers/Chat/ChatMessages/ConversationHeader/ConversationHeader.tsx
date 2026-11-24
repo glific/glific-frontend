@@ -103,6 +103,8 @@ export const ConversationHeader = ({
   // A web conversation has no 24 hour window, so anything derived from one — the session timer,
   // the flow button's window check — has to take a different branch here.
   const isWebConversation = channel === MESSAGE_CHANNELS.web;
+  // Set only when the org has the web channel; terminate and clear then act on this conversation's channel alone.
+  const channelName = channel && (isWebConversation ? 'web' : 'WhatsApp');
 
   let updateQuery = groups ? UPDATE_WA_GROUP_COLLECTION : UPDATE_CONTACT_COLLECTIONS;
 
@@ -135,7 +137,7 @@ export const ConversationHeader = ({
 
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
-    variables: { contactId: entityId },
+    variables: { contactId: entityId, channel },
   });
 
   let collectionOptions = [];
@@ -239,7 +241,12 @@ export const ConversationHeader = ({
       if (result?.success) {
         setClearChatDialog(false);
         handleAction();
-        setNotification(t('Conversation cleared for this contact.'), 'warning');
+        setNotification(
+          channelName
+            ? `The ${channelName} conversation is cleared for this contact.`
+            : t('Conversation cleared for this contact.'),
+          'warning'
+        );
       } else if (result?.errors?.length) {
         setNotification(result.errors[0].message, 'warning');
       } else {
@@ -251,11 +258,11 @@ export const ConversationHeader = ({
   };
 
   if (showClearChatDialog) {
-    const bodyContext =
-      'All the conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
+    const scope = channelName ? `${channelName} conversation` : 'conversation';
+    const bodyContext = `All the ${scope} data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.`;
     dialogBox = (
       <DialogBox
-        title="Are you sure you want to clear all conversation for this contact?"
+        title={`Are you sure you want to clear all ${scope} for this contact?`}
         handleOk={handleClearChatSubmit}
         handleCancel={() => setClearChatDialog(false)}
         alignButtons="center"
@@ -302,7 +309,14 @@ export const ConversationHeader = ({
   }
 
   if (showTerminateDialog) {
-    dialogBox = <TerminateFlow contactId={entityId} setDialog={setShowTerminateDialog} />;
+    dialogBox = (
+      <TerminateFlow
+        contactId={entityId}
+        setDialog={setShowTerminateDialog}
+        channel={channel}
+        channelName={channelName}
+      />
+    );
   }
 
   let flowButton: any;
@@ -400,7 +414,7 @@ export const ConversationHeader = ({
       }}
     >
       <TerminateFlowIcon className={styles.Icon} />
-      Terminate flows
+      {channelName ? `Terminate ${channelName} flows` : 'Terminate flows'}
     </Button>
   ) : null;
 
@@ -435,7 +449,7 @@ export const ConversationHeader = ({
   const clearConversation = entityId && (
     <Button className={styles.ListButtonPrimary} data-testid="clearChatButton" onClick={() => setClearChatDialog(true)}>
       <ClearConversation className={styles.Icon} />
-      Clear conversation
+      {channelName ? `Clear ${channelName} conversation` : 'Clear conversation'}
     </Button>
   );
 
