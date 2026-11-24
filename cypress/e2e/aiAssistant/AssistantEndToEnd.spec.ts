@@ -164,21 +164,21 @@ describe('an AI assistant, end to end against the real backend', () => {
     cy.get('[data-testid="knowledgeBaseFile"]').should('contain', 'sample.md');
   });
 
-  it('loads the guardrails the server offers', () => {
+  it('creates the assistant with Privacy Protection already on', () => {
     openSavedAssistant();
     openTab('guardrails');
 
     guardrailRule('content-safety', { timeout: PAGE_TIMEOUT }).should('contain', 'Content Safety');
+    guardrailToggle('privacy-protection').should('be.checked');
     guardrailToggle('content-safety').should('not.be.checked');
   });
 
-  it('saves Content Safety and Privacy Protection as a new version', () => {
+  it('saves Content Safety alongside Privacy Protection as a new version', () => {
     openSavedAssistant();
     openTab('guardrails');
 
     toggleGuardrail('content-safety', { timeout: PAGE_TIMEOUT });
     setContentSafetyReply(CONTENT_SAFETY_REPLY);
-    toggleGuardrail('privacy-protection');
     saveVersion();
 
     cy.contains('Changes saved successfully', { timeout: 30000 }).should('be.visible');

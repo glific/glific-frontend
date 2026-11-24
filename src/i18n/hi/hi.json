@@ -1189,5 +1189,6 @@
   "The web conversation is cleared for this contact.": "The web conversation is cleared for this contact.",
   "Are you sure you want to clear the web conversation for this contact?": "Are you sure you want to clear the web conversation for this contact?",
   "All the web conversation data for this contact will be deleted permanently from Glific. Their WhatsApp conversation is kept. This action cannot be undone.": "All the web conversation data for this contact will be deleted permanently from Glific. Their WhatsApp conversation is kept. This action cannot be undone.",
-  "All active web flows for the contact will be stopped. Their WhatsApp flows keep running. They can initiate a flow via keyword or you will need to do it manually.": "All active web flows for the contact will be stopped. Their WhatsApp flows keep running. They can initiate a flow via keyword or you will need to do it manually."
+  "All active web flows for the contact will be stopped. Their WhatsApp flows keep running. They can initiate a flow via keyword or you will need to do it manually.": "All active web flows for the contact will be stopped. Their WhatsApp flows keep running. They can initiate a flow via keyword or you will need to do it manually.",
+  "Only WhatsApp flows can be triggered.": "केवल WhatsApp फ्लो ही ट्रिगर किए जा सकते हैं।"
 }

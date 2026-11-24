@@ -1,8 +1,20 @@
 import CloseIcon from '@mui/icons-material/Close';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BackgroundPhoneImage from 'assets/images/phone.png';
-import { ContentItem, Screen } from '../FormBuilder/FormBuilder.types';
+import { ContentItem, ContentOption, Screen } from '../FormBuilder/FormBuilder.types';
 import styles from './Preview.module.css';
+
+const PLACEHOLDER_NAMES: Record<string, string> = {
+  RichText: 'Rich text',
+  CalendarPicker: 'Calendar picker',
+  NavigationList: 'Navigation list',
+  ImageCarousel: 'Image carousel',
+  PhotoPicker: 'Photo upload',
+  DocumentPicker: 'Document upload',
+  ChipsSelector: 'Chips selector',
+  If: 'Conditional content',
+  Switch: 'Conditional content',
+};
 
 interface PreviewProps {
   screens?: Screen[];
@@ -73,6 +85,8 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     }
   };
 
+  const isDisabled = (option: ContentOption) => option.extraAttributes?.enabled === false;
+
   const renderSelectionContent = (item: ContentItem) => {
     const { name, data } = item;
     const label = data.label || 'Label';
@@ -89,7 +103,11 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
             </label>
             <div className={styles.OptionsList}>
               {options.map((option) => (
-                <div key={option.id} className={styles.RadioOption}>
+                <div
+                  key={option.id}
+                  className={`${styles.RadioOption} ${isDisabled(option) ? styles.DisabledOption : ''}`}
+                  aria-disabled={isDisabled(option)}
+                >
                   <div className={styles.RadioButton}></div>
                   <span className={styles.OptionText}>{option.value}</span>
                 </div>
@@ -106,7 +124,11 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
             </label>
             <div className={styles.OptionsList}>
               {options.map((option) => (
-                <div key={option.id} className={styles.CheckboxOption}>
+                <div
+                  key={option.id}
+                  className={`${styles.CheckboxOption} ${isDisabled(option) ? styles.DisabledOption : ''}`}
+                  aria-disabled={isDisabled(option)}
+                >
                   <div className={styles.Checkbox}></div>
                   <span className={styles.OptionText}>{option.value}</span>
                 </div>
@@ -156,6 +178,38 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
     );
   };
 
+  const renderPlaceholder = (name: string) => (
+    <p data-testid="preview-placeholder" className={styles.Placeholder}>
+      {name} – shown in WhatsApp
+    </p>
+  );
+
+  const renderUnsupportedContent = (item: ContentItem) => {
+    const raw = item.data.rawComponent;
+
+    switch (raw?.type) {
+      case 'EmbeddedLink':
+        return (
+          <span data-testid="preview-embedded-link" className={styles.EmbeddedLink}>
+            {raw.text}
+          </span>
+        );
+      case 'CalendarPicker':
+        if (raw.mode === 'range') {
+          return (
+            <div className={styles.PlaceholderGroup}>
+              {renderPlaceholder('Calendar picker (start date)')}
+              {renderPlaceholder('Calendar picker (end date)')}
+            </div>
+          );
+        }
+        return renderPlaceholder(PLACEHOLDER_NAMES[raw.type]);
+      default:
+        if (!raw?.type) return null;
+        return renderPlaceholder(Object.hasOwn(PLACEHOLDER_NAMES, raw.type) ? PLACEHOLDER_NAMES[raw.type] : raw.type);
+    }
+  };
+
   const renderContent = (item: ContentItem) => {
     switch (item.type) {
       case 'Text':
@@ -166,6 +220,8 @@ export const Preview = ({ screens = [], currentScreenIndex }: PreviewProps) => {
         return renderSelectionContent(item);
       case 'Media':
         return renderMediaContent(item);
+      case 'Unsupported':
+        return renderUnsupportedContent(item);
       default:
         return null;
     }

@@ -1,6 +1,7 @@
 import { DEFAULT_SERVICES, bodyMentions, loginWithServices } from './assistant-flow';
 import { MODELS, UPLOADED_FILE } from './assistant-fixtures';
 import { waitForAssistantPage } from './assistant-detail';
+import { GUARDRAIL_VALIDATORS } from './guardrail-fixtures';
 
 export const NEW_ASSISTANT_ID = '42';
 export const CREATE_PATH = '/assistants/add';
@@ -117,14 +118,27 @@ export const stubCreateAssistantApi = () => {
         req.reply({ body: { data: { aiEvaluations: [] } } });
         return;
 
+      case 'guardrailValidators':
+        req.reply({
+          body: {
+            data: {
+              guardrailValidators: {
+                __typename: 'GuardrailValidatorsResult',
+                validators: GUARDRAIL_VALIDATORS,
+              },
+            },
+          },
+        });
+        return;
+
       default:
         req.continue();
     }
   });
 };
 
-export const openCreatePage = () => {
-  loginWithServices(DEFAULT_SERVICES);
+export const openCreatePage = (services: Record<string, boolean> = DEFAULT_SERVICES) => {
+  loginWithServices(services);
   stubCreateAssistantApi();
 
   cy.visit(CREATE_PATH);
