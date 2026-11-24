@@ -69,6 +69,15 @@ jobs:
           sudo sysctl -p
           cat /proc/sys/fs/inotify/max_user_watches
           yarn setup
+          # vite-plugin-mkcert otherwise looks up mkcert through the GitHub API on every
+          # dev-server start; when that call is rate-limited the server never comes up.
+          # Put the official binary where the plugin looks first, so it skips the API call.
+          # (Ubuntu's apt mkcert doesn't get its CA trusted by the backend, which breaks
+          # media validation of the sample files served from glific.test:3000.)
+          mkdir -p ~/.vite-plugin-mkcert
+          wget -q -O ~/.vite-plugin-mkcert/mkcert https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64
+          chmod +x ~/.vite-plugin-mkcert/mkcert
+          ~/.vite-plugin-mkcert/mkcert -version
 
       - name: Install cloudflared
         run: |
@@ -144,7 +153,7 @@ jobs:
 
       - name: Run glific frontend
         run: |
-          yarn dev &
+          yarn dev > frontend-server.log 2>&1 &
 
       - name: Run glific backend
         run: |
@@ -158,6 +167,12 @@ jobs:
           resource: https-get://glific.test:4001
           timeout: 180000
 
+      - name: Wait for frontend to be ready
+        uses: iFaxity/wait-on-action@v1.2.1
+        with:
+          resource: https-get://glific.test:3000
+          timeout: 180000
+
       - name: Cypress run (shard ${{ matrix.shard }}/3)
         run: |
           yarn run cypress run \
@@ -168,7 +183,7 @@ jobs:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.shard }}
 
-      - name: Upload Phoenix server & cloudflared logs (shard ${{ matrix.shard }})
+      - name: Upload Phoenix server, frontend & cloudflared logs (shard ${{ matrix.shard }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -176,5 +191,6 @@ jobs:
           path: |
             /home/runner/work/glific-frontend/glific-frontend/project/glific/phoenix-server.log
             /home/runner/work/glific-frontend/glific-frontend/cloudflared.log
+            /home/runner/work/glific-frontend/glific-frontend/frontend-server.log
           if-no-files-found: warn
           retention-days: 7
