@@ -1,5 +1,6 @@
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 import { useMutation } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 import { setNotification } from 'common/notification';
 import { TERMINATE_FLOW } from 'graphql/mutations/Flow';
 import { MessageChannel } from 'common/constants';
@@ -9,10 +10,11 @@ export interface TerminateFlowProps {
   contactId: String | undefined;
   setDialog: any;
   channel?: MessageChannel;
-  channelName?: string;
+  web?: boolean;
 }
 
-export const TerminateFlow = ({ contactId, setDialog, channel, channelName }: TerminateFlowProps) => {
+export const TerminateFlow = ({ contactId, setDialog, channel, web }: TerminateFlowProps) => {
+  const { t } = useTranslation();
   const [terminateFlow] = useMutation(TERMINATE_FLOW);
 
   const handleTerminateFlow = async () => {
@@ -33,7 +35,7 @@ export const TerminateFlow = ({ contactId, setDialog, channel, channelName }: Te
 
   return (
     <DialogBox
-      title={channelName ? `Terminate ${channelName} flows!` : 'Terminate flows!'}
+      title={web ? t('Terminate web flows!') : 'Terminate flows!'}
       alignButtons="center"
       buttonOk="YES, TERMINATE"
       buttonCancel="NO, CANCEL"
@@ -45,10 +47,11 @@ export const TerminateFlow = ({ contactId, setDialog, channel, channelName }: Te
       }}
     >
       <div className={styles.Dialog}>
-        {channelName
-          ? `All active ${channelName} flows for the contact will be stopped. Their flows on other channels keep running.`
-          : 'All active flows for the contact will be stopped.'}{' '}
-        They can initiate a flow via keyword or you will need to do it manually.
+        {web
+          ? t(
+              'All active web flows for the contact will be stopped. Their WhatsApp flows keep running. They can initiate a flow via keyword or you will need to do it manually.'
+            )
+          : 'All active flows for the contact will be stopped. They can initiate a flow via keyword or you will need to do it manually.'}
       </div>
     </DialogBox>
   );
