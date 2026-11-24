@@ -103,8 +103,8 @@ export const ConversationHeader = ({
   // A web conversation has no 24 hour window, so anything derived from one — the session timer,
   // the flow button's window check — has to take a different branch here.
   const isWebConversation = channel === MESSAGE_CHANNELS.web;
-  // Set only when the org has the web channel; terminate and clear then act on this conversation's channel alone.
-  const channelName = channel && (isWebConversation ? 'web' : 'WhatsApp');
+  // Terminate and clear act on this conversation's channel alone; only the web one says so in its labels.
+  const channelName = isWebConversation ? 'web' : undefined;
 
   let updateQuery = groups ? UPDATE_WA_GROUP_COLLECTION : UPDATE_CONTACT_COLLECTIONS;
 

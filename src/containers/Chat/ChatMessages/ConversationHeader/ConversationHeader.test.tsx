@@ -571,11 +571,24 @@ describe('on a web channel conversation', () => {
     expect(setNotification).toHaveBeenCalledWith('The web conversation is cleared for this contact.', 'warning');
   });
 
-  test('a WhatsApp conversation names WhatsApp once the web channel is on', async () => {
-    render(renderHeader(mocks, { channel: MESSAGE_CHANNELS.whatsapp }));
+  test('a WhatsApp conversation keeps its labels and clears only WhatsApp', async () => {
+    const handleAction = vi.fn();
+    render(
+      renderHeader([...mocks, clearChannelMessagesQuery(MESSAGE_CHANNELS.whatsapp)], {
+        channel: MESSAGE_CHANNELS.whatsapp,
+        handleAction,
+      })
+    );
     await openMenu();
 
-    expect(screen.getByTestId('terminateButton')).toHaveTextContent('Terminate WhatsApp flows');
-    expect(screen.getByTestId('clearChatButton')).toHaveTextContent('Clear WhatsApp conversation');
+    expect(screen.getByTestId('terminateButton')).toHaveTextContent(/^Terminate flows$/);
+    expect(screen.getByTestId('clearChatButton')).toHaveTextContent(/^Clear conversation$/);
+
+    fireEvent.click(screen.getByTestId('clearChatButton'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(handleAction).toHaveBeenCalled();
+    });
   });
 });
