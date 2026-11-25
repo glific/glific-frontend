@@ -167,6 +167,7 @@ export const clearMessagesQuery = {
     query: CLEAR_MESSAGES,
     variables: {
       contactId: '2',
+      channel: 'WHATSAPP',
     },
   },
   result: {
@@ -783,12 +784,12 @@ export const clearChannelMessagesQuery = (channel: string) => ({
   request: { ...clearMessagesQuery.request, variables: { contactId: '2', channel } },
 });
 
-export const terminateFlowQuery = (error: boolean = false, channel?: string) => ({
+export const terminateFlowQuery = (error: boolean = false, channel: string = 'WHATSAPP') => ({
   request: {
     query: TERMINATE_FLOW,
     variables: {
       contactId: '2',
-      ...(channel && { channel }),
+      channel,
     },
   },
   result: {

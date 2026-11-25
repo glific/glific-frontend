@@ -9,7 +9,7 @@ import styles from './TerminateFlow.module.css';
 export interface TerminateFlowProps {
   contactId: String | undefined;
   setDialog: any;
-  channel?: MessageChannel;
+  channel: MessageChannel;
   web?: boolean;
 }
 

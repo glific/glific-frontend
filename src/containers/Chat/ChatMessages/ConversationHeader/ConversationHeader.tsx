@@ -103,6 +103,7 @@ export const ConversationHeader = ({
   // A web conversation has no 24 hour window, so anything derived from one — the session timer,
   // the flow button's window check — has to take a different branch here.
   const isWebConversation = channel === MESSAGE_CHANNELS.web;
+  const actionChannel = channel ?? MESSAGE_CHANNELS.whatsapp;
 
   let updateQuery = groups ? UPDATE_WA_GROUP_COLLECTION : UPDATE_CONTACT_COLLECTIONS;
 
@@ -135,7 +136,7 @@ export const ConversationHeader = ({
 
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
-    variables: { contactId: entityId, channel },
+    variables: { contactId: entityId, channel: actionChannel },
   });
 
   let collectionOptions = [];
@@ -261,7 +262,7 @@ export const ConversationHeader = ({
       ? t(
           'All the web conversation data for this contact will be deleted permanently from Glific. Their WhatsApp conversation is kept. This action cannot be undone.'
         )
-      : 'All the conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
+      : 'All WhatsApp conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
     dialogBox = (
       <DialogBox
         title={
@@ -319,7 +320,7 @@ export const ConversationHeader = ({
       <TerminateFlow
         contactId={entityId}
         setDialog={setShowTerminateDialog}
-        channel={channel}
+        channel={actionChannel}
         web={isWebConversation}
       />
     );

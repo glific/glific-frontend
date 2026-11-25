@@ -127,6 +127,7 @@ describe('channels on the Profile tab', () => {
     const rows = await screen.findAllByTestId('channelRow');
     expect(rows[0]).toHaveTextContent('WhatsAppActive');
     expect(rows[1]).toHaveTextContent('WebNot active');
+    expect(screen.getByTestId('whatsAppDetails')).toBeInTheDocument();
   });
 
   test('shows the web row when the contact only has a web identity', async () => {
@@ -136,6 +137,7 @@ describe('channels on the Profile tab', () => {
     const rows = await screen.findAllByTestId('channelRow');
     expect(rows[0]).toHaveTextContent('WhatsAppNot active');
     expect(rows[1]).toHaveTextContent('WebActive');
+    expect(screen.queryByTestId('whatsAppDetails')).not.toBeInTheDocument();
   });
 
   test('shows WhatsApp only when the web channel is off', async () => {

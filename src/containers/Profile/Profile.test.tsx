@@ -24,6 +24,7 @@ const mocks = [...LOGGED_IN_USER_MOCK, getUsersEmptyVars];
 const props: any = {
   profileType: 'User',
   redirectionLink: '/chat',
+  channels: [{ channel: 'WHATSAPP', active: true }],
 };
 
 const wrapper = (

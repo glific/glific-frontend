@@ -86,7 +86,7 @@ describe('channels on history entries (#5877)', () => {
       </MemoryRouter>
     );
 
-  it('shows no channel when the organization does not use the web channel', async () => {
+  it('shows no channel when web channel is not enabled', async () => {
     setWebChannel(false);
     const { findByText, queryByTestId } = renderHistory();
 

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import ProfileIcon from 'assets/images/icons/Contact/Profile.svg?react';
-import { CONTACT_STATUS, PROVIDER_STATUS } from 'common/constants';
 import { FormLayout } from 'containers/Form/FormLayout';
 import { Input } from 'components/UI/Form/Input/Input';
 import { Loading } from 'components/UI/Layout/Loading/Loading';
@@ -13,7 +12,6 @@ import { GET_CONTACT, GET_PROFILE } from 'graphql/queries/Contact';
 import { CREATE_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, DELETE_CONTACT_PROFILE } from 'graphql/mutations/Contact';
 import { GET_CURRENT_USER, GET_USER_CONTACT_IDS } from 'graphql/queries/User';
 import { getDisplayName, isSimulator } from 'common/utils';
-import { AutoComplete } from 'components/UI/Form/AutoComplete/AutoComplete';
 import { MESSAGE_CHANNELS } from 'common/constants';
 import { ContactChannel, ContactChannels } from './ContactChannels/ContactChannels';
 import { WhatsAppDetails } from './WhatsAppDetails/WhatsAppDetails';
@@ -26,11 +24,8 @@ export interface ProfileProps {
   afterDelete?: any;
   removePhoneField?: boolean;
   multiProfileAttributes?: any;
-  /**
-   * The contact's channels, from the contact profile page. When given, the page is two cards:
-   * contact details with the channels, and the WhatsApp state on its own, read only.
-   */
-  channels?: ContactChannel[];
+  /** The channels shown on the contact; the WhatsApp state gets its own card when it is active. */
+  channels: ContactChannel[];
 }
 
 export const Profile = ({
@@ -48,8 +43,7 @@ export const Profile = ({
   const [hideRemoveBtn, setHideRemoveBtn] = useState(false);
   const { t } = useTranslation();
   const hasMultipleProfiles = multiProfileAttributes?.selectedProfile;
-  const showsChannels = channels !== undefined;
-  const onWhatsApp = channels?.some(({ channel, active }) => active && channel === MESSAGE_CHANNELS.whatsapp);
+  const onWhatsApp = channels.some(({ channel, active }) => active && channel === MESSAGE_CHANNELS.whatsapp);
 
   const queries = {
     getItemQuery: hasMultipleProfiles ? GET_PROFILE : GET_CONTACT,
@@ -102,7 +96,7 @@ export const Profile = ({
     currentContactId = params.id;
   }
 
-  const states: any = { name, phone, status, bspStatus, languageId };
+  const states: any = { name, phone, languageId };
 
   const setStates = ({
     name: nameValue,
@@ -170,32 +164,6 @@ export const Profile = ({
       skip: removePhoneField,
       skipPayload: true,
     },
-    {
-      component: AutoComplete,
-      name: 'status',
-      placeholder: t('Status'),
-      label: t('Status'),
-      options: CONTACT_STATUS,
-      optionLabel: 'label',
-      disabled: true,
-      skipPayload: true,
-      skip: showsChannels,
-      handleCreateItem: () => {},
-      multiple: false,
-    },
-    {
-      component: AutoComplete,
-      name: 'bspStatus',
-      skip: showsChannels,
-      placeholder: t('Provider status'),
-      label: t('Provider status'),
-      options: PROVIDER_STATUS,
-      optionLabel: 'label',
-      disabled: true,
-      skipPayload: true,
-      handleCreateItem: () => {},
-      multiple: false,
-    },
   ];
 
   let type: any;
@@ -239,13 +207,11 @@ export const Profile = ({
       entityId={hasMultipleProfiles ? multiProfileAttributes?.selectedProfileId : currentContactId}
       restrictDelete={hideRemoveBtn}
       noHeading
-      afterFields={showsChannels ? <ContactChannels channels={channels} /> : undefined}
-      customStyles={showsChannels ? styles.CardForm : null}
-      buttonState={showsChannels ? { text: '', status: false, styles: styles.CardButtons, show: true } : undefined}
+      afterFields={<ContactChannels channels={channels} />}
+      customStyles={styles.CardForm}
+      buttonState={{ text: '', status: false, styles: styles.CardButtons, show: true }}
     />
   );
-
-  if (!showsChannels) return form;
 
   return (
     <div className={styles.Cards}>
