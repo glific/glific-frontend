@@ -43,8 +43,8 @@ export const CREATE_AND_SEND_MESSAGE_TO_COLLECTION_MUTATION = gql`
 `;
 
 export const CLEAR_MESSAGES = gql`
-  mutation clearMessages($contactId: ID!) {
-    clearMessages(contactId: $contactId) {
+  mutation clearMessages($contactId: ID!, $channel: MessageChannelEnum) {
+    clearMessages(contactId: $contactId, channel: $channel) {
       success
       errors {
         key

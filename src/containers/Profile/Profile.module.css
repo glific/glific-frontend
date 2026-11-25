@@ -1,0 +1,70 @@
+/* The two cards on the contact profile's Profile tab (#5877). FormLayout lays a form out for a full
+   page, so its spacing is tightened here, inside .Card only, to sit in a card. */
+
+.Cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-xl);
+  max-width: 640px;
+  padding: 20px 24px;
+}
+
+.Card {
+  padding: 20px;
+  border: 1px solid var(--app-color-border);
+  border-radius: var(--app-radius-lg);
+  background-color: var(--app-color-white);
+}
+
+.CardTitle {
+  font-size: var(--app-font-size-md);
+  font-weight: 600;
+  color: var(--app-color-text-heading);
+}
+
+.CardSubtitle {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--app-color-text-tertiary);
+}
+
+.Card .CardForm {
+  width: 100%;
+  padding: 0;
+}
+
+.Card [data-testid='formLabel'] {
+  margin-top: 18px;
+  padding-bottom: 8px;
+  font-size: var(--app-font-size-sm);
+  line-height: 18px;
+  color: var(--app-color-text-heading);
+}
+
+.Card :global(.MuiOutlinedInput-root) {
+  border-radius: 8px;
+}
+
+.Card :global(.MuiOutlinedInput-input) {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: var(--app-font-size-sm);
+}
+
+.Card :global(.MuiFormHelperText-root) {
+  margin-left: 0;
+}
+
+.CardButtons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.CardButtons :global(.MuiButton-root) {
+  min-width: 0;
+  padding: 6px 18px;
+  font-size: var(--app-font-size-sm);
+  box-shadow: none;
+}

@@ -11,7 +11,7 @@ import ChatMessages from './ChatMessages';
 import { MESSAGE_CHANNELS } from 'common/constants';
 import { MemoryRouter, Route, Routes, BrowserRouter as Router } from 'react-router';
 import { createMediaMessageMock, getAttachmentPermissionMock } from 'mocks/Attachment';
-import { clearMessagesQuery, contactCollectionsQuery } from 'mocks/Contact';
+import { clearChannelMessagesQuery, clearMessagesQuery, contactCollectionsQuery } from 'mocks/Contact';
 import { OrganizationStateMock } from 'mocks/Organization';
 import {
   CONVERSATION_MOCKS,
@@ -31,6 +31,7 @@ import { getBlockedContactSearchQuery, getContactSearchQuery, messages, searchQu
 import { getWhatsAppManagedPhonesStatusMock } from 'mocks/StatusBar';
 import { TEMPLATE_MOCKS } from 'mocks/Template';
 import * as Notification from 'common/notification';
+import * as ChatService from 'services/ChatService';
 
 const mockIntersectionObserver = class {
   constructor() {}
@@ -511,9 +512,7 @@ test('send message to contact', async () => {
   });
 });
 
-// A contact is one person across both channels, but a thread is not: a reply typed in the WhatsApp
-// view under something they said in the browser would go out on the wrong channel.
-test('a web message is not shown in the WhatsApp thread', async () => {
+const cacheWithBothChannels = () => {
   const mixedCache = new InMemoryCache({ addTypename: false });
   mixedCache.writeQuery({
     ...searchQuery,
@@ -531,6 +530,13 @@ test('a web message is not shown in the WhatsApp thread', async () => {
       ),
     },
   });
+  return mixedCache;
+};
+
+// A contact is one person across both channels, but a thread is not: a reply typed in the WhatsApp
+// view under something they said in the browser would go out on the wrong channel.
+test('a web message is not shown in the WhatsApp thread', async () => {
+  const mixedCache = cacheWithBothChannels();
 
   const renderThread = (channel?: any) =>
     render(
@@ -552,6 +558,40 @@ test('a web message is not shown in the WhatsApp thread', async () => {
 
   await waitFor(() => expect(screen.getAllByText('sent from a browser').length).toBeGreaterThan(0));
   expect(screen.queryByText('sent over whatsapp')).not.toBeInTheDocument();
+});
+
+describe('clearing a conversation', () => {
+  // The channels of the messages left in the thread once the clear is written to the cache.
+  const channelsLeftAfterClearing = async (channel?: any) => {
+    const writeSpy = vi.spyOn(ChatService, 'updateConversationsCache').mockImplementation(() => {});
+    render(
+      <MemoryRouter>
+        <MockedProvider
+          mocks={[...mocks, clearChannelMessagesQuery(MESSAGE_CHANNELS.web)]}
+          cache={cacheWithBothChannels()}
+        >
+          <ChatMessages entityId="2" channel={channel} />
+        </MockedProvider>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(await screen.findByTestId('dropdownIcon'));
+    fireEvent.click(screen.getByTestId('clearChatButton'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => expect(writeSpy).toHaveBeenCalled());
+    const [conversations] = writeSpy.mock.calls[0];
+    writeSpy.mockRestore();
+    return conversations.search[0].messages.map((message: any) => message.channel);
+  };
+
+  test('the web conversation keeps the WhatsApp messages', async () => {
+    expect(await channelsLeftAfterClearing(MESSAGE_CHANNELS.web)).toEqual(['WHATSAPP', 'WHATSAPP']);
+  });
+
+  test('without the web channel, only the WhatsApp messages go', async () => {
+    expect(await channelsLeftAfterClearing()).toEqual(['WEB', 'WEB']);
+  });
 });
 
 // The single most consequential line in this component: omit the channel and the server defaults

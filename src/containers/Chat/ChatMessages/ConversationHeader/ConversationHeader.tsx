@@ -103,6 +103,7 @@ export const ConversationHeader = ({
   // A web conversation has no 24 hour window, so anything derived from one — the session timer,
   // the flow button's window check — has to take a different branch here.
   const isWebConversation = channel === MESSAGE_CHANNELS.web;
+  const actionChannel = channel ?? MESSAGE_CHANNELS.whatsapp;
 
   let updateQuery = groups ? UPDATE_WA_GROUP_COLLECTION : UPDATE_CONTACT_COLLECTIONS;
 
@@ -135,7 +136,7 @@ export const ConversationHeader = ({
 
   // mutation to clear the chat messages of the contact
   const [clearMessages] = useMutation(CLEAR_MESSAGES, {
-    variables: { contactId: entityId },
+    variables: { contactId: entityId, channel: actionChannel },
   });
 
   let collectionOptions = [];
@@ -239,7 +240,12 @@ export const ConversationHeader = ({
       if (result?.success) {
         setClearChatDialog(false);
         handleAction();
-        setNotification(t('Conversation cleared for this contact.'), 'warning');
+        setNotification(
+          isWebConversation
+            ? t('The web conversation is cleared for this contact.')
+            : t('Conversation cleared for this contact.'),
+          'warning'
+        );
       } else if (result?.errors?.length) {
         setNotification(result.errors[0].message, 'warning');
       } else {
@@ -251,11 +257,19 @@ export const ConversationHeader = ({
   };
 
   if (showClearChatDialog) {
-    const bodyContext =
-      'All the conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
+    // Terminate and clear act on this conversation's channel alone; only the web one says so.
+    const bodyContext = isWebConversation
+      ? t(
+          'All the web conversation data for this contact will be deleted permanently from Glific. Their WhatsApp conversation is kept. This action cannot be undone.'
+        )
+      : 'All WhatsApp conversation data for this contact will be deleted permanently from Glific. This action cannot be undone. However, you should be able to access it in reports if you have backup configuration enabled.';
     dialogBox = (
       <DialogBox
-        title="Are you sure you want to clear all conversation for this contact?"
+        title={
+          isWebConversation
+            ? t('Are you sure you want to clear the web conversation for this contact?')
+            : 'Are you sure you want to clear all conversation for this contact?'
+        }
         handleOk={handleClearChatSubmit}
         handleCancel={() => setClearChatDialog(false)}
         alignButtons="center"
@@ -302,7 +316,14 @@ export const ConversationHeader = ({
   }
 
   if (showTerminateDialog) {
-    dialogBox = <TerminateFlow contactId={entityId} setDialog={setShowTerminateDialog} />;
+    dialogBox = (
+      <TerminateFlow
+        contactId={entityId}
+        setDialog={setShowTerminateDialog}
+        channel={actionChannel}
+        web={isWebConversation}
+      />
+    );
   }
 
   let flowButton: any;
@@ -400,7 +421,7 @@ export const ConversationHeader = ({
       }}
     >
       <TerminateFlowIcon className={styles.Icon} />
-      Terminate flows
+      {isWebConversation ? t('Terminate web flows') : 'Terminate flows'}
     </Button>
   ) : null;
 
@@ -435,7 +456,7 @@ export const ConversationHeader = ({
   const clearConversation = entityId && (
     <Button className={styles.ListButtonPrimary} data-testid="clearChatButton" onClick={() => setClearChatDialog(true)}>
       <ClearConversation className={styles.Icon} />
-      Clear conversation
+      {isWebConversation ? t('Clear web conversation') : 'Clear conversation'}
     </Button>
   );
 

@@ -53,3 +53,10 @@ test('stays a bare label by default, so table cells are unaffected', () => {
 
   expect(screen.getByTestId('channelLabel').className).not.toMatch(/Chip/);
 });
+
+it('shows the channel logo instead of the dot when asked', () => {
+  const { getByTestId, container } = render(<ChannelLabel channel="WEB" variant="chip" icon />);
+
+  expect(getByTestId('channelIcon')).toBeInTheDocument();
+  expect(container).toHaveTextContent('Web');
+});

@@ -7,6 +7,7 @@ import {
   contactCollectionsQueryWithGroups,
   updateContactCollectionQuery,
   clearMessagesQuery,
+  clearChannelMessagesQuery,
   terminateFlowQuery,
   getExcludedContactsQuery,
 } from '../../../../mocks/Contact';
@@ -527,5 +528,67 @@ describe('on a web channel conversation', () => {
     });
 
     expect(screen.queryByTestId('conversationChannelSelector')).not.toBeInTheDocument();
+  });
+
+  const openMenu = async () => {
+    await waitFor(() => {
+      fireEvent.click(screen.getByTestId('dropdownIcon')?.querySelector('svg') as SVGElement);
+    });
+  };
+
+  test('terminating flows names the web channel and ends only its flows', async () => {
+    render(renderHeader([...mocks, presenceMock, terminateFlowQuery(false, MESSAGE_CHANNELS.web)], webProps));
+    await openMenu();
+
+    expect(screen.getByTestId('terminateButton')).toHaveTextContent('Terminate web flows');
+    fireEvent.click(screen.getByTestId('terminateButton'));
+    expect(screen.getByText('Terminate web flows!')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(setNotification).toHaveBeenCalledWith('Flow terminated successfully');
+    });
+  });
+
+  test('clearing names the web channel and clears only its conversation', async () => {
+    const handleAction = vi.fn();
+    render(
+      renderHeader([...mocks, presenceMock, clearChannelMessagesQuery(MESSAGE_CHANNELS.web)], {
+        ...webProps,
+        handleAction,
+      })
+    );
+    await openMenu();
+
+    expect(screen.getByTestId('clearChatButton')).toHaveTextContent('Clear web conversation');
+    fireEvent.click(screen.getByTestId('clearChatButton'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(handleAction).toHaveBeenCalled();
+    });
+    expect(setNotification).toHaveBeenCalledWith('The web conversation is cleared for this contact.', 'warning');
+  });
+
+  test('a WhatsApp conversation keeps its labels and clears only WhatsApp', async () => {
+    const handleAction = vi.fn();
+    render(
+      renderHeader([...mocks, clearChannelMessagesQuery(MESSAGE_CHANNELS.whatsapp)], {
+        channel: MESSAGE_CHANNELS.whatsapp,
+        handleAction,
+      })
+    );
+    await openMenu();
+
+    expect(screen.getByTestId('terminateButton')).toHaveTextContent(/^Terminate flows$/);
+    expect(screen.getByTestId('clearChatButton')).toHaveTextContent(/^Clear conversation$/);
+
+    fireEvent.click(screen.getByTestId('clearChatButton'));
+    fireEvent.click(screen.getByTestId('ok-button'));
+
+    await waitFor(() => {
+      expect(handleAction).toHaveBeenCalled();
+    });
   });
 });

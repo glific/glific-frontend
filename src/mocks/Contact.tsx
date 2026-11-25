@@ -167,6 +167,7 @@ export const clearMessagesQuery = {
     query: CLEAR_MESSAGES,
     variables: {
       contactId: '2',
+      channel: 'WHATSAPP',
     },
   },
   result: {
@@ -190,10 +191,10 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
     data: {
       contact: {
         contact: {
-          ...attributes,
           name: 'Default User',
           phone: '+919820198765',
           maskedPhone: '+919820198765',
+          identities: [{ id: '1', channel: 'WHATSAPP' }],
           lastMessageAt: date.toISOString(),
           groups: [
             {
@@ -209,6 +210,7 @@ export const getContactDetailsQuery = (id: string, attributes: any = {}) => ({
           optinMethod: 'BSP',
           optoutMethod: null,
           settings: {},
+          ...attributes,
         },
       },
     },
@@ -511,6 +513,7 @@ export const contactHistoryQuery = {
           eventLabel: 'Removed from collection: "Optout contacts"',
           eventMeta:
             '{"group":{"uuid":"2","name":"Optout contacts","id":2},"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
+          channel: null,
           eventType: 'contact_groups_updated',
           id: '1',
           insertedAt: '2021-12-08T06:50:33.000000Z',
@@ -540,6 +543,7 @@ export const contactHistoryQueryUpdatedOffset = {
           eventDatetime: '2021-12-08T06:50:32Z',
           eventLabel: 'Flow started: "Optout contacts"',
           eventMeta: '"flow":{"uuid":"8c78ffd7-792e-4fa5-878d-266bfa63ae27","name":"test","id":14},"context_id":2}',
+          channel: null,
           eventType: 'contact_flow_started',
           id: '2',
           insertedAt: '2021-12-08T06:50:33.000000Z',
@@ -775,11 +779,17 @@ export const importContactsNetworkError = {
   variableMatcher: (variables: any) => true,
 };
 
-export const terminateFlowQuery = (error: boolean = false) => ({
+export const clearChannelMessagesQuery = (channel: string) => ({
+  ...clearMessagesQuery,
+  request: { ...clearMessagesQuery.request, variables: { contactId: '2', channel } },
+});
+
+export const terminateFlowQuery = (error: boolean = false, channel: string = 'WHATSAPP') => ({
   request: {
     query: TERMINATE_FLOW,
     variables: {
       contactId: '2',
+      channel,
     },
   },
   result: {

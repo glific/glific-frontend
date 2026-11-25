@@ -32,7 +32,7 @@ import {
 } from '../../../graphql/mutations/Chat';
 import { getCachedConverations, updateConversationsCache } from '../../../services/ChatService';
 import { addLogs, getDisplayName, isSimulator, updateContactCache } from '../../../common/utils';
-import { MessageChannel, messageChannel } from 'common/constants';
+import { MESSAGE_CHANNELS, MessageChannel, messageChannel } from 'common/constants';
 import { CollectionInformation } from '../../Collection/CollectionInformation/CollectionInformation';
 import { LexicalWrapper } from 'common/LexicalWrapper';
 import {
@@ -778,7 +778,11 @@ export const ChatMessages = ({ entityId, collectionId, phoneId, appliedFilters, 
 
   const handleChatClearedAction = () => {
     const conversationInfoCopy = JSON.parse(JSON.stringify(conversationInfo));
-    conversationInfoCopy.messages = [];
+    // The thread holds both channels' messages; a channel's clear leaves the other's in place.
+    const clearedChannel = channel ?? MESSAGE_CHANNELS.whatsapp;
+    conversationInfoCopy.messages = conversationInfoCopy.messages.filter(
+      (message: any) => messageChannel(message) !== clearedChannel
+    );
     let allConversationsCopy: any = [];
     allConversationsCopy = JSON.parse(JSON.stringify(allConversations));
     const index = conversationIndex === -1 ? 0 : conversationIndex;
