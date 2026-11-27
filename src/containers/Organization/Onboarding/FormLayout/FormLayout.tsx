@@ -6,6 +6,11 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
+const CAPTCHA_ACTIONS: Record<string, string> = {
+  platformDetails: 'register',
+  reachOutToUs: 'reachout',
+};
+
 interface FormLayoutProps {
   validationSchema: any;
   formFieldItems: Array<any>;
@@ -58,10 +63,10 @@ export const FormLayout = ({
   setCustomError,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaAction = CAPTCHA_ACTIONS[identifier];
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
-    const payload = setPayload({ ...itemData, token: captchaToken });
+    const payload = setPayload(itemData);
 
     if (identifier !== 'reachOutToUs') saveData(payload, identifier);
 
@@ -172,20 +177,23 @@ export const FormLayout = ({
             Previous
           </Button>
         )}
-        {identifier === 'platformDetails' ? (
+        {captchaAction ? (
           <Captcha
             component={Button}
             variant="contained"
             color="primary"
-            onClick={(token: string) => {
-              setCaptchaToken(token);
+            onClick={async (token: string) => {
+              await formik.setValues({ ...formik.values, token });
+              await new Promise((resolve) => setTimeout(resolve, 0));
               formik.submitForm();
             }}
             className={styles.Button}
             data-testid="submitActionButton"
-            action="register"
+            action={captchaAction}
+            disabled={buttonState.status}
+            loading={loading}
           >
-            Next
+            {buttonState.text ? buttonState.text : 'Next'}
           </Captcha>
         ) : (
           <Button
