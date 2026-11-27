@@ -6,7 +6,6 @@ import { Button } from 'components/UI/Form/Button/Button';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
 
-// Forms that post to an unauthenticated endpoint, which only accepts a request with a reCAPTCHA token.
 const CAPTCHA_ACTIONS: Record<string, string> = {
   platformDetails: 'register',
   reachOutToUs: 'reachout',
@@ -185,7 +184,6 @@ export const FormLayout = ({
             color="primary"
             onClick={async (token: string) => {
               await formik.setValues({ ...formik.values, token });
-              // Give React time to process the state update, as on the login page
               await new Promise((resolve) => setTimeout(resolve, 0));
               formik.submitForm();
             }}
