@@ -1,5 +1,5 @@
 import { Field, FormikProvider, useFormik } from 'formik';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 import styles from './FormLayout.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
@@ -64,12 +64,10 @@ export const FormLayout = ({
   setCustomError,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // A ref, not state: the token is set right before submitForm, and the submit handler must see it in the same tick.
-  const captchaToken = useRef<string | null>(null);
   const captchaAction = CAPTCHA_ACTIONS[identifier];
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
-    const payload = setPayload({ ...itemData, token: captchaToken.current });
+    const payload = setPayload(itemData);
 
     if (identifier !== 'reachOutToUs') saveData(payload, identifier);
 
@@ -185,8 +183,10 @@ export const FormLayout = ({
             component={Button}
             variant="contained"
             color="primary"
-            onClick={(token: string) => {
-              captchaToken.current = token;
+            onClick={async (token: string) => {
+              await formik.setValues({ ...formik.values, token });
+              // Give React time to process the state update, as on the login page
+              await new Promise((resolve) => setTimeout(resolve, 0));
               formik.submitForm();
             }}
             className={styles.Button}

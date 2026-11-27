@@ -68,7 +68,7 @@ test('it should fill the Chatbot Details page', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(screen.getByText('Confirmation')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   // closes the dialog box
@@ -76,7 +76,7 @@ test('it should fill the Chatbot Details page', async () => {
   fireEvent.click(getByTestId('submitActionButton'));
 
   await waitFor(() => {
-    expect(screen.getByText('Confirmation')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   fireEvent.click(screen.getByText('Confirm'));
