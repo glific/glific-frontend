@@ -79,16 +79,6 @@ jobs:
           chmod +x ~/.vite-plugin-mkcert/mkcert
           ~/.vite-plugin-mkcert/mkcert -version
 
-      - name: Install cloudflared
-        run: |
-          wget -q -O cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-          chmod +x cloudflared
-          sudo mv cloudflared /usr/local/bin/
-          cloudflared --version
-
-      - name: Start Cloudflare tunnel (quick tunnel, sets GLIFIC_API_HOST_OVERRIDE)
-        run: .github/scripts/cloudflare-tunnel.sh
-
       # backend setup
       - name: Setup backend (clone and configure)
         run: |
@@ -173,6 +163,8 @@ jobs:
           resource: https-get://glific.test:3000
           timeout: 180000
 
+      # No public tunnel here: the Kaapi callback spec (AssistantEndToEnd) is excluded below and
+      # runs in the label-gated e2e-tests-slow.yml, which starts its own tunnel.
       - name: Cypress run (shard ${{ matrix.shard }}/3)
         run: |
           yarn run cypress run \
@@ -183,14 +175,13 @@ jobs:
           SPLIT: 3
           SPLIT_INDEX: ${{ matrix.shard }}
 
-      - name: Upload Phoenix server, frontend & cloudflared logs (shard ${{ matrix.shard }})
+      - name: Upload Phoenix server & frontend logs (shard ${{ matrix.shard }})
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: phoenix-server-log-shard-${{ matrix.shard }}
           path: |
             /home/runner/work/glific-frontend/glific-frontend/project/glific/phoenix-server.log
-            /home/runner/work/glific-frontend/glific-frontend/cloudflared.log
             /home/runner/work/glific-frontend/glific-frontend/frontend-server.log
           if-no-files-found: warn
           retention-days: 7
