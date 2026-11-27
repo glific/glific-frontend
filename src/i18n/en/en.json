@@ -1148,6 +1148,7 @@
   "Suggested prompt change": "Suggested prompt change",
   "Answers drift from the ideal answers on facts.": "Answers drift from the ideal answers on facts.",
   "Some replies invent detail not in your documents.": "Some replies invent detail not in your documents.",
+  "Something went wrong. Please try again.": "Something went wrong. Please try again.",
   "Tone directives slip on edge cases.": "Tone directives slip on edge cases.",
   "Why this change?": "Why this change?",
   "Apply and save a new version": "Apply and save a new version",

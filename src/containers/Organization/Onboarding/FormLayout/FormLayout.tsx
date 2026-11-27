@@ -1,10 +1,16 @@
 import { Field, FormikProvider, useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Typography } from '@mui/material';
 import styles from './FormLayout.module.css';
 import { Button } from 'components/UI/Form/Button/Button';
 import { Captcha } from 'components/UI/Form/Captcha/Captcha';
 import { DialogBox } from 'components/UI/DialogBox/DialogBox';
+
+// Forms that post to an unauthenticated endpoint, which only accepts a request with a reCAPTCHA token.
+const CAPTCHA_ACTIONS: Record<string, string> = {
+  platformDetails: 'register',
+  reachOutToUs: 'reachout',
+};
 
 interface FormLayoutProps {
   validationSchema: any;
@@ -58,10 +64,12 @@ export const FormLayout = ({
   setCustomError,
 }: FormLayoutProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  // A ref, not state: the token is set right before submitForm, and the submit handler must see it in the same tick.
+  const captchaToken = useRef<string | null>(null);
+  const captchaAction = CAPTCHA_ACTIONS[identifier];
 
   const saveHandler = async (itemData: any, setErrors: Function) => {
-    const payload = setPayload({ ...itemData, token: captchaToken });
+    const payload = setPayload({ ...itemData, token: captchaToken.current });
 
     if (identifier !== 'reachOutToUs') saveData(payload, identifier);
 
@@ -172,20 +180,22 @@ export const FormLayout = ({
             Previous
           </Button>
         )}
-        {identifier === 'platformDetails' ? (
+        {captchaAction ? (
           <Captcha
             component={Button}
             variant="contained"
             color="primary"
             onClick={(token: string) => {
-              setCaptchaToken(token);
+              captchaToken.current = token;
               formik.submitForm();
             }}
             className={styles.Button}
             data-testid="submitActionButton"
-            action="register"
+            action={captchaAction}
+            disabled={buttonState.status}
+            loading={loading}
           >
-            Next
+            {buttonState.text ? buttonState.text : 'Next'}
           </Captcha>
         ) : (
           <Button

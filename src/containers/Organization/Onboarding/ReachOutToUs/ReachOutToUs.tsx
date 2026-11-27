@@ -25,6 +25,7 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
   const [message, setMessage] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [customError, setCustomError] = useState<string | null>(null);
 
   const helperText = (
     <span>
@@ -100,6 +101,11 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
           setErrors(data.messages);
           return false;
         }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setCustomError(error?.response?.data?.error?.message || t('Something went wrong. Please try again.'));
+        return false;
       });
   };
 
@@ -156,6 +162,8 @@ export const ReachOutToUs = ({ open, setOpen, handleStepChange, saveData }: Reac
           saveData={saveData}
           submitData={handleSubmit}
           loading={loading}
+          customError={customError}
+          setCustomError={setCustomError}
         />
       )}
     </Dialog>
